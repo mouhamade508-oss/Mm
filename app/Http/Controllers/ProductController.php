@@ -4,10 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 
 class ProductController extends Controller
 {
+
+
     public function index(Request $request)
     {
         $query = Product::query();
@@ -35,4 +38,41 @@ class ProductController extends Controller
         return view('products.index', compact('products'));
     }
 
+    public function create()
+    {
+        return view('products.create');
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'category' => 'required|string|max:255',
+            'price' => 'required|numeric|min:0',
+            'stock' => 'required|integer|min:0',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('products', 'public');
+            $validated['image'] = $path;
+        }
+
+        Product::create($validated);
+
+        return redirect()->route('admin.products.index')->with('success', '✅ تم إضافة المنتج بنجاح!');
+    }
+
+    public function destroy(Product $product)
+    {
+        // Delete image if exists
+        if ($product->image) {
+            Storage::disk('public')->delete($product->image);
+        }
+
+        $product->delete();
+
+        return redirect()->route('admin.products.index')->with('success', '✅ تم حذف المنتج بنجاح!');
+    }
 }

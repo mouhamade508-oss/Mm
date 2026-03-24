@@ -275,20 +275,33 @@
 </style>
 
 <div class="py-4">
+    <!-- Admin Panel Header -->
+    <div style="background: linear-gradient(135deg, #059669, #047857); color: white; padding: 1.5rem; border-radius: 20px; text-align: center; margin-bottom: 3rem; box-shadow: 0 20px 40px rgba(6, 78, 59, 0.3);">
+        <h2 style="font-size: 2.2rem; font-weight: 900; margin: 0 0 0.5rem 0;">👨‍💼 لوحة الإدارة</h2>
+        <p style="margin: 0; font-size: 1.1rem; opacity: 0.95;">مرحبا {{ Auth::user()->name }} | إدارة المنتجات المتكاملة</p>
+    </div>
+
     <!-- Hero Custom -->
     <section class="hero-custom">
         <h1>MHD Print Lab</h1>
         <p style="font-size: 1.4rem;">مرحبا بك في متجرك المفضل - منتجات جميلة بتصميم أزرق حديث ✨</p>
     </section>
 
+    @if (session('success'))
+    <div style="background: linear-gradient(135deg, #dcfce7, #bbf7d0); border: 1px solid #86efac; border-radius: 20px; padding: 2rem; margin-bottom: 2rem; color: #166534; text-align: center; max-width: 600px; margin: 2rem auto 0;">
+        <h4 style="margin: 0 0 0.5rem 0;">✅ نجح!</h4>
+        <p style="margin: 0; font-size: 1.1rem;">{{ session('success') }}</p>
+    </div>
+    @endif
+
     <!-- Filters Custom -->
     <section class="filters-custom">
         <div class="filter-row">
-            <form method="GET" action="{{ route('products.index') }}" style="display: contents;">
+            <form method="GET" action="{{ route('admin.products.index') }}" style="display: contents;">
                 <input type="text" name="search" value="{{ request('search') }}" class="input-modern" placeholder="🔍 ابحث بالاسم">
                 <button type="submit" class="btn-blue">بحث</button>
             </form>
-            <form method="GET" action="{{ route('products.index') }}" style="display: contents;">
+            <form method="GET" action="{{ route('admin.products.index') }}" style="display: contents;">
                 <select name="category" onchange="this.form.submit()" class="input-modern">
                     <option value="">📂 جميع الفئات</option>
                     <option value="إلكترونيات" {{ request('category') == 'إلكترونيات' ? 'selected' : '' }}>إلكترونيات</option>
@@ -297,7 +310,7 @@
                 </select>
                 <input type="hidden" name="search" value="{{ request('search') }}">
             </form>
-            <form method="GET" action="{{ route('products.index') }}" style="display: flex; gap: 1rem; align-items: end;">
+            <form method="GET" action="{{ route('admin.products.index') }}" style="display: flex; gap: 1rem; align-items: end;">
                 <input type="number" name="min_price" value="{{ request('min_price') }}" class="input-modern" placeholder="الحد الأدنى" style="flex: 1;">
                 <input type="number" name="max_price" value="{{ request('max_price') }}" class="input-modern" placeholder="الحد الأقصى" style="flex: 1;">
                 <button type="submit" class="btn-blue" style="padding: 1.2rem 1rem; white-space: nowrap;">فلتر السعر</button>
@@ -321,9 +334,16 @@
                 <p class="product-text">{{ Str::limit($product->description, 140) }}</p>
                 <div class="price-big">{{ number_format($product->price, 0) }} <span style="font-size: 0.5em;">ر.س</span></div>
                 <div class="stock-info">📦 المخزون: {{ $product->stock }}</div>
-                <a href="https://wa.me/963982617848?text=مرحبا، أريد طلب {{ $product->name }} بسعر {{ $product->price }} ر.س | {{ Str::limit($product->description, 100) }}" class="whatsapp-full" target="_blank">
-                    اطلب الآن عبر واتساب
-                </a>
+                <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                    <a href="https://wa.me/963982617848?text=مرحبا، أريد طلب {{ $product->name }} بسعر {{ $product->price }} ر.س | {{ Str::limit($product->description, 100) }}" class="whatsapp-full" target="_blank" style="flex: 1; padding: 1rem 1.5rem; font-size: 1rem;">
+                        واتساب
+                    </a>
+                    <form method="POST" action="{{ route('admin.products.destroy', $product) }}" style="flex: 1;" onsubmit="return confirm('هل أنت متأكد من حذف هذا المنتج؟')">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn-blue" style="background: linear-gradient(135deg, #ef4444, #dc2626); border: none; width: 100%; padding: 1rem 1.5rem; font-size: 1rem; cursor: pointer;">🗑️ حذف</button>
+                    </form>
+                </div>
             </div>
         </article>
         @empty
@@ -331,7 +351,7 @@
                 <div class="icon-large">🔍</div>
                 <h2 class="no-title">لا توجد منتجات مطابقة</h2>
                 <p class="no-text">عدّل شروط البحث أو جرب فئة أخرى</p>
-                <a href="{{ route('products.index') }}" class="btn-blue" style="display: inline-block; padding: 1.5rem 3rem; font-size: 1.2rem;">عرض جميع المنتجات</a>
+        <a href="{{ route('admin.products.index') }}" class="btn-blue" style="display: inline-block; padding: 1.5rem 3rem; font-size: 1.2rem;">🔄 إعادة تحميل</a>
             </div>
         @endforelse
     </div>

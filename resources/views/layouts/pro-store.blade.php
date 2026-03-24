@@ -7,7 +7,7 @@
     
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     
-    <link rel="stylesheet" href="{{ asset('resources/views/products/custom-styles.css') }}">
+<link rel="stylesheet" href="{{ asset('css/custom-styles.css') }}">
     <style>
         /* Pro Store Styles - Nike/Adidas Level */
         :root {
@@ -221,9 +221,18 @@
                     </svg>
                     <input type="search" class="search-input" placeholder="ابحث عن المنتجات...">
                 </div>
-                <svg class="cart-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-1.5 6.5a2 2 0 002 1.5h11a2 2 0 002-1.5l-1.5-6.5M3 3h18M16 13V6a1 1 0 00-1-1h-4a1 1 0 00-1 1v7"/>
-                </svg>
+                @auth
+                    <span style="color: white; font-weight: 500;">مرحبا، {{ Auth::user()->name }}</span>
+                    <svg class="cart-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="cursor: pointer;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-1.5 6.5a2 2 0 002 1.5h11a2 2 0 002-1.5l-1.5-6.5M3 3h18M16 13V6a1 1 0 00-1-1h-4a1 1 0 00-1 1v7"/>
+                    </svg>
+                    <form method="POST" action="{{ route('logout') }}" style="display: inline;">
+                        @csrf
+                        <button type="submit" style="background: linear-gradient(135deg, #ef4444, #dc2626); border: none; color: white; padding: 0.8rem 1.5rem; border-radius: 20px; font-weight: 600; cursor: pointer; font-family: inherit;">خروج</button>
+                    </form>
+                @else
+                    <a href="{{ route('login') }}" style="background: var(--primary-blue); color: white; padding: 0.8rem 1.5rem; border-radius: 20px; font-weight: 600; text-decoration: none;">تسجيل دخول</a>
+                @endauth
             </div>
         </div>
     </header>

@@ -1,0 +1,21 @@
+{
+  "name": "MHD Print Lab - متجر احترافي",
+  "short_name": "MHD Store",
+  "description": "متجر إلكتروني احترافي يقدم أجود المنتجات العالمية",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1e40af",
+  "theme_color": "#3b82f6",
+  "icons": [
+    {
+      "src": "https://via.placeholder.com/192x192/1e40af/ffffff?text=MHD",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://via.placeholder.com/512x512/1e40af/ffffff?text=MHD",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
