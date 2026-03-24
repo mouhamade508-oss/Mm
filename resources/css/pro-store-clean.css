@@ -1,0 +1,53 @@
+/* Pro-Store CSS - Railway Build Ready - No @apply group */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    --primary-gradient: linear-gradient(
+        135deg,
+        #0f172a 0%,
+        #1e40af 30%,
+        #3b82f6 70%,
+        #60a5fa 100%
+    );
+    --glass-bg: rgba(255, 255, 255, 0.08);
+    --glass-border: rgba(255, 255, 255, 0.15);
+    --radius-xl: 24px;
+    --transition-pro: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Safe CSS only - No Tailwind group issues */
+.product-card {
+    position: relative;
+    background: white;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #dbeafe;
+    transition: all 0.5s ease;
+}
+.product-card:hover {
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    transform: translateY(-16px);
+    border-color: #bfdbfe;
+}
+
+.product-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.7s ease;
+    transform: scale(1);
+}
+.product-card:hover .product-image {
+    transform: scale(1.1);
+}
+
+/* Rest Tailwind safe */
+.header-pro {
+    @apply fixed top-0 w-full z-50 bg-gradient-to-r from-slate-900 to-blue-950/95 backdrop-blur-xl border-b border-white/10 transition-all duration-300;
+}
+.logo-pro {
+    @apply text-3xl font-black bg-gradient-to-l from-blue-400 to-blue-600 bg-clip-text text-transparent hover:scale-105 transition-all duration-300;
+}
