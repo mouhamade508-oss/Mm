@@ -1,155 +1,345 @@
-@extends('layouts.app')
+@extends('layouts.pro-store')
 
 @section('content')
+<style>
+/* تزيين مخصص أزرق جميل - كود Blade نقي */
+:root {
+  --blue-hero: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #60a5fa 100%);
+  --blue-glow: 0 25px 50px rgba(59,130,246,0.4);
+  --card-radius: 28px;
+}
 
-<div class="py-12">
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-        <!-- Hero Section -->
-        <div class="text-center mb-12">
-            <h1 class="text-5xl md:text-6xl font-bold bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 bg-clip-text text-transparent mb-6">
-                MHD Print Lab
-            </h1>
-            <p class="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-                اكتشف مجموعتنا الواسعة من المنتجات عالية الجودة بأسعار تنافسية. اطلب الآن عبر واتساب!
-            </p>
+.hero-custom {
+  background: var(--blue-hero);
+  color: white;
+  text-align: center;
+  padding: 5rem 2rem;
+  margin-bottom: 3rem;
+  border-radius: var(--card-radius);
+  box-shadow: var(--blue-glow);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-custom::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+  animation: rotate 20s linear infinite;
+}
+
+@keyframes rotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.hero-custom h1 {
+  font-size: 3.5rem;
+  font-weight: 900;
+  margin-bottom: 1rem;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+  position: relative;
+  z-index: 1;
+}
+
+.hero-custom p {
+  font-size: 1.4rem;
+  opacity: 0.95;
+  max-width: 700px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.filters-custom {
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(20px);
+  padding: 3rem;
+  border-radius: var(--card-radius);
+  box-shadow: var(--blue-glow);
+  margin-bottom: 3rem;
+  border: 1px solid rgba(59,130,246,0.2);
+}
+
+.filter-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+}
+
+.input-modern, select {
+  width: 100%;
+  padding: 1.2rem 1.8rem;
+  border: 2px solid #e0e7ff;
+  border-radius: 20px;
+  font-size: 1.1rem;
+  font-family: 'Tajawal', sans-serif;
+  background: linear-gradient(145deg, #ffffff, #f8fafc);
+  transition: all 0.3s ease;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.input-modern:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 4px rgba(59,130,246,0.15), inset 0 1px 2px rgba(0,0,0,0.05);
+  transform: translateY(-1px);
+}
+
+.btn-blue {
+  background: var(--blue-hero);
+  color: white;
+  border: none;
+  padding: 1.2rem 2.5rem;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  cursor: pointer;
+  box-shadow: var(--blue-glow);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.btn-blue:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 30px 60px rgba(59,130,246,0.5);
+}
+
+.products-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 2.5rem;
+  margin-bottom: 5rem;
+}
+
+.card-modern {
+  background: white;
+  border-radius: var(--card-radius);
+  overflow: hidden;
+  box-shadow: var(--blue-glow);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(59,130,246,0.15);
+  position: relative;
+}
+
+.card-modern::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--blue-hero);
+  transform: scaleX(0);
+  transition: transform 0.5s ease;
+}
+
+.card-modern:hover::before {
+  transform: scaleX(1);
+}
+
+.card-modern:hover {
+  transform: translateY(-15px);
+  box-shadow: 0 40px 80px rgba(59,130,246,0.35);
+}
+
+.image-container {
+  height: 280px;
+  background: linear-gradient(135deg, #eff6ff, #dbeafe);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+
+.card-modern:hover .image-container img {
+  transform: scale(1.15);
+}
+
+.card-body {
+  padding: 2.5rem;
+}
+
+.product-title {
+  font-size: 1.6rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+  line-height: 1.3;
+  color: #1e293b;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.product-text {
+  color: #64748b;
+  margin-bottom: 1.8rem;
+  line-height: 1.7;
+  font-size: 1rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.price-big {
+  font-size: 2.5rem;
+  font-weight: 900;
+  background: var(--blue-hero);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin-bottom: 0.8rem;
+}
+
+.stock-info {
+  color: #94a3b8;
+  font-weight: 600;
+  font-size: 1rem;
+  margin-bottom: 2rem;
+}
+
+.whatsapp-full {
+  display: block;
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  color: white;
+  text-decoration: none;
+  padding: 1.5rem 2rem;
+  border-radius: 24px;
+  font-weight: 800;
+  font-size: 1.2rem;
+  text-align: center;
+  box-shadow: 0 15px 35px rgba(34,197,94,0.4);
+  transition: all 0.4s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.whatsapp-full::before {
+  content: '💬';
+  margin-left: 1rem;
+}
+
+.whatsapp-full:hover {
+  transform: translateY(-4px) scale(1.03);
+  box-shadow: 0 25px 50px rgba(34,197,94,0.5);
+}
+
+.no-products {
+  text-align: center;
+  grid-column: 1/-1;
+  padding: 8rem 3rem;
+}
+
+.icon-large {
+  font-size: 6rem;
+  margin-bottom: 2rem;
+  opacity: 0.8;
+}
+
+.no-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 1.5rem;
+  color: #1e293b;
+}
+
+.no-text {
+  color: #64748b;
+  font-size: 1.3rem;
+  margin-bottom: 3rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .products-container {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  
+  .hero-custom h1 {
+    font-size: 2.5rem;
+  }
+}
+</style>
+
+<div class="py-4">
+    <!-- Hero Custom -->
+    <section class="hero-custom">
+        <h1>MHD Print Lab</h1>
+        <p style="font-size: 1.4rem;">مرحبا بك في متجرك المفضل - منتجات جميلة بتصميم أزرق حديث ✨</p>
+    </section>
+
+    <!-- Filters Custom -->
+    <section class="filters-custom">
+        <div class="filter-row">
+            <form method="GET" action="{{ route('products.index') }}" style="display: contents;">
+                <input type="text" name="search" value="{{ request('search') }}" class="input-modern" placeholder="🔍 ابحث بالاسم">
+                <button type="submit" class="btn-blue">بحث</button>
+            </form>
+            <form method="GET" action="{{ route('products.index') }}" style="display: contents;">
+                <select name="category" onchange="this.form.submit()" class="input-modern">
+                    <option value="">📂 جميع الفئات</option>
+                    <option value="إلكترونيات" {{ request('category') == 'إلكترونيات' ? 'selected' : '' }}>إلكترونيات</option>
+                    <option value="ملابس" {{ request('category') == 'ملابس' ? 'selected' : '' }}>ملابس</option>
+                    <option value="إكسسوارات" {{ request('category') == 'إكسسوارات' ? 'selected' : '' }}>إكسسوارات</option>
+                </select>
+                <input type="hidden" name="search" value="{{ request('search') }}">
+            </form>
+            <form method="GET" action="{{ route('products.index') }}" style="display: flex; gap: 1rem; align-items: end;">
+                <input type="number" name="min_price" value="{{ request('min_price') }}" class="input-modern" placeholder="الحد الأدنى" style="flex: 1;">
+                <input type="number" name="max_price" value="{{ request('max_price') }}" class="input-modern" placeholder="الحد الأقصى" style="flex: 1;">
+                <button type="submit" class="btn-blue" style="padding: 1.2rem 1rem; white-space: nowrap;">فلتر السعر</button>
+            </form>
         </div>
+    </section>
 
-        <!-- Filters -->
-        <div class="bg-white rounded-3xl shadow-xl p-8 mb-12">
-            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                <!-- Search -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">البحث</label>
-                    <form method="GET" action="{{ route('products.index') }}" class="flex">
-                        <input type="text" name="search" value="{{ request('search') }}" 
-                               class="flex-1 px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
-                               placeholder="اسم المنتج...">
-                        <button type="submit" class="ml-2 px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-xl font-medium transition-all">
-                            بحث
-                        </button>
-                    </form>
-                </div>
-
-                <!-- Category Filter -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">الفئة</label>
-                    <select name="category" onchange="this.form.submit()" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                        <option value="">جميع الفئات</option>
-                        <option value="إلكترونيات" {{ request('category') == 'إلكترونيات' ? 'selected' : '' }}>إلكترونيات</option>
-                        <option value="ملابس" {{ request('category') == 'ملابس' ? 'selected' : '' }}>ملابس</option>
-                        <option value="إكسسوارات" {{ request('category') == 'إكسسوارات' ? 'selected' : '' }}>إكسسوارات</option>
-                        <option value="طابعات" {{ request('category') == 'طابعات' ? 'selected' : '' }}>طابعات</option>
-                    </select>
-                    <input type="hidden" name="search" value="{{ request('search') }}">
-                    <input type="hidden" name="min_price" value="{{ request('min_price') }}">
-                    <input type="hidden" name="max_price" value="{{ request('max_price') }}">
-                </div>
-
-                <!-- Price Range -->
-                <div class="md:col-span-2 lg:col-span-1">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">السعر</label>
-                    <div class="flex space-x-2 space-x-reverse">
-                        <input type="number" name="min_price" value="{{ request('min_price') }}" placeholder="الحد الأدنى" 
-                               class="flex-1 px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500">
-                        <span>-</span>
-                        <input type="number" name="max_price" value="{{ request('max_price') }}" placeholder="الحد الأقصى" 
-                               class="flex-1 px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500">
-                        <button onclick="this.form.submit()" class="px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-xl font-medium transition-all whitespace-nowrap">
-                            فلتر
-                        </button>
-                    </div>
-                    <form hidden></form>
-                </div>
+    <!-- Products -->
+    <div class="products-container">
+        @forelse($products as $product)
+        <article class="card-modern">
+            <div class="image-container">
+                @if($product->image)
+                    <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}">
+                @else
+                    <div style="font-size: 5rem; opacity: 0.5;">🛍️</div>
+                @endif
             </div>
-
-            <!-- Filter Summary -->
-            @if(request('search') || request('category') || request('min_price') || request('max_price'))
-            <div class="mt-6 pt-6 border-t border-gray-200 flex flex-wrap gap-4">
-                <span class="bg-blue-100 text-blue-800 px-4 py-2 rounded-full text-sm">مفلتر: 
-                    @if(request('search')){{ request('search') }} @endif
-                    @if(request('category')){{ request('category') }} @endif
-                    @if(request('min_price')){{ request('min_price') }} - @endif
-                    @if(request('max_price')){{ request('max_price') }} @endif
-                </span>
-                <a href="{{ route('products.index') }}" class="text-blue-600 hover:text-blue-700 text-sm font-medium underline">إزالة الفلاتر</a>
+            <div class="card-body">
+                <h3 class="product-title">{{ Str::limit($product->name, 60) }}</h3>
+                <p class="product-text">{{ Str::limit($product->description, 140) }}</p>
+                <div class="price-big">{{ number_format($product->price, 0) }} <span style="font-size: 0.5em;">ر.س</span></div>
+                <div class="stock-info">📦 المخزون: {{ $product->stock }}</div>
+                <a href="https://wa.me/963982617848?text=مرحبا، أريد طلب {{ $product->name }} بسعر {{ $product->price }} ر.س | {{ Str::limit($product->description, 100) }}" class="whatsapp-full" target="_blank">
+                    اطلب الآن عبر واتساب
+                </a>
             </div>
-            @endif
-        </div>
-
-        <!-- Products Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-            @forelse($products as $product)
-                <div class="group bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 overflow-hidden border border-gray-100 hover:border-blue-200">
-                    <!-- Product Image -->
-                    <div class="h-64 bg-gradient-to-br from-blue-50 to-indigo-50 flex items-center justify-center overflow-hidden relative">
-                        @if($product->image)
-                            <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                        @else
-                            <div class="w-24 h-24 bg-gradient-to-br from-gray-300 to-gray-400 rounded-2xl flex items-center justify-center">
-                                <svg class="w-12 h-12 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                </svg>
-                            </div>
-                        @endif
-                    </div>
-
-                    <!-- Product Info -->
-                    <div class="p-8">
-                        <h3 class="font-bold text-xl mb-2 leading-tight line-clamp-2 group-hover:text-blue-600 transition-colors">{{ $product->name }}</h3>
-                        <p class="text-gray-600 text-sm mb-4 line-clamp-3 leading-relaxed">{{ $product->description }}</p>
-                        
-                        <!-- Price & WhatsApp -->
-                        <div class="flex items-center justify-between mb-6">
-                            <div class="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-                                {{ number_format($product->price, 2) }} ر.س
-                            </div>
-                            <div class="flex items-center space-x-2 space-x-reverse">
-                                <span class="text-sm text-gray-500 font-medium">المخزون: {{ $product->stock }}</span>
-                            </div>
-                        </div>
-
-                        <!-- WhatsApp Button -->
-                        <a href="https://wa.me/963982617848?text=مرحبا، أريد طلب: {{ urlencode($product->name) }} - السعر: {{ $product->price }} ر.س - {{ urlencode($product->description) }}" 
-                           class="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold py-4 px-6 rounded-2xl text-lg flex items-center justify-center space-x-3 space-x-reverse transition-all hover:scale-105 shadow-xl hover:shadow-2xl transform"
-                           target="_blank" rel="noopener">
-                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.446l-.232-.139-3.578-.503-1.043-.12-.005-.005-.002-.001-.001-.001l-.001-.001-.001-.001-.001-.001l-.001-.001-.001-.001-.001-.001l-.001-.001l-.001-.001l-.001-.001l-.001-.001l-.001-.001l-.001-.001l-.001-.001l-.001-.001l-.001-.001l-.001-.001l-.001-.001l-.001-.001l-.001-.001l-.001-.001l-.001-.001l-.001-.001l Providers/AppServiceProvider.php
-                            </svg>
-                            <span>اطلب عبر واتساب</span>
-                        </a>
-                    </div>
-                </div>
-            @empty
-                <div class="col-span-full text-center py-24">
-                    <div class="w-32 h-32 mx-auto mb-8 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-3xl flex items-center justify-center">
-                        <svg class="w-16 h-16 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
-                        </svg>
-                    </div>
-                    <h3 class="text-2xl font-bold text-gray-900 mb-4">لا توجد منتجات</h3>
-                    <p class="text-lg text-gray-600 mb-8">لم نجد منتجات تطابق شروط البحث الخاصة بك</p>
-                    <a href="{{ route('products.index') }}" class="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-8 py-4 rounded-2xl font-bold text-lg shadow-xl hover:shadow-2xl transition-all">
-                        عرض جميع المنتجات
-                    </a>
-                </div>
-            @endforelse
-        </div>
-
-        <!-- Pagination -->
-        <div class="flex justify-center mt-16">
-            {{ $products->appends(request()->query())->links() }}
-        </div>
+        </article>
+        @empty
+            <div class="no-products">
+                <div class="icon-large">🔍</div>
+                <h2 class="no-title">لا توجد منتجات مطابقة</h2>
+                <p class="no-text">عدّل شروط البحث أو جرب فئة أخرى</p>
+                <a href="{{ route('products.index') }}" class="btn-blue" style="display: inline-block; padding: 1.5rem 3rem; font-size: 1.2rem;">عرض جميع المنتجات</a>
+            </div>
+        @endforelse
     </div>
 </div>
 
-@push('scripts')
 <script>
-    // Auto-submit filters
-    document.querySelectorAll('select[name="category"], input[name="min_price"], input[name="max_price"]').forEach(el => {
-        el.addEventListener('change', function() {
-            this.form.submit();
-        });
-    });
+document.querySelectorAll('input[type=number], select').forEach(el => {
+  el.addEventListener('change', () => el.closest('form').submit());
+});
 </script>
-@endpush>
-
+@endsection
