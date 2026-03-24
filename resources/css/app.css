@@ -1,4 +1,6 @@
-@import 'tailwindcss';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
@@ -6,13 +8,14 @@
 @source '../**/*.js';
 
 @theme {
-    --font-sans: 'Tajawal', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
-    
+    --font-sans:
+        "Tajawal", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
+        "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+
     /* MHD Blue Theme */
     --color-primary: #2563eb;
     --color-primary-dark: #1d4ed8;
     --color-primary-light: #60a5fa;
-    
+
     --color-gradient-blue: linear-gradient(to left, #3b82f6, #1e40af);
 }
