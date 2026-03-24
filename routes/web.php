@@ -11,10 +11,11 @@ Route::get('/login', [App\Http\Controllers\AuthController::class, 'showLogin'])-
 Route::post('/login', [App\Http\Controllers\AuthController::class, 'login']);
 Route::post('/logout', [App\Http\Controllers\AuthController::class, 'logout'])->name('logout');
 
-// Admin routes only
+// Admin routes - protected
 Route::middleware('admin')->prefix('admin')->name('admin.')->group(function () {
     Route::get('/products', [App\Http\Controllers\ProductController::class, 'index'])->name('products.index');
     Route::get('/products/create', [App\Http\Controllers\ProductController::class, 'create'])->name('products.create');
     Route::post('/products', [App\Http\Controllers\ProductController::class, 'store'])->name('products.store');
     Route::delete('/products/{product}', [App\Http\Controllers\ProductController::class, 'destroy'])->name('products.destroy');
 });
+

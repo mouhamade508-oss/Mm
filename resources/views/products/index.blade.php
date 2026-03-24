@@ -278,7 +278,7 @@
     <!-- Admin Panel Header -->
     <div style="background: linear-gradient(135deg, #059669, #047857); color: white; padding: 1.5rem; border-radius: 20px; text-align: center; margin-bottom: 3rem; box-shadow: 0 20px 40px rgba(6, 78, 59, 0.3);">
         <h2 style="font-size: 2.2rem; font-weight: 900; margin: 0 0 0.5rem 0;">👨‍💼 لوحة الإدارة</h2>
-        <p style="margin: 0; font-size: 1.1rem; opacity: 0.95;">مرحبا {{ Auth::user()->name }} | إدارة المنتجات المتكاملة</p>
+        <p style="margin: 0; font-size: 1.1rem; opacity: 0.95;">مرحبا {{ session('admin_user.name') ?? 'الإداري' }} | إدارة المنتجات المتكاملة</p>
     </div>
 
     <!-- Hero Custom -->

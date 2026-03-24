@@ -15,11 +15,12 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!auth()->check()) {
+        // Check normal auth OR hardcoded session
+        if (!auth()->check() && !$request->session()->get('admin_logged_in')) {
             return redirect('/login')->with('error', 'يجب تسجيل الدخول أولاً');
         }
 
-        if (auth()->user()->email !== 'mouhamad.deop@gmail.com') {
+        if (auth()->user() && auth()->user()->email !== 'mouhamad.deop@gmail.com') {
             return redirect('/')->with('error', 'ليس لديك صلاحية الوصول لهذه الصفحة');
         }
 
