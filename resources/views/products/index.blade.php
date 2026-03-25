@@ -332,10 +332,10 @@
             <div class="card-body">
                 <h3 class="product-title">{{ Str::limit($product->name, 60) }}</h3>
                 <p class="product-text">{{ Str::limit($product->description, 140) }}</p>
-                <div class="price-big">{{ number_format($product->price, 0) }} <span style="font-size: 0.5em;">ر.س</span></div>
+                <div class="price-big">{{ number_format($product->price, 0) }} <span style="font-size: 0.5em;">ل.س</span></div>
                 <div class="stock-info">📦 المخزون: {{ $product->stock }}</div>
                 <div style="display: flex; gap: 1rem; margin-top: 1rem;">
-                    <a href="https://wa.me/963982617848?text=مرحبا، أريد طلب {{ $product->name }} بسعر {{ $product->price }} ر.س | {{ Str::limit($product->description, 100) }}" class="whatsapp-full" target="_blank" style="flex: 1; padding: 1rem 1.5rem; font-size: 1rem;">
+                    <a href="https://wa.me/963982617848?text=مرحبا، أريد طلب {{ $product->name }} بسعر {{ $product->price }} ل.س | {{ Str::limit($product->description, 100) }}" class="whatsapp-full" target="_blank" style="flex: 1; padding: 1rem 1.5rem; font-size: 1rem;">
                         واتساب
                     </a>
                     <form method="POST" action="{{ route('admin.products.destroy', $product) }}" style="flex: 1;" onsubmit="return confirm('هل أنت متأكد من حذف هذا المنتج؟')">

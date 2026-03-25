@@ -124,7 +124,7 @@
                         <option value="">-- اختر المنتج --</option>
                         @foreach($products as $product)
                             <option value="{{ $product->id }}" {{ old('product_id', $discount->product_id) == $product->id ? 'selected' : '' }}>
-                                {{ $product->name }} ({{ number_format($product->price, 0) }} ر.س)
+                                {{ $product->name }} ({{ number_format($product->price, 0) }} ل.س)
                             </option>
                         @endforeach
                     </select>

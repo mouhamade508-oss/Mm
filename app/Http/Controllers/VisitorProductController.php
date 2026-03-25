@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\Category;
 use App\Models\Discount;
 use Illuminate\Http\Request;
 
@@ -17,7 +18,7 @@ class VisitorProductController extends Controller
         }
 
         if ($request->filled('category')) {
-            $query->where('category', $request->category);
+            $query->where('category_id', $request->category);
         }
 
         if ($request->filled('min_price')) {
@@ -29,6 +30,9 @@ class VisitorProductController extends Controller
 
         $products = $query->paginate(12);
 
+        // Get all categories
+        $categories = Category::all();
+
         // Get all active general discounts
         $generalDiscounts = Discount::where('type', 'general')
             ->where('is_active', true)
@@ -37,7 +41,7 @@ class VisitorProductController extends Controller
             ->where('used_count', '<', \DB::raw('usage_limit'))
             ->get();
 
-        return view('welcome', compact('products', 'generalDiscounts'));
+        return view('welcome', compact('products', 'categories', 'generalDiscounts'));
     }
 }
 

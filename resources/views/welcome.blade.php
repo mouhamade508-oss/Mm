@@ -651,10 +651,10 @@
         
         <!-- السعر والخصم -->
         <div style="margin-bottom: 1rem;">
-          <div class="product-price" id="original-price-{{ $product->id }}">{{ number_format($product->price, 0) }} ر.س</div>
+          <div class="product-price" id="original-price-{{ $product->id }}">{{ number_format($product->price, 0) }}ل.س</div>
           @if($productDiscount)
             <div style="font-size: 1.3rem; color: #22c55e; font-weight: 700; margin-top: 0.5rem;" id="discount-price-{{ $product->id }}">
-              {{ number_format($productDiscount->calculateFinalPrice($product->price), 0) }} ر.س
+              {{ number_format($productDiscount->calculateFinalPrice($product->price), 0) }} ل.س
             </div>
           @endif
         </div>
@@ -828,7 +828,7 @@ function updatePrice(productId, percentage, isGlobal = false) {
         originalEl.parentNode.insertBefore(discountEl, originalEl.nextSibling);
     }
     
-    discountEl.textContent = Math.round(finalPrice).toLocaleString() + ' ر.س';
+    discountEl.textContent = Math.round(finalPrice).toLocaleString() + 'ل.س ';
 }
 
 function resetAllPrices() {

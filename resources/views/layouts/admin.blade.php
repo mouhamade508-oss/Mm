@@ -174,6 +174,12 @@
                     </a>
                 </li>
                 <li>
+                    <a href="{{ route('admin.categories.index') }}" 
+                       class="{{ Route::is('admin.categories.*') ? 'active' : '' }}">
+                        📂 الفئات
+                    </a>
+                </li>
+                <li>
                     <a href="{{ route('admin.products.index') }}" 
                        class="{{ Route::is('admin.products.*') ? 'active' : '' }}">
                         📦 المنتجات

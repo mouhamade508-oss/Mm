@@ -18,6 +18,9 @@ Route::middleware('admin')->prefix('admin')->name('admin.')->group(function () {
         return view('admin.dashboard');
     })->name('dashboard');
 
+    // Categories routes
+    Route::resource('categories', App\Http\Controllers\CategoryController::class);
+
     // Products routes
     Route::get('/products', [App\Http\Controllers\ProductController::class, 'index'])->name('products.index');
     Route::get('/products/create', [App\Http\Controllers\ProductController::class, 'create'])->name('products.create');

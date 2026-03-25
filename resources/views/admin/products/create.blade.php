@@ -73,18 +73,19 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <!-- Category -->
                         <div>
-                            <label for="category" class="flex items-center text-gray-700 font-bold mb-3 gap-2">
+                            <label for="category_id" class="flex items-center text-gray-700 font-bold mb-3 gap-2">
                                 <span class="text-xl">📂</span> الفئة <span class="text-red-500">*</span>
                             </label>
-                            <select id="category" name="category" required 
+                            <select id="category_id" name="category_id" required 
                                     class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition">
                                 <option value="">-- اختر الفئة --</option>
-                                <option value="إلكترونيات" {{ old('category') === 'إلكترونيات' ? 'selected' : '' }}>📱 إلكترونيات</option>
-                                <option value="ملابس" {{ old('category') === 'ملابس' ? 'selected' : '' }}>👕 ملابس</option>
-                                <option value="إكسسوارات" {{ old('category') === 'إكسسوارات' ? 'selected' : '' }}>👜 إكسسوارات</option>
-                                <option value="منزليات" {{ old('category') === 'منزليات' ? 'selected' : '' }}>🏠 منزليات</option>
+                                @foreach($categories as $category)
+                                    <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
+                                        {{ $category->name }}
+                                    </option>
+                                @endforeach
                             </select>
-                            @error('category') 
+                            @error('category_id') 
                                 <p class="text-red-500 text-sm mt-2">{{ $message }}</p>
                             @enderror
                         </div>
@@ -99,7 +100,7 @@
                                        step="0.01" min="0"
                                        placeholder="0.00"
                                        class="w-full px-4 py-3 pr-12 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition">
-                                <span class="absolute left-4 top-3 text-gray-500 font-bold">ر.س</span>
+                                <span class="absolute left-4 top-3 text-gray-500 font-bold">ل.س</span>
                             </div>
                             @error('price') 
                                 <p class="text-red-500 text-sm mt-2">{{ $message }}</p>

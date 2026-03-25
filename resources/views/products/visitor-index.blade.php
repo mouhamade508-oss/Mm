@@ -144,9 +144,9 @@
       <form method="GET" action="{{ route('products.index') }}" style="display: contents;">
         <select name="category" class="input-modern" onchange="this.form.submit()">
           <option value="">📂 جميع الفئات</option>
-          <option value="إلكترونيات" {{ request('category') == 'إلكترونيات' ? 'selected' : '' }}>إلكترونيات</option>
-          <option value="ملابس" {{ request('category') == 'ملابس' ? 'selected' : '' }}>ملابس</option>
-          <option value="إكسسوارات" {{ request('category') == 'إكسسوارات' ? 'selected' : '' }}>إكسسوارات</option>
+          @foreach($categories as $cat)
+            <option value="{{ $cat->id }}" {{ request('category') == $cat->id ? 'selected' : '' }}>{{ $cat->name }}</option>
+          @endforeach
         </select>
         <input type="hidden" name="search" value="{{ request('search') }}">
       </form>
@@ -186,13 +186,13 @@
         <div style="margin-bottom: 1.5rem;">
           <!-- السعر الأصلي -->
           <div style="font-size: 2.5rem; font-weight: 900; background: var(--blue-hero); -webkit-background-clip: text; margin-bottom: 0.5rem;" class="original-price-{{ $product->id }}">
-            {{ number_format($product->price, 0) }} <span style="font-size: 0.5em;">ر.س</span>
+            {{ number_format($product->price, 0) }} <span style="font-size: 0.5em;">ل.س</span>
           </div>
           
           <!-- السعر مع الخصم الخاص بالمنتج إن وجد -->
           @if($productDiscount)
             <div style="font-size: 1.3rem; color: #22c55e; font-weight: 700;" class="discounted-price-{{ $product->id }}">
-              {{ number_format($productDiscount->calculateFinalPrice($product->price), 0) }} <span style="font-size: 0.6em;">ر.س</span>
+              {{ number_format($productDiscount->calculateFinalPrice($product->price), 0) }} <span style="font-size: 0.6em;">ل.س</span>
             </div>
           @endif
         </div>
@@ -218,7 +218,7 @@
 
         <div style="color: #94a3b8; font-weight: 600; margin-bottom: 2rem;">📦 المخزون: {{ $product->stock }}</div>
         
-        <a href="https://wa.me/963982617848?text=مرحبا، أريد طلب {{ $product->name }} بسعر {{ $product->price }} ر.س" class="whatsapp-buy" id="whatsapp-{{ $product->id }}">
+        <a href="https://wa.me/963982617848?text=مرحبا، أريد طلب {{ $product->name }} بسعر {{ $product->price }}ل.س" class="whatsapp-buy" id="whatsapp-{{ $product->id }}">
           💬 اطلب عبر واتساب
         </a>
       </div>
@@ -296,14 +296,14 @@ function updateProductPrice(productId, discountPercentage) {
     const finalPrice = originalPrice - discountAmount;
     
     if (priceElement) {
-        priceElement.textContent = Math.round(finalPrice).toLocaleString() + ' ر.س';
+        priceElement.textContent = Math.round(finalPrice).toLocaleString() + ' ل.س';
         priceElement.style.color = '#22c55e';
     } else {
         // إنشاء عنصر السعر المخفض إذا لم يكن موجود
         const newPriceEl = document.createElement('div');
         newPriceEl.className = 'discounted-price-' + productId;
         newPriceEl.style.cssText = 'font-size: 1.3rem; color: #22c55e; font-weight: 700;';
-        newPriceEl.textContent = Math.round(finalPrice).toLocaleString() + ' ر.س';
+        newPriceEl.textContent = Math.round(finalPrice).toLocaleString() + ' ل.س';
         originalPriceElement.parentNode.insertBefore(newPriceEl, originalPriceElement.nextSibling);
     }
 }

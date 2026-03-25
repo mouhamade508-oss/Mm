@@ -50,7 +50,7 @@
                     <div class="flex justify-between items-start">
                         <div>
                             <p class="text-gray-600 text-sm mb-1">قيمة المخزون</p>
-                            <p class="text-3xl font-bold text-purple-600">{{ number_format(\App\Models\Product::query()->select(\Illuminate\Support\Facades\DB::raw('SUM(price * stock) as total'))->first()->total ?? 0, 0) }} ر.س</p>
+                            <p class="text-3xl font-bold text-purple-600">{{ number_format(\App\Models\Product::query()->select(\Illuminate\Support\Facades\DB::raw('SUM(price * stock) as total'))->first()->total ?? 0, 0) }} ل.س</p>
                         </div>
                         <span class="text-3xl">💰</span>
                     </div>
@@ -85,8 +85,8 @@
                     <input type="text" name="search" placeholder="🔍 ابحث عن منتج..." value="{{ request('search') }}" class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
                     <select name="category" class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
                         <option value="">جميع الفئات</option>
-                        @foreach(\App\Models\Product::distinct()->pluck('category') as $cat)
-                            <option value="{{ $cat }}" {{ request('category') === $cat ? 'selected' : '' }}>{{ $cat }}</option>
+                        @foreach(\App\Models\Category::all() as $cat)
+                            <option value="{{ $cat->id }}" {{ request('category') == $cat->id ? 'selected' : '' }}>{{ $cat->name }}</option>
                         @endforeach
                     </select>
                     <select name="stock_status" class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
@@ -134,8 +134,8 @@
                             <h3 class="text-xl font-bold text-gray-900 mb-2 line-clamp-2">{{ $product->name }}</h3>
                             
                             <div class="mb-4 space-y-2 text-sm text-gray-600">
-                                <p><span class="font-semibold">📂 الفئة:</span> {{ $product->category }}</p>
-                                <p><span class="font-semibold">💵 السعر:</span> <span class="text-lg font-bold text-blue-600">{{ number_format($product->price, 0) }} ر.س</span></p>
+                                <p><span class="font-semibold">📂 الفئة:</span> {{ $product->category ? $product->category->name : 'بدون فئة' }}</p>
+                                <p><span class="font-semibold">💵 السعر:</span> <span class="text-lg font-bold text-blue-600">{{ number_format($product->price, 0) }} ل.س</span></p>
                                 <p><span class="font-semibold">📦 المخزون:</span> 
                                     <span class="inline-block bg-slate-100 text-slate-700 px-3 py-1 rounded-full text-xs font-bold">
                                         {{ $product->stock }} قطعة

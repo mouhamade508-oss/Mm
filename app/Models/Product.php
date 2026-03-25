@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Product extends Model
 {
@@ -15,7 +16,7 @@ class Product extends Model
     protected $fillable = [
         'name',
         'description',
-        'category',
+        'category_id',
         'price',
         'image',
         'stock',
@@ -31,6 +32,14 @@ class Product extends Model
         return [
             'price' => 'decimal:2',
         ];
+    }
+
+    /**
+     * Get the product's specific discounts.
+     */
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(Category::class);
     }
 
     /**

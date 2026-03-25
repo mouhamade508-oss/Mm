@@ -5,11 +5,12 @@
 :root {
   --blue-hero: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #60a5fa 100%);
   --blue-glow: 0 25px 50px rgba(59,130,246,0.4);
+  --orange-hero: linear-gradient(135deg, #f59e0b 0%, #d97706 50%, #b45309 100%);
   --card-radius: 28px;
 }
 
-.create-hero {
-  background: var(--blue-hero);
+.edit-hero {
+  background: var(--orange-hero);
   color: white;
   text-align: center;
   padding: 4rem 2rem;
@@ -18,13 +19,13 @@
   box-shadow: var(--blue-glow);
 }
 
-.create-hero h1 {
+.edit-hero h1 {
   font-size: 3rem;
   font-weight: 900;
   margin-bottom: 1rem;
 }
 
-.create-container {
+.edit-container {
   max-width: 700px;
   margin: 0 auto;
 }
@@ -64,8 +65,8 @@
 }
 
 .input-modern:focus, textarea:focus, select:focus {
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 4px rgba(59,130,246,0.15);
+  border-color: #f59e0b;
+  box-shadow: 0 0 0 4px rgba(245,158,11,0.15);
   outline: none;
   transform: translateY(-2px);
 }
@@ -74,8 +75,16 @@ textarea {
   min-height: 150px;
 }
 
-.btn-save {
-  background: var(--blue-hero);
+.current-image {
+  max-width: 200px;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.btn-update {
+  background: var(--orange-hero);
   color: white;
   border: none;
   padding: 1.5rem 4rem;
@@ -88,9 +97,9 @@ textarea {
   transition: all 0.4s ease;
 }
 
-.btn-save:hover {
+.btn-update:hover {
   transform: translateY(-4px) scale(1.02);
-  box-shadow: 0 30px 60px rgba(59,130,246,0.5);
+  box-shadow: 0 30px 60px rgba(245,158,11,0.5);
 }
 
 .btn-back {
@@ -118,12 +127,12 @@ textarea {
 </style>
 
 <div class="py-4">
-    <section class="create-hero">
-    <h1>➕ إضافة منتج جديد</h1>
-    <p>لوحة الإدارة - إضافة منتج للمتجر</p>
+  <section class="edit-hero">
+    <h1>✏️ تعديل المنتج</h1>
+    <p>لوحة الإدارة - تعديل بيانات "{{ $product->name ?? 'المنتج' }}"</p>
   </section>
 
-  <div class="create-container">
+  <div class="edit-container">
     <div class="form-card">
       @if ($errors->any())
         <div style="background: linear-gradient(135deg, #fee2e2, #fecaca); border: 1px solid #fca5a5; border-radius: 20px; padding: 2rem; margin-bottom: 2rem;">
@@ -142,46 +151,57 @@ textarea {
         </div>
       @endif
 
-      <form action="{{ route('admin.products.store') }}" method="POST" enctype="multipart/form-data">
+      <form action="{{ route('admin.products.update', $product) }}" method="POST" enctype="multipart/form-data">
         @csrf
+        @method('PUT')
         
         <div class="form-group">
           <label class="label-modern">📝 اسم المنتج</label>
-          <input type="text" name="name" class="input-modern" value="{{ old('name') }}" required placeholder="مثال: تيشرت ماركة MHD">
+          <input type="text" name="name" class="input-modern" value="{{ old('name', $product->name) }}" required placeholder="مثال: تيشرت ماركة MHD">
         </div>
 
         <div class="form-group">
           <label class="label-modern">📄 الوصف</label>
-          <textarea name="description" class="input-modern" placeholder="وصف مفصل للمنتج...">{{ old('description') }}</textarea>
+          <textarea name="description" class="input-modern" placeholder="وصف مفصل للمنتج...">{{ old('description', $product->description) }}</textarea>
         </div>
 
         <div class="form-group">
           <label class="label-modern">📂 الفئة</label>
           <select name="category" class="input-modern" required>
             <option value="">اختر الفئة</option>
-            <option value="إلكترونيات" {{ old('category') == 'إلكترونيات' ? 'selected' : '' }}>إلكترونيات</option>
-            <option value="ملابس" {{ old('category') == 'ملابس' ? 'selected' : '' }}>ملابس</option>
-            <option value="إكسسوارات" {{ old('category') == 'إكسسوارات' ? 'selected' : '' }}>إكسسوارات</option>
-            <option value="منزليات" {{ old('category') == 'منزليات' ? 'selected' : '' }}>منزليات</option>
+            <option value="إلكترونيات" {{ old('category', $product->category) == 'إلكترونيات' ? 'selected' : '' }}>إلكترونيات</option>
+            <option value="ملابس" {{ old('category', $product->category) == 'ملابس' ? 'selected' : '' }}>ملابس</option>
+            <option value="إكسسوارات" {{ old('category', $product->category) == 'إكسسوارات' ? 'selected' : '' }}>إكسسوارات</option>
+            <option value="منزليات" {{ old('category', $product->category) == 'منزليات' ? 'selected' : '' }}>منزليات</option>
           </select>
         </div>
 
         <div class="form-group">
           <label class="label-modern">💰 السعر (ل.س)</label>
-          <input type="number" name="price" step="0.01" min="0" class="input-modern" value="{{ old('price') }}" required placeholder="مثال: 99.99">
-        </div>
-
-        <div class="form-group">
-          <label class="label-modern">📸 صورة المنتج (اختياري)</label>
-          <input type="file" name="image" class="input-modern" accept="image/*">
+          <input type="number" name="price" step="0.01" min="0" class="input-modern" value="{{ old('price', $product->price) }}" required placeholder="مثال: 99.99">
         </div>
 
         <div class="form-group">
           <label class="label-modern">📦 المخزون</label>
-          <input type="number" name="stock" min="0" class="input-modern" value="{{ old('stock', 10) }}" required placeholder="عدد القطع المتاحة">
+          <input type="number" name="stock" min="0" class="input-modern" value="{{ old('stock', $product->stock) }}" required placeholder="عدد القطع المتاحة">
         </div>
 
-        <button type="submit" class="btn-save">💾 حفظ المنتج الجديد</button>
+        <div class="form-group">
+          <label class="label-modern">🖼️ الصورة الحالية</label>
+          @if($product->image)
+            <img src="{{ asset('storage/' . $product->image) }}" alt="الصورة الحالية" class="current-image">
+            <p style="color: #6b7280; font-size: 0.95rem; margin-top: 0.5rem;">يمكنك استبدالها بصورة جديدة</p>
+          @else
+            <p style="color: #6b7280;">لا توجد صورة حالية</p>
+          @endif
+        </div>
+
+        <div class="form-group">
+          <label class="label-modern">📸 صورة جديدة (اختياري - للاستبدال)</label>
+          <input type="file" name="image" class="input-modern" accept="image/*">
+        </div>
+
+        <button type="submit" class="btn-update">💾 تحديث المنتج</button>
       </form>
 
       <a href="{{ route('admin.products.index') }}" class="btn-back">← العودة للمنتجات</a>
@@ -189,4 +209,3 @@ textarea {
   </div>
 </div>
 @endsection
-
