@@ -13,9 +13,28 @@ Route::post('/logout', [App\Http\Controllers\AuthController::class, 'logout'])->
 
 // Admin routes - protected
 Route::middleware('admin')->prefix('admin')->name('admin.')->group(function () {
+    // Dashboard
+    Route::get('/', function() {
+        return view('admin.dashboard');
+    })->name('dashboard');
+
+    // Products routes
     Route::get('/products', [App\Http\Controllers\ProductController::class, 'index'])->name('products.index');
     Route::get('/products/create', [App\Http\Controllers\ProductController::class, 'create'])->name('products.create');
     Route::post('/products', [App\Http\Controllers\ProductController::class, 'store'])->name('products.store');
+    Route::get('/products/{product}/edit', [App\Http\Controllers\ProductController::class, 'edit'])->name('products.edit');
+    Route::put('/products/{product}', [App\Http\Controllers\ProductController::class, 'update'])->name('products.update');
     Route::delete('/products/{product}', [App\Http\Controllers\ProductController::class, 'destroy'])->name('products.destroy');
+
+    // Discounts routes
+    Route::get('/discounts', [App\Http\Controllers\DiscountController::class, 'index'])->name('discounts.index');
+    Route::get('/discounts/create', [App\Http\Controllers\DiscountController::class, 'create'])->name('discounts.create');
+    Route::post('/discounts', [App\Http\Controllers\DiscountController::class, 'store'])->name('discounts.store');
+    Route::get('/discounts/{discount}/edit', [App\Http\Controllers\DiscountController::class, 'edit'])->name('discounts.edit');
+    Route::put('/discounts/{discount}', [App\Http\Controllers\DiscountController::class, 'update'])->name('discounts.update');
+    Route::delete('/discounts/{discount}', [App\Http\Controllers\DiscountController::class, 'destroy'])->name('discounts.destroy');
 });
+
+// Public route for validating discount codes
+Route::post('/api/validate-discount', [App\Http\Controllers\DiscountController::class, 'validate'])->name('validate-discount');
 

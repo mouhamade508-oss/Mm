@@ -35,12 +35,12 @@ class ProductController extends Controller
 
         $products = $query->paginate(12);
 
-        return view('products.index', compact('products'));
+        return view('admin.products.index', compact('products'));
     }
 
     public function create()
     {
-        return view('products.create');
+        return view('admin.products.create');
     }
 
     public function store(Request $request)
@@ -62,6 +62,36 @@ class ProductController extends Controller
         Product::create($validated);
 
         return redirect()->route('admin.products.index')->with('success', '✅ تم إضافة المنتج بنجاح!');
+    }
+
+    public function edit(Product $product)
+    {
+        return view('admin.products.edit', compact('product'));
+    }
+
+    public function update(Request $request, Product $product)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'category' => 'required|string|max:255',
+            'price' => 'required|numeric|min:0',
+            'stock' => 'required|integer|min:0',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        if ($request->hasFile('image')) {
+            // Delete old image
+            if ($product->image) {
+                Storage::disk('public')->delete($product->image);
+            }
+            $path = $request->file('image')->store('products', 'public');
+            $validated['image'] = $path;
+        }
+
+        $product->update($validated);
+
+        return redirect()->route('admin.products.index')->with('success', '✅ تم تحديث المنتج بنجاح!');
     }
 
     public function destroy(Product $product)

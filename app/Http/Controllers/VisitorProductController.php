@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\Discount;
 use Illuminate\Http\Request;
 
 class VisitorProductController extends Controller
@@ -28,7 +29,15 @@ class VisitorProductController extends Controller
 
         $products = $query->paginate(12);
 
-return view('welcome', compact('products'));
+        // Get all active general discounts
+        $generalDiscounts = Discount::where('type', 'general')
+            ->where('is_active', true)
+            ->where('valid_from', '<=', now())
+            ->where('valid_until', '>=', now())
+            ->where('used_count', '<', \DB::raw('usage_limit'))
+            ->get();
+
+        return view('welcome', compact('products', 'generalDiscounts'));
     }
 }
 

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Product extends Model
 {
@@ -32,4 +33,25 @@ class Product extends Model
         ];
     }
 
+    /**
+     * Get the product's specific discounts.
+     */
+    public function discounts(): HasMany
+    {
+        return $this->hasMany(Discount::class);
+    }
+
+    /**
+     * Get the active specific discount for this product
+     */
+    public function getActiveDiscount(): ?Discount
+    {
+        return $this->discounts()
+            ->where('type', 'specific')
+            ->where('is_active', true)
+            ->where('valid_from', '<=', now())
+            ->where('valid_until', '>=', now())
+            ->where('used_count', '<', \DB::raw('usage_limit'))
+            ->first();
+    }
 }

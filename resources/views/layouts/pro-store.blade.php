@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ config('app.name', 'MHD Print Lab') }} - متجر احترافي</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
@@ -222,7 +223,7 @@
                     <input type="search" class="search-input" placeholder="ابحث عن المنتجات...">
                 </div>
                 @auth
-                    <span style="color: white; font-weight: 500;">مرحبا، {{ Auth::user()->name }}</span>
+                    <span style="color: white; font-weight: 500;">مرحبا، {{ Auth::user()?->name ?? session('admin_user')['name'] ?? 'المستخدم' }}</span>
                     <svg class="cart-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="cursor: pointer;">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-1.5 6.5a2 2 0 002 1.5h11a2 2 0 002-1.5l-1.5-6.5M3 3h18M16 13V6a1 1 0 00-1-1h-4a1 1 0 00-1 1v7"/>
                     </svg>

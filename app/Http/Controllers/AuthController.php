@@ -31,7 +31,7 @@ class AuthController extends Controller
             $request->session()->put('admin_email', $credentials['email']);
             $request->session()->regenerate();
             
-            return redirect()->intended('/admin/products');
+            return redirect()->intended('/admin/');
         }
 
         // ✅ DB auth commented out for hardcoded only

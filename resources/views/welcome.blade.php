@@ -269,6 +269,105 @@
   margin-left: auto;
   margin-right: auto;
 }
+
+.global-discount-section {
+  background: linear-gradient(135deg, #fef08a 0%, #fde047 50%, #facc15 100%);
+  padding: 2.5rem;
+  border-radius: var(--card-radius);
+  box-shadow: 0 25px 50px rgba(250,204,21,0.3);
+  margin-bottom: 4rem;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  border: 2px solid rgba(255,255,255,0.5);
+}
+
+.global-discount-section h2 {
+  color: #854d0e;
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  font-weight: 900;
+  text-align: center;
+}
+
+.global-discount-section p {
+  color: #b45309;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.global-discount-input-group {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.global-discount-input-group input {
+  flex: 1;
+  padding: 1.2rem 1.5rem;
+  border: 2px solid rgba(255,255,255,0.6);
+  border-radius: 16px;
+  font-size: 1.1rem;
+  font-family: 'Tajawal', sans-serif;
+  font-weight: 600;
+  background: rgba(255,255,255,0.9);
+  text-align: center;
+  transition: all 0.3s;
+}
+
+.global-discount-input-group input:focus {
+  outline: none;
+  border-color: #b45309;
+  background: white;
+  box-shadow: 0 0 0 4px rgba(180,83,9,0.15);
+}
+
+.global-discount-input-group button {
+  background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
+  color: white;
+  border: none;
+  padding: 1.2rem 2.5rem;
+  border-radius: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: all 0.3s;
+  white-space: nowrap;
+  box-shadow: 0 10px 30px rgba(202,65,12,0.3);
+}
+
+.global-discount-input-group button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 40px rgba(202,65,12,0.4);
+}
+
+.global-discount-msg {
+  text-align: center;
+  font-weight: 600;
+  font-size: 1.1rem;
+  min-height: 30px;
+  color: #854d0e;
+}
+
+.global-discount-msg.success {
+  color: #15803d;
+}
+
+.global-discount-msg.error {
+  color: #dc2626;
+}
+
+@media (max-width: 768px) {
+  .global-discount-input-group {
+    flex-direction: column;
+  }
+  
+  .global-discount-input-group button {
+    width: 100%;
+  }
+}
 </style>
 
 <!-- Hero -->
@@ -305,6 +404,19 @@
   </form>
 </section>
 
+<!-- Global Discount Code -->
+<section class="global-discount-section">
+  <h2>🎁 هل لديك كود خصم عام؟</h2>
+  <p>أدخل الكود للحصول على خصم على جميع المنتجات</p>
+  
+  <div class="global-discount-input-group">
+    <input type="text" id="global-discount-code" placeholder="أدخل كود الخصم..." maxlength="50">
+    <button type="button" onclick="validateGlobalDiscount()">تطبيق الكود</button>
+  </div>
+  
+  <div class="global-discount-msg" id="global-discount-msg"></div>
+</section>
+
 <!-- Products -->
 <div class="products-grid">
   @forelse($products as $product)
@@ -315,12 +427,48 @@
         @endif
       </div>
       <div class="product-info">
+        <!-- عرض الخصم الخاص بالمنتج -->
+        @php
+          $productDiscount = $product->getActiveDiscount();
+        @endphp
+        @if($productDiscount)
+          <div style="position: absolute; top: 15px; right: 15px; background: linear-gradient(135deg, #f97316, #ea580c); color: white; padding: 0.8rem 1.2rem; border-radius: 12px; font-weight: 700; font-size: 0.85rem; box-shadow: 0 10px 25px rgba(249,115,22,0.3);">
+            🎁 خصم {{ $productDiscount->percentage }}%
+          </div>
+        @endif
+
         <h3 class="product-name">{{ Str::limit($product->name, 50) }}</h3>
         <p class="product-desc">{{ Str::limit($product->description, 120) }}</p>
-        <div class="product-price">{{ number_format($product->price, 0) }} ر.س</div>
+        
+        <!-- السعر والخصم -->
+        <div style="margin-bottom: 1rem;">
+          <div class="product-price" id="original-price-{{ $product->id }}">{{ number_format($product->price, 0) }} ر.س</div>
+          @if($productDiscount)
+            <div style="font-size: 1.3rem; color: #22c55e; font-weight: 700; margin-top: 0.5rem;" id="discount-price-{{ $product->id }}">
+              {{ number_format($productDiscount->calculateFinalPrice($product->price), 0) }} ر.س
+            </div>
+          @endif
+        </div>
+
+        <!-- حقل الخصم -->
+        <div style="background: #f8f9fa; padding: 1.2rem; border-radius: 12px; margin-bottom: 1.5rem; border: 2px dashed #3b82f6;">
+          <div style="display: flex; gap: 0.6rem; margin-bottom: 0.8rem;">
+            <input type="text" id="discount-code-{{ $product->id }}" placeholder="كود الخصم" style="flex: 1; padding: 0.7rem; border: 1px solid #e0e7ff; border-radius: 8px; font-size: 0.9rem; font-family: 'Tajawal', sans-serif;">
+            <button type="button" onclick="validateDiscount({{ $product->id }})" class="btn-filter" style="padding: 0.7rem 1.2rem; font-size: 0.9rem; white-space: nowrap; width: auto;">تطبيق</button>
+          </div>
+          <div id="discount-msg-{{ $product->id }}" style="font-size: 0.8rem; min-height: 18px; color: #64748b;"></div>
+        </div>
+
+        <!-- عرض الخصومات العامة -->
+        @if($generalDiscounts->count() > 0)
+          <div style="background: #e0f2fe; padding: 0.8rem; border-radius: 8px; margin-bottom: 1.5rem; text-align: center; font-size: 0.9rem;">
+            <span style="color: #0369a1; font-weight: 600;">🎉 كود عام: <span style="font-weight: 700;">{{ $generalDiscounts->first()->code }}</span> - {{ $generalDiscounts->first()->percentage }}%</span>
+          </div>
+        @endif
+
         <div class="product-stock">📦 متوفر: {{ $product->stock }} قطعة</div>
         <a href="https://wa.me/963982617848?text=مرحبا%21%20أريد%20طلب%20%22{{ urlencode($product->name) }}%22%20السعر%3A%20{{ $product->price }}%20ر.س%20{{ urlencode($product->description) }}" 
-           class="whatsapp-btn" target="_blank">
+           class="whatsapp-btn" target="_blank" id="whatsapp-{{ $product->id }}">
            اطلب عبر واتساب
         </a>
       </div>
@@ -343,6 +491,168 @@
   <p>لإضافة وإدارة المنتجات</p>
   <a href="{{ route('login') }}" style="background: var(--blue-hero); color: white; padding: 1rem 2.5rem; border-radius: 20px; font-weight: 700; text-decoration: none; display: inline-block;">تسجيل الدخول</a>
 </div>
+
+<!-- JavaScript للخصومات -->
+<script>
+let appliedDiscounts = {};
+let globalDiscount = null;
+
+function validateGlobalDiscount() {
+    const code = document.getElementById('global-discount-code').value.trim();
+    const msgEl = document.getElementById('global-discount-msg');
+    
+    if (!code) {
+        msgEl.innerHTML = '<span class="error">❌ أدخل كود صحيح</span>';
+        msgEl.className = 'global-discount-msg error';
+        return;
+    }
+
+    // Don't send product_id for global discount
+    fetch('{{ route("validate-discount") }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        },
+        body: JSON.stringify({
+            code: code.toUpperCase()
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.valid) {
+            globalDiscount = {
+                code: code.toUpperCase(),
+                percentage: data.percentage,
+                discount_id: data.discount_id,
+                type: data.type
+            };
+            
+            msgEl.innerHTML = '<span class="success">✓ تم تطبيق الكود العام بنجاح! خصم ' + data.percentage + '%</span>';
+            msgEl.className = 'global-discount-msg success';
+            
+            // Apply to all products
+            applyGlobalDiscountToAll();
+        } else {
+            globalDiscount = null;
+            msgEl.innerHTML = '<span class="error">✗ ' + data.message + '</span>';
+            msgEl.className = 'global-discount-msg error';
+            // Reset all prices
+            resetAllPrices();
+        }
+    })
+    .catch(() => {
+        globalDiscount = null;
+        msgEl.innerHTML = '<span class="error">❌ خطأ في التحقق</span>';
+        msgEl.className = 'global-discount-msg error';
+        resetAllPrices();
+    });
+}
+
+function applyGlobalDiscountToAll() {
+    if (!globalDiscount) return;
+    
+    // Get all product cards
+    document.querySelectorAll('[id^="original-price-"]').forEach(el => {
+        const productId = el.id.replace('original-price-', '');
+        updatePrice(productId, globalDiscount.percentage, true);
+    });
+}
+
+function validateDiscount(productId) {
+    const code = document.getElementById('discount-code-' + productId).value.trim();
+    const msgEl = document.getElementById('discount-msg-' + productId);
+    
+    if (!code) {
+        msgEl.innerHTML = '<span style="color: #ef4444;">أدخل كود صحيح</span>';
+        return;
+    }
+
+    fetch('{{ route("validate-discount") }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        },
+        body: JSON.stringify({
+            code: code.toUpperCase(),
+            product_id: productId
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.valid) {
+            appliedDiscounts[productId] = data;
+            updatePrice(productId, data.percentage);
+            msgEl.innerHTML = '<span style="color: #22c55e; font-weight: 700;">✓ تم تطبيق الخصم ' + data.percentage + '%</span>';
+            updateWhatsAppLink(productId, code, data.percentage);
+        } else {
+            delete appliedDiscounts[productId];
+            msgEl.innerHTML = '<span style="color: #ef4444;">✗ ' + data.message + '</span>';
+        }
+    })
+    .catch(() => {
+        msgEl.innerHTML = '<span style="color: #ef4444;">❌ خطأ في التحقق</span>';
+    });
+}
+
+function updatePrice(productId, percentage, isGlobal = false) {
+    const originalEl = document.getElementById('original-price-' + productId);
+    let discountEl = document.getElementById('discount-price-' + productId);
+    
+    const price = parseFloat(originalEl.textContent.replace(/[^\d.]/g, '').split(' ')[0] || 0);
+    if (!price) return;
+    
+    // Use the highest discount available
+    let finalPercentage = percentage;
+    if (appliedDiscounts[productId] && isGlobal) {
+        // If both global and product discount exist, use the higher one
+        finalPercentage = Math.max(percentage, appliedDiscounts[productId].percentage);
+    }
+    
+    const finalPrice = price - (price * finalPercentage) / 100;
+    
+    if (!discountEl) {
+        discountEl = document.createElement('div');
+        discountEl.id = 'discount-price-' + productId;
+        discountEl.style = 'font-size: 1.3rem; color: #22c55e; font-weight: 700; margin-top: 0.5rem;';
+        originalEl.parentNode.insertBefore(discountEl, originalEl.nextSibling);
+    }
+    
+    discountEl.textContent = Math.round(finalPrice).toLocaleString() + ' ر.س';
+}
+
+function resetAllPrices() {
+    document.querySelectorAll('[id^="discount-price-"]').forEach(el => {
+        el.remove();
+    });
+}
+
+function updateWhatsAppLink(productId, code, percentage) {
+    document.getElementById('whatsapp-' + productId).href = 
+        `https://wa.me/963982617848?text=مرحبا%21%20أريد%20طلب%20هذا%20المنتج%20برقم%20${productId}%20مع%20تطبيق%20الكود%20${code}%20(خصم%20${percentage}%)`;
+}
+
+// Enter key support for product discount
+document.querySelectorAll('[id*="discount-code-"]').forEach(input => {
+    input.addEventListener('keypress', e => {
+        if (e.key === 'Enter') {
+            const id = input.id.replace('discount-code-', '');
+            validateDiscount(id);
+        }
+    });
+});
+
+// Enter key support for global discount
+const globalDiscountInput = document.getElementById('global-discount-code');
+if (globalDiscountInput) {
+    globalDiscountInput.addEventListener('keypress', e => {
+        if (e.key === 'Enter') {
+            validateGlobalDiscount();
+        }
+    });
+}
+</script>
 
 @endsection
 

@@ -162,19 +162,63 @@
   <div class="products-container">
     @forelse($products as $product)
     <article class="card-modern">
-      <div class="image-container" style="height: 280px; background: linear-gradient(135deg, #eff6ff, #dbeafe); display: flex; align-items: center; justify-content: center;">
+      <div class="image-container" style="height: 280px; background: linear-gradient(135deg, #eff6ff, #dbeafe); display: flex; align-items: center; justify-content: center; position: relative;">
         @if($product->image)
           <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" style="width: 100%; height: 100%; object-fit: cover;">
         @else
           <div style="font-size: 5rem; opacity: 0.5;">🛍️</div>
         @endif
+        
+        <!-- عرض الخصم الخاص بالمنتج إن وجد -->
+        @php
+          $productDiscount = $product->getActiveDiscount();
+        @endphp
+        @if($productDiscount)
+          <div style="position: absolute; top: 15px; right: 15px; background: linear-gradient(135deg, #f97316, #ea580c); color: white; padding: 0.8rem 1.2rem; border-radius: 12px; font-weight: 700; font-size: 0.9rem; box-shadow: 0 10px 25px rgba(249,115,22,0.3);">
+            خصم {{ $productDiscount->percentage }}%
+          </div>
+        @endif
       </div>
       <div class="card-body" style="padding: 2.5rem;">
         <h3 style="font-size: 1.6rem; font-weight: 800; margin-bottom: 1rem;">{{ Str::limit($product->name, 60) }}</h3>
         <p style="color: #64748b; margin-bottom: 1.8rem; line-height: 1.7;">{{ Str::limit($product->description, 100) }}</p>
-        <div style="font-size: 2.5rem; font-weight: 900; background: var(--blue-hero); -webkit-background-clip: text; margin-bottom: 1rem;">{{ number_format($product->price, 0) }} <span style="font-size: 0.5em;">ر.س</span></div>
+        
+        <div style="margin-bottom: 1.5rem;">
+          <!-- السعر الأصلي -->
+          <div style="font-size: 2.5rem; font-weight: 900; background: var(--blue-hero); -webkit-background-clip: text; margin-bottom: 0.5rem;" class="original-price-{{ $product->id }}">
+            {{ number_format($product->price, 0) }} <span style="font-size: 0.5em;">ر.س</span>
+          </div>
+          
+          <!-- السعر مع الخصم الخاص بالمنتج إن وجد -->
+          @if($productDiscount)
+            <div style="font-size: 1.3rem; color: #22c55e; font-weight: 700;" class="discounted-price-{{ $product->id }}">
+              {{ number_format($productDiscount->calculateFinalPrice($product->price), 0) }} <span style="font-size: 0.6em;">ر.س</span>
+            </div>
+          @endif
+        </div>
+
+        <!-- قسم إدخال كود الخصم -->
+        <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 16px; margin-bottom: 1.5rem; border: 2px dashed #3b82f6;">
+          <div style="display: flex; gap: 0.8rem; margin-bottom: 1rem;">
+            <input type="text" class="discount-code-input-{{ $product->id }}" placeholder="أدخل كود الخصم" style="flex: 1; padding: 0.8rem; border: 1px solid #e0e7ff; border-radius: 8px; font-size: 0.95rem;">
+            <button type="button" onclick="validateDiscount({{ $product->id }})" class="btn-store" style="padding: 0.8rem 1.5rem; font-size: 0.95rem; white-space: nowrap;">تطبيق</button>
+          </div>
+          <div class="discount-message-{{ $product->id }}" style="font-size: 0.85rem; min-height: 20px;"></div>
+        </div>
+
+        <!-- عرض الخصومات العامة المتاحة -->
+        @if($generalDiscounts->count() > 0)
+          <div style="background: #e0f2fe; padding: 1rem; border-radius: 12px; margin-bottom: 1.5rem; text-align: center;">
+            <p style="font-size: 0.9rem; color: #0369a1; font-weight: 600; margin: 0;">كود عام متاح: 
+              <span style="color: #0284c7; font-weight: 700;">{{ $generalDiscounts->first()->code }}</span>
+              - خصم {{ $generalDiscounts->first()->percentage }}%
+            </p>
+          </div>
+        @endif
+
         <div style="color: #94a3b8; font-weight: 600; margin-bottom: 2rem;">📦 المخزون: {{ $product->stock }}</div>
-        <a href="https://wa.me/963982617848?text=مرحبا، أريد طلب {{ $product->name }} بسعر {{ $product->price }} ر.س" class="whatsapp-buy">
+        
+        <a href="https://wa.me/963982617848?text=مرحبا، أريد طلب {{ $product->name }} بسعر {{ $product->price }} ر.س" class="whatsapp-buy" id="whatsapp-{{ $product->id }}">
           💬 اطلب عبر واتساب
         </a>
       </div>
@@ -195,5 +239,94 @@
     <a href="{{ route('login') }}" class="btn-store" style="background: var(--blue-hero); display: inline-block; padding: 1.2rem 3rem; margin-top: 1rem;">إدارة المتجر</a>
   </div>
 </div>
+
+<script>
+let appliedDiscounts = {};
+
+function validateDiscount(productId) {
+    const code = document.querySelector('.discount-code-input-' + productId).value.trim();
+    const messageEl = document.querySelector('.discount-message-' + productId);
+    
+    if (!code) {
+        messageEl.innerHTML = '<span style="color: #ef4444;">أدخل كود صحيح</span>';
+        return;
+    }
+
+    fetch('{{ route("validate-discount") }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        },
+        body: JSON.stringify({
+            code: code.toUpperCase(),
+            product_id: productId
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.valid) {
+            appliedDiscounts[productId] = data;
+            updateProductPrice(productId, data.percentage);
+            messageEl.innerHTML = '<span style="color: #22c55e; font-weight: 700;">✓ تم تطبيق الخصم! ' + data.percentage + '%</span>';
+            updateWhatsAppLink(productId);
+        } else {
+            delete appliedDiscounts[productId];
+            messageEl.innerHTML = '<span style="color: #ef4444;">✗ ' + data.message + '</span>';
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        messageEl.innerHTML = '<span style="color: #ef4444;">حدث خطأ، حاول لاحقاً</span>';
+    });
+}
+
+function updateProductPrice(productId, discountPercentage) {
+    const priceElement = document.querySelector('.discounted-price-' + productId);
+    const originalPriceElement = document.querySelector('.original-price-' + productId);
+    
+    // الحصول على السعر الأصلي من النص
+    const originalPrice = parseFloat(
+        originalPriceElement.textContent
+            .replace(/[^\d.]/g, '')
+            .split(' ')[0]
+    );
+    
+    const discountAmount = (originalPrice * discountPercentage) / 100;
+    const finalPrice = originalPrice - discountAmount;
+    
+    if (priceElement) {
+        priceElement.textContent = Math.round(finalPrice).toLocaleString() + ' ر.س';
+        priceElement.style.color = '#22c55e';
+    } else {
+        // إنشاء عنصر السعر المخفض إذا لم يكن موجود
+        const newPriceEl = document.createElement('div');
+        newPriceEl.className = 'discounted-price-' + productId;
+        newPriceEl.style.cssText = 'font-size: 1.3rem; color: #22c55e; font-weight: 700;';
+        newPriceEl.textContent = Math.round(finalPrice).toLocaleString() + ' ر.س';
+        originalPriceElement.parentNode.insertBefore(newPriceEl, originalPriceElement.nextSibling);
+    }
+}
+
+function updateWhatsAppLink(productId) {
+    const whatsappLink = document.querySelector('#whatsapp-' + productId);
+    const code = document.querySelector('.discount-code-input-' + productId).value;
+    const discount = appliedDiscounts[productId];
+    
+    if (discount) {
+        whatsappLink.href = `https://wa.me/963982617848?text=مرحبا، أريد طلب المنتج برقم ${productId} مع تطبيق الكود ${code} (خصم ${discount.percentage}%)`;
+    }
+}
+
+// allow enter key to apply discount
+document.querySelectorAll('[class*="discount-code-input-"]').forEach(input => {
+    input.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            const productId = this.className.match(/\d+/)[0];
+            validateDiscount(productId);
+        }
+    });
+});
+</script>
 @endsection
 
