@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::table('products', function (Blueprint $table) {
             $table->foreignId('category_id')->nullable()->constrained('categories')->onDelete('set null');
+            $table->dropColumn('category');
         });
     }
 
@@ -24,6 +25,7 @@ return new class extends Migration
         Schema::table('products', function (Blueprint $table) {
             $table->dropForeign(['category_id']);
             $table->dropColumn('category_id');
+            $table->string('category')->default('');
         });
     }
 };
