@@ -188,21 +188,21 @@
                                 @php
                                     $now = \Carbon\Carbon::now();
                                     $status = 'قيد الانتظار';
-                                    $statusColor = 'gray';
+                                    $statusClass = 'bg-gray-100 text-gray-800';
                                     
                                     if ($now->lt($discount->valid_from)) {
                                         $status = '⏰ ينتظر البدء';
-                                        $statusColor = 'yellow';
+                                        $statusClass = 'bg-yellow-100 text-yellow-800';
                                     } elseif ($now->between($discount->valid_from, $discount->valid_until)) {
                                         $status = '🎯 قيد الصلاحية';
-                                        $statusColor = 'green';
+                                        $statusClass = 'bg-green-100 text-green-800';
                                     } else {
                                         $status = '⏱️ انتهت الصلاحية';
-                                        $statusColor = 'red';
+                                        $statusClass = 'bg-red-100 text-red-800';
                                     }
                                 @endphp
                                 <p class="text-xs text-gray-500 font-semibold mb-1">حالة الصلاحية</p>
-                                <span class="bg-{{ $statusColor }}-100 text-{{ $statusColor }}-800 px-3 py-1 rounded-full text-xs font-bold">
+                                <span class="{{ $statusClass }} px-3 py-1 rounded-full text-xs font-bold">
                                     {{ $status }}
                                 </span>
                             </div>
