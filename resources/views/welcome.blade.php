@@ -13,31 +13,34 @@
   background: var(--blue-hero);
   color: white;
   text-align: center;
-  padding: 6rem 2rem;
+  padding: clamp(2rem, 5vw, 6rem) 1rem;
   border-radius: 0 0 var(--card-radius) var(--card-radius);
   box-shadow: var(--blue-glow);
-  margin-bottom: 4rem;
+  margin-bottom: clamp(2rem, 5vw, 4rem);
 }
 
-
+.hero-store h2 {
+  font-size: clamp(1.5rem, 4vw, 2.8rem);
   font-weight: 900;
   margin-bottom: 1rem;
-  color: white
+  color: white;
+}
 
 .hero-store p {
-  font-size: 1.4rem;
+  font-size: clamp(1rem, 3vw, 1.4rem);
   opacity: 0.95;
   max-width: 600px;
-  margin: 0 auto 2.5rem;
+  margin: 0 auto clamp(1.5rem, 4vw, 2.5rem);
+  padding: 0 0.5rem;
 }
 
 .filters-section {
   background: rgba(255,255,255,0.9);
   backdrop-filter: blur(20px);
-  padding: 3rem;
+  padding: clamp(1.5rem, 4vw, 3rem);
   border-radius: var(--card-radius);
   box-shadow: var(--blue-glow);
-  margin-bottom: 4rem;
+  margin-bottom: clamp(2rem, 5vw, 4rem);
   max-width: 1200px;
   margin-left: auto;
   margin-right: auto;
@@ -50,10 +53,29 @@
   align-items: end;
 }
 
+@media (max-width: 1024px) {
+  .filter-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+}
+
 @media (max-width: 768px) {
+  .filters-section {
+    padding: clamp(1rem, 3vw, 2rem);
+    margin-bottom: clamp(1.5rem, 4vw, 2.5rem);
+  }
+  
   .filter-grid {
     grid-template-columns: 1fr;
     gap: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .filters-section {
+    padding: 1rem;
+    margin-bottom: 1.5rem;
   }
 }
 
@@ -63,7 +85,7 @@
 
 .input-filter, select {
   width: 100%;
-  padding: 1.2rem 1.5rem;
+  padding: clamp(0.8rem, 2vw, 1.2rem) clamp(1rem, 2vw, 1.5rem);
   border: 2px solid #e2e8f0;
   border-radius: 16px;
   font-size: 1rem;
@@ -82,12 +104,12 @@
   background: var(--blue-hero);
   color: white;
   border: none;
-  padding: 1.2rem 2rem;
+  padding: clamp(0.8rem, 2vw, 1.2rem) clamp(1rem, 2vw, 2rem);
   border-radius: 16px;
   font-weight: 700;
   cursor: pointer;
   width: 100%;
-  font-size: 1rem;
+  font-size: clamp(0.9rem, 2vw, 1rem);
   transition: all 0.3s;
 }
 
@@ -104,11 +126,29 @@
 
 .products-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-  gap: 2.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: clamp(1.5rem, 3vw, 2.5rem);
   max-width: 1400px;
-  margin: 0 auto 6rem;
-  padding: 0 2rem;
+  margin: 0 auto clamp(3rem, 5vw, 6rem);
+  padding: 0 clamp(0.5rem, 2vw, 2rem);
+}
+
+@media (max-width: 768px) {
+  .products-grid {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: clamp(1rem, 2vw, 2rem);
+    margin: 0 auto clamp(2rem, 4vw, 3rem);
+    padding: 0 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .products-grid {
+    grid-template-columns: 1fr;
+    gap: 1.2rem;
+    margin: 0 auto 2rem;
+    padding: 0 0.5rem;
+  }
 }
 
 .product-card {
@@ -118,6 +158,8 @@
   box-shadow: 0 10px 40px rgba(59,130,246,0.15);
   transition: all 0.4s ease;
   border: 1px solid rgba(59,130,246,0.1);
+  display: flex;
+  flex-direction: column;
 }
 
 .product-card:hover {
@@ -126,13 +168,14 @@
 }
 
 .product-image {
-  height: 260px;
+  height: clamp(200px, 40vw, 260px);
   background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
   position: relative;
+  width: 100%;
 }
 
 .product-image img {
@@ -143,16 +186,19 @@
 
 .product-image:empty::before {
   content: '🛍️';
-  font-size: 4rem;
+  font-size: clamp(2rem, 5vw, 4rem);
   opacity: 0.6;
 }
 
 .product-info {
-  padding: 2.5rem;
+  padding: clamp(1rem, 3vw, 2.5rem);
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .product-name {
-  font-size: 1.5rem;
+  font-size: clamp(1.1rem, 2vw, 1.5rem);
   font-weight: 800;
   color: #1e293b;
   margin-bottom: 0.8rem;
@@ -162,26 +208,29 @@
 .product-desc {
   color: #64748b;
   line-height: 1.6;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
+  font-size: clamp(0.85rem, 1.5vw, 1rem);
+  flex-grow: 1;
 }
 
 .product-price {
-  font-size: 2.2rem;
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
   font-weight: 900;
   background: var(--blue-hero);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  margin-bottom: 1rem;
+  margin-bottom: 0.8rem;
 }
 
 .product-stock {
   color: #059669;
   font-weight: 600;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  font-size: clamp(0.85rem, 1.5vw, 1rem);
 }
 
 .whatsapp-btn {
@@ -189,16 +238,18 @@
   background: var(--whatsapp-green);
   color: white;
   text-decoration: none;
-  padding: 1.3rem;
+  padding: clamp(0.9rem, 2vw, 1.3rem);
   border-radius: 16px;
   font-weight: 700;
-  font-size: 1.1rem;
+  font-size: clamp(0.85rem, 1.5vw, 1.1rem);
   text-align: center;
   display: block;
   box-shadow: 0 10px 30px rgba(37,211,102,0.4);
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
+  border: none;
+  cursor: pointer;
 }
 
 .whatsapp-btn:hover {
@@ -213,17 +264,17 @@
 .no-products {
   grid-column: 1 / -1;
   text-align: center;
-  padding: 6rem 2rem;
+  padding: clamp(2rem, 5vw, 6rem) 1rem;
 }
 
 .no-icon {
-  font-size: 5rem;
+  font-size: clamp(2.5rem, 5vw, 5rem);
   margin-bottom: 2rem;
   opacity: 0.6;
 }
 
 .no-title {
-  font-size: 2.5rem;
+  font-size: clamp(1.5rem, 3vw, 2.5rem);
   font-weight: 800;
   color: #1e293b;
   margin-bottom: 1rem;
@@ -231,20 +282,20 @@
 
 .no-text {
   color: #64748b;
-  font-size: 1.2rem;
+  font-size: clamp(1rem, 2vw, 1.2rem);
   margin-bottom: 3rem;
 }
 
 .pagination-custom {
   display: flex;
   justify-content: center;
-  gap: 0.5rem;
-  margin: 4rem 0;
+  gap: clamp(0.3rem, 1vw, 0.5rem);
+  margin: clamp(2rem, 5vw, 4rem) 0;
   flex-wrap: wrap;
 }
 
 .pagination-custom a, .pagination-custom span {
-  padding: 1rem 1.5rem;
+  padding: clamp(0.6rem, 1.5vw, 1rem) clamp(0.8rem, 2vw, 1.5rem);
   border-radius: 12px;
   text-decoration: none;
   color: #3b82f6;
@@ -252,6 +303,7 @@
   background: white;
   box-shadow: 0 4px 15px rgba(0,0,0,0.1);
   transition: all 0.3s;
+  font-size: clamp(0.8rem, 1.5vw, 1rem);
 }
 
 .pagination-custom .current {
@@ -261,8 +313,8 @@
 
 .admin-link {
   text-align: center;
-  margin-top: 4rem;
-  padding: 2rem;
+  margin-top: clamp(2rem, 5vw, 4rem);
+  padding: clamp(1rem, 3vw, 2rem);
   background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
   border-radius: var(--card-radius);
   max-width: 500px;
@@ -272,10 +324,10 @@
 
 .global-discount-section {
   background: linear-gradient(135deg, #fef08a 0%, #fde047 50%, #facc15 100%);
-  padding: 2.5rem;
+  padding: clamp(1.5rem, 4vw, 2.5rem);
   border-radius: var(--card-radius);
   box-shadow: 0 25px 50px rgba(250,204,21,0.3);
-  margin-bottom: 4rem;
+  margin-bottom: clamp(2rem, 5vw, 4rem);
   max-width: 800px;
   margin-left: auto;
   margin-right: auto;
@@ -284,7 +336,7 @@
 
 .global-discount-section h2 {
   color: #854d0e;
-  font-size: 1.8rem;
+  font-size: clamp(1.3rem, 3vw, 1.8rem);
   margin-bottom: 1rem;
   font-weight: 900;
   text-align: center;
@@ -294,7 +346,7 @@
   color: #b45309;
   text-align: center;
   margin-bottom: 1.5rem;
-  font-size: 1.1rem;
+  font-size: clamp(0.9rem, 2vw, 1.1rem);
   font-weight: 600;
 }
 
@@ -306,10 +358,10 @@
 
 .global-discount-input-group input {
   flex: 1;
-  padding: 1.2rem 1.5rem;
+  padding: clamp(0.8rem, 2vw, 1.2rem) clamp(1rem, 2vw, 1.5rem);
   border: 2px solid rgba(255,255,255,0.6);
   border-radius: 16px;
-  font-size: 1.1rem;
+  font-size: clamp(0.9rem, 1.5vw, 1.1rem);
   font-family: 'Tajawal', sans-serif;
   font-weight: 600;
   background: rgba(255,255,255,0.9);
@@ -328,11 +380,11 @@
   background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
   color: white;
   border: none;
-  padding: 1.2rem 2.5rem;
+  padding: clamp(0.8rem, 2vw, 1.2rem) clamp(1rem, 2vw, 2.5rem);
   border-radius: 16px;
   font-weight: 700;
   cursor: pointer;
-  font-size: 1.1rem;
+  font-size: clamp(0.85rem, 1.5vw, 1.1rem);
   transition: all 0.3s;
   white-space: nowrap;
   box-shadow: 0 10px 30px rgba(202,65,12,0.3);
@@ -346,7 +398,7 @@
 .global-discount-msg {
   text-align: center;
   font-weight: 600;
-  font-size: 1.1rem;
+  font-size: clamp(0.9rem, 1.5vw, 1.1rem);
   min-height: 30px;
   color: #854d0e;
 }
@@ -359,13 +411,170 @@
   color: #dc2626;
 }
 
+@media (max-width: 1024px) {
+  .global-discount-input-group {
+    gap: 0.8rem;
+  }
+}
+
 @media (max-width: 768px) {
+  .global-discount-section {
+    padding: clamp(1rem, 3vw, 2rem);
+  }
+  
+  .global-discount-section h2 {
+    font-size: clamp(1rem, 2.5vw, 1.5rem);
+  }
+  
   .global-discount-input-group {
     flex-direction: column;
+    gap: 0.8rem;
   }
   
   .global-discount-input-group button {
     width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .global-discount-section {
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .global-discount-input-group {
+    gap: 0.5rem;
+  }
+  
+  .global-discount-input-group input {
+    font-size: 16px;
+  }
+}
+
+/* Additional Responsive Styles for Inline Elements */
+.discount-badge {
+  position: absolute;
+  top: clamp(0.8rem, 2vw, 15px);
+  right: clamp(0.8rem, 2vw, 15px);
+  background: linear-gradient(135deg, #f97316, #ea580c);
+  color: white;
+  padding: clamp(0.5rem, 1vw, 0.8rem) clamp(0.8rem, 2vw, 1.2rem);
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: clamp(0.7rem, 1.5vw, 0.85rem);
+  box-shadow: 0 10px 25px rgba(249,115,22,0.3);
+}
+
+.discount-field {
+  background: #f8f9fa;
+  padding: clamp(0.8rem, 2vw, 1.2rem);
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  border: 2px dashed #3b82f6;
+}
+
+.discount-field-input {
+  display: flex;
+  gap: 0.6rem;
+  margin-bottom: 0.8rem;
+  flex-wrap: wrap;
+}
+
+.discount-field-input input {
+  flex: 1;
+  min-width: 150px;
+  padding: clamp(0.5rem, 1.5vw, 0.7rem);
+  border: 1px solid #e0e7ff;
+  border-radius: 8px;
+  font-size: clamp(0.8rem, 1.5vw, 0.9rem);
+  font-family: 'Tajawal', sans-serif;
+}
+
+.discount-field-input button {
+  padding: clamp(0.5rem, 1.5vw, 0.7rem) clamp(0.8rem, 1.5vw, 1.2rem);
+  font-size: clamp(0.75rem, 1.5vw, 0.9rem);
+  white-space: nowrap;
+}
+
+.general-discount-box {
+  background: #e0f2fe;
+  padding: 0.8rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  font-size: clamp(0.8rem, 1.5vw, 0.9rem);
+}
+
+.general-discount-box span {
+  color: #0369a1;
+  font-weight: 600;
+}
+
+.admin-link-btn {
+  background: var(--blue-hero);
+  color: white;
+  padding: clamp(0.7rem, 2vw, 1rem) clamp(1.5rem, 3vw, 2.5rem);
+  border-radius: 20px;
+  font-weight: 700;
+  text-decoration: none;
+  display: inline-block;
+  font-size: clamp(0.9rem, 1.5vw, 1rem);
+}
+
+.no-products-btn {
+  width: auto;
+  padding: clamp(0.8rem, 2vw, 1.2rem) clamp(1.5rem, 3vw, 3rem);
+  display: inline-block;
+  font-size: clamp(0.9rem, 1.5vw, 1rem);
+}
+
+@media (max-width: 768px) {
+  .discount-field {
+    padding: 1rem;
+  }
+  
+  .discount-field-input {
+    gap: 0.5rem;
+  }
+  
+  .discount-field-input input {
+    min-width: 120px;
+  }
+  
+  .discount-field-input button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .discount-badge {
+    padding: 0.5rem 0.8rem;
+    font-size: 0.7rem;
+  }
+  
+  .discount-field {
+    padding: 0.8rem;
+    margin-bottom: 1rem;
+  }
+  
+  .discount-field-input {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .discount-field-input input {
+    width: 100%;
+    min-width: unset;
+  }
+  
+  .discount-field-input button {
+    width: 100%;
+  }
+  
+  .general-discount-box {
+    padding: 0.6rem;
+    margin-bottom: 1rem;
+    font-size: 0.8rem;
   }
 }
 </style>
