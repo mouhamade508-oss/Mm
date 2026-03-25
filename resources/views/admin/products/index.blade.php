@@ -116,7 +116,7 @@
                                 </div>
                             @endif
                             <!-- Stock Badge -->
-                            <div class="absolute top-4 right-4">
+                            <div class="absolute top-4 right-4 flex flex-col gap-2">
                                 @if($product->stock > 0)
                                     <span class="bg-green-500 text-white px-3 py-1 rounded-full font-semibold text-sm">
                                         ✅ متاح
@@ -124,6 +124,11 @@
                                 @else
                                     <span class="bg-red-500 text-white px-3 py-1 rounded-full font-semibold text-sm">
                                         ❌ غير متاح
+                                    </span>
+                                @endif
+                                @if($product->is_digital)
+                                    <span class="bg-blue-500 text-white px-3 py-1 rounded-full font-semibold text-sm">
+                                        💻 رقمي
                                     </span>
                                 @endif
                             </div>

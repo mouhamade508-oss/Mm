@@ -27,6 +27,18 @@ class ProductSeeder extends Seeder
                 'image' => 'products/printer-hp.jpg',
                 'stock' => 25,
             ]);
+
+            // إضافة منتج رقمي عينة
+            Product::create([
+                'name' => 'قالب تصميم موقع إلكتروني احترافي',
+                'description' => 'قالب HTML/CSS/JS جاهز للاستخدام مع تصميم responsive، يتضمن 10 صفحات، دعم Bootstrap 5، ملفات PSD، ودليل الاستخدام الكامل.',
+                'category_id' => $electronics->id,
+                'price' => 99.99,
+                'image' => 'products/website-template.jpg',
+                'stock' => 100,
+                'is_digital' => true,
+                'file_path' => 'digital_products/website-template.zip',
+            ]);
         }
 
         // إضافة بيانات إضافية اختيارية باستخدام Factory للاختبار

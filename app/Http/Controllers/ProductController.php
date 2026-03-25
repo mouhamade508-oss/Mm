@@ -54,11 +54,18 @@ class ProductController extends Controller
             'price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'is_digital' => 'boolean',
+            'file_path' => 'nullable|file|mimes:pdf,doc,docx,txt,zip|max:10240',
         ]);
 
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('products', 'public');
             $validated['image'] = $path;
+        }
+
+        if ($request->hasFile('file_path')) {
+            $filePath = $request->file('file_path')->store('digital_products', 'public');
+            $validated['file_path'] = $filePath;
         }
 
         Product::create($validated);
@@ -81,6 +88,8 @@ class ProductController extends Controller
             'price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'is_digital' => 'boolean',
+            'file_path' => 'nullable|file|mimes:pdf,doc,docx,txt,zip|max:10240',
         ]);
 
         if ($request->hasFile('image')) {
@@ -90,6 +99,15 @@ class ProductController extends Controller
             }
             $path = $request->file('image')->store('products', 'public');
             $validated['image'] = $path;
+        }
+
+        if ($request->hasFile('file_path')) {
+            // Delete old file
+            if ($product->file_path) {
+                Storage::disk('public')->delete($product->file_path);
+            }
+            $filePath = $request->file('file_path')->store('digital_products', 'public');
+            $validated['file_path'] = $filePath;
         }
 
         $product->update($validated);
@@ -102,6 +120,11 @@ class ProductController extends Controller
         // Delete image if exists
         if ($product->image) {
             Storage::disk('public')->delete($product->image);
+        }
+
+        // Delete digital file if exists
+        if ($product->file_path) {
+            Storage::disk('public')->delete($product->file_path);
         }
 
         $product->delete();

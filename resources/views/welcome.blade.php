@@ -583,6 +583,12 @@
 <section class="hero-store">
   <h1>🛍️ MHD Print Lab</h1>
   <p>اكتشف مجموعتنا المميزة من المنتجات بأسعار تنافسية - اطلب عبر واتساب بسهولة!</p>
+  
+  <!-- Navigation -->
+  <div style="margin-top: 2rem; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+    <a href="{{ route('home') }}" class="btn-store" style="background: var(--blue-hero); padding: 0.8rem 1.5rem; font-size: 0.9rem;">🛍️ جميع المنتجات</a>
+    <a href="{{ route('products.digital') }}" class="btn-store" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8); padding: 0.8rem 1.5rem; font-size: 0.9rem;">💻 المنتجات الرقمية</a>
+  </div>
 </section>
 
 <!-- Filters -->
@@ -645,6 +651,11 @@
             🎁 خصم {{ $productDiscount->percentage }}%
           </div>
         @endif
+        @if($product->is_digital)
+          <div style="position: absolute; top: 15px; left: 15px; background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; padding: 0.5rem 1rem; border-radius: 12px; font-weight: 700; font-size: 0.8rem; box-shadow: 0 10px 25px rgba(59,130,246,0.3);">
+            📁 رقمي
+          </div>
+        @endif
 
         <h3 class="product-name">{{ Str::limit($product->name, 50) }}</h3>
         <p class="product-desc">{{ Str::limit($product->description, 120) }}</p>
@@ -676,7 +687,7 @@
         @endif
 
         <div class="product-stock">📦 متوفر: {{ $product->stock }} قطعة</div>
-        <a href="https://wa.me/963982617848?text=مرحبا%21%20أريد%20طلب%20%22{{ urlencode($product->name) }}%22%20السعر%3A%20{{ $product->price }}%20ر.س%20{{ urlencode($product->description) }}" 
+        <a href="https://wa.me/963982617848?text=مرحبا%21%20أريد%20طلب%20%22{{ urlencode($product->name) }}%22%20{{ $product->is_digital ? 'المنتج الرقمي' : '' }}%20السعر%3A%20{{ $product->price }}%20ر.س%20{{ urlencode($product->description) }}" 
            class="whatsapp-btn" target="_blank" id="whatsapp-{{ $product->id }}">
            اطلب عبر واتساب
         </a>

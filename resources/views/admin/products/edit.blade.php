@@ -116,26 +116,79 @@
                     </div>
                 </div>
 
-                <!-- Section 3: Stock -->
+                <!-- Section 3: Stock and Digital Product -->
                 <div class="mb-8 pb-8 border-b">
                     <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-                        <span class="text-3xl">📦</span> المخزون
+                        <span class="text-3xl">📦</span> المخزون والنوع
                     </h2>
 
-                    <div>
-                        <label for="stock" class="text-gray-700 font-bold mb-3 flex items-center gap-2">
-                            <span class="text-xl">📊</span> عدد القطع المتاحة <span class="text-red-500">*</span>
-                        </label>
-                        <input type="number" id="stock" name="stock" value="{{ old('stock', $product->stock) }}" required 
-                               min="0"
-                               class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition">
-                        @error('stock') 
-                            <p class="text-red-500 text-sm mt-2">{{ $message }}</p>
-                        @enderror
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Stock -->
+                        <div>
+                            <label for="stock" class="text-gray-700 font-bold mb-3 flex items-center gap-2">
+                                <span class="text-xl">📊</span> عدد القطع المتاحة <span class="text-red-500">*</span>
+                            </label>
+                            <input type="number" id="stock" name="stock" value="{{ old('stock', $product->stock) }}" required 
+                                   min="0"
+                                   class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition">
+                            @error('stock') 
+                                <p class="text-red-500 text-sm mt-2">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <!-- Is Digital -->
+                        <div>
+                            <label class="flex items-center text-gray-700 font-bold mb-3 gap-2">
+                                <span class="text-xl">💻</span> منتج رقمي
+                            </label>
+                            <div class="flex items-center">
+                                <input type="checkbox" id="is_digital" name="is_digital" value="1" {{ old('is_digital', $product->is_digital) ? 'checked' : '' }}
+                                       class="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2">
+                                <label for="is_digital" class="ml-2 text-sm font-medium text-gray-900">هذا منتج رقمي (ملف قابل للتحميل)</label>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Section 4: Product Image -->
+                <!-- Section 4: Digital File (shown only if digital) -->
+                <div class="mb-8 pb-8 border-b digital-file-section" style="display: none;">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+                        <span class="text-3xl">📁</span> ملف المنتج الرقمي
+                    </h2>
+
+                    <!-- Current File -->
+                    @if($product->file_path)
+                        <div class="mb-6 p-4 bg-green-50 rounded-lg border-2 border-green-200">
+                            <p class="text-sm text-gray-600 font-semibold mb-3">الملف الحالي:</p>
+                            <p class="text-green-800 font-medium">📄 {{ basename($product->file_path) }}</p>
+                        </div>
+                    @endif
+
+                    <!-- Upload New File -->
+                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-blue-500 transition cursor-pointer" id="file-dropzone">
+                        <input type="file" id="file_path" name="file_path" accept=".pdf,.doc,.docx,.txt,.zip" class="hidden" onchange="handleFileSelect(event)">
+                        <div class="mb-4">
+                            <span class="text-5xl">📄</span>
+                        </div>
+                        <p class="text-gray-600 font-semibold mb-2">انقر هنا أو اسحب الملف الجديد</p>
+                        <p class="text-gray-500 text-sm">الصيغ المسموحة: PDF, DOC, DOCX, TXT, ZIP</p>
+                        <p class="text-gray-500 text-sm">الحد الأقصى: 10MB</p>
+                        <p class="text-orange-600 text-sm mt-2">ـــ اتركه فارغاً للحفاظ على الملف الحالي ـــ</p>
+                    </div>
+
+                    <div id="file-preview" class="mt-4 hidden">
+                        <p id="file-name" class="text-gray-700 font-semibold"></p>
+                        <button type="button" onclick="removeFile()" class="mt-2 block mx-auto bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg">
+                            ❌ إزالة الملف الجديد
+                        </button>
+                    </div>
+
+                    @error('file_path') 
+                        <p class="text-red-500 text-sm mt-2">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Section 5: Product Image -->
                 <div class="mb-8">
                     <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
                         <span class="text-3xl">🖼️</span> صورة المنتج
@@ -193,7 +246,26 @@
     const preview = document.getElementById('image-preview');
     const previewImg = document.getElementById('preview-img');
 
-    // Drag and drop
+    const fileDropzone = document.getElementById('file-dropzone');
+    const fileInputField = document.getElementById('file_path');
+    const filePreview = document.getElementById('file-preview');
+    const fileName = document.getElementById('file-name');
+    const isDigitalCheckbox = document.getElementById('is_digital');
+    const digitalFileSection = document.querySelector('.digital-file-section');
+
+    // Toggle digital file section
+    isDigitalCheckbox.addEventListener('change', function() {
+        if (this.checked) {
+            digitalFileSection.style.display = 'block';
+        } else {
+            digitalFileSection.style.display = 'none';
+            // Clear file input
+            fileInputField.value = '';
+            filePreview.classList.add('hidden');
+        }
+    });
+
+    // Image drag and drop
     dropzone.addEventListener('dragover', (e) => {
         e.preventDefault();
         dropzone.classList.add('border-blue-500', 'bg-blue-50');
@@ -210,16 +282,42 @@
         const files = e.dataTransfer.files;
         if (files.length > 0) {
             fileInput.files = files;
-            handleFileSelect({ target: { files } });
+            handleImageSelect({ target: { files } });
         }
     });
 
-    // Click to select
+    // Click to select image
     dropzone.addEventListener('click', () => {
         fileInput.click();
     });
 
-    function handleFileSelect(event) {
+    // File drag and drop
+    fileDropzone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        fileDropzone.classList.add('border-blue-500', 'bg-blue-50');
+    });
+
+    fileDropzone.addEventListener('dragleave', () => {
+        fileDropzone.classList.remove('border-blue-500', 'bg-blue-50');
+    });
+
+    fileDropzone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        fileDropzone.classList.remove('border-blue-500', 'bg-blue-50');
+        
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            fileInputField.files = files;
+            handleFileSelect({ target: { files } });
+        }
+    });
+
+    // Click to select file
+    fileDropzone.addEventListener('click', () => {
+        fileInputField.click();
+    });
+
+    function handleImageSelect(event) {
         const files = event.target.files;
         if (files.length > 0) {
             const file = files[0];
@@ -234,10 +332,31 @@
         }
     }
 
+    function handleFileSelect(event) {
+        const files = event.target.files;
+        if (files.length > 0) {
+            const file = files[0];
+            fileName.textContent = `📄 ${file.name}`;
+            filePreview.classList.remove('hidden');
+        }
+    }
+
     function removeImage() {
         fileInput.value = '';
         preview.classList.add('hidden');
     }
+
+    function removeFile() {
+        fileInputField.value = '';
+        filePreview.classList.add('hidden');
+    }
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        if (isDigitalCheckbox.checked) {
+            digitalFileSection.style.display = 'block';
+        }
+    });
 </script>
 
 <style>

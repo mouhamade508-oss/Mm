@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [App\Http\Controllers\VisitorProductController::class, 'index'])->name('home');
 
 Route::get('/products', [App\Http\Controllers\VisitorProductController::class, 'index'])->name('products.index');
+Route::get('/digital-products', [App\Http\Controllers\VisitorProductController::class, 'digitalProducts'])->name('products.digital');
 
 // Auth routes
 Route::get('/login', [App\Http\Controllers\AuthController::class, 'showLogin'])->name('login');

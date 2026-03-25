@@ -125,29 +125,42 @@
 .icon-large { font-size: 6rem; margin-bottom: 2rem; opacity: 0.8; }
 .no-title { font-size: 2.5rem; font-weight: 800; margin-bottom: 1.5rem; color: #1e293b; }
 .no-text { color: #64748b; font-size: 1.3rem; margin-bottom: 3rem; }
+
+.digital-badge {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 0.8rem;
+  box-shadow: 0 10px 25px rgba(59,130,246,0.3);
+}
 </style>
 
 <div class="py-4">
   <!-- Hero Store -->
   <section class="hero-store">
-    <h1>🛍️ MHD Print Lab</h1>
-    <p>اكتشف أفضل المنتجات بأسعار مميزة مع تصميم أزرق أنيق</p>
+    <h1>💻 المنتجات الرقمية</h1>
+    <p>اكتشف مجموعة متنوعة من المنتجات الرقمية والملفات القابلة للتحميل</p>
     
     <!-- Navigation -->
     <div style="margin-top: 2rem; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-      <a href="{{ route('products.index') }}" class="btn-store" style="background: var(--blue-hero); padding: 0.8rem 1.5rem; font-size: 0.9rem;">🛍️ جميع المنتجات</a>
-      <a href="{{ route('products.digital') }}" class="btn-store" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8); padding: 0.8rem 1.5rem; font-size: 0.9rem;">💻 المنتجات الرقمية</a>
+      <a href="{{ route('home') }}" class="btn-store" style="background: linear-gradient(135deg, #6b7280, #4b5563); padding: 0.8rem 1.5rem; font-size: 0.9rem;">🛍️ جميع المنتجات</a>
+      <a href="{{ route('products.digital') }}" class="btn-store" style="background: var(--blue-hero); padding: 0.8rem 1.5rem; font-size: 0.9rem;">💻 المنتجات الرقمية</a>
     </div>
   </section>
 
   <!-- Filters -->
   <section class="filters-store">
     <div class="filter-row">
-      <form method="GET" action="{{ route('products.index') }}" style="display: contents;">
-        <input type="text" name="search" value="{{ request('search') }}" class="input-modern" placeholder="🔍 ابحث عن منتج">
+      <form method="GET" action="{{ route('products.digital') }}" style="display: contents;">
+        <input type="text" name="search" value="{{ request('search') }}" class="input-modern" placeholder="🔍 ابحث عن منتج رقمي">
         <button type="submit" class="btn-store">🔍 بحث</button>
       </form>
-      <form method="GET" action="{{ route('products.index') }}" style="display: contents;">
+      <form method="GET" action="{{ route('products.digital') }}" style="display: contents;">
         <select name="category" class="input-modern" onchange="this.form.submit()">
           <option value="">📂 جميع الفئات</option>
           @foreach($categories as $cat)
@@ -156,7 +169,7 @@
         </select>
         <input type="hidden" name="search" value="{{ request('search') }}">
       </form>
-      <form method="GET" action="{{ route('products.index') }}" style="display: flex; gap: 1rem; align-items: end;">
+      <form method="GET" action="{{ route('products.digital') }}" style="display: flex; gap: 1rem; align-items: end;">
         <input type="number" name="min_price" value="{{ request('min_price') }}" class="input-modern" placeholder="الحد الأدنى">
         <input type="number" name="max_price" value="{{ request('max_price') }}" class="input-modern" placeholder="الحد الأقصى">
         <button type="submit" class="btn-store" style="padding: 1.2rem 1rem;">فلتر السعر</button>
@@ -172,8 +185,11 @@
         @if($product->image)
           <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" style="width: 100%; height: 100%; object-fit: cover;">
         @else
-          <div style="font-size: 5rem; opacity: 0.5;">🛍️</div>
+          <div style="font-size: 5rem; opacity: 0.5;">💻</div>
         @endif
+        
+        <!-- Digital Badge -->
+        <div class="digital-badge">📁 منتج رقمي</div>
         
         <!-- عرض الخصم الخاص بالمنتج إن وجد -->
         @php
@@ -222,19 +238,19 @@
           </div>
         @endif
 
-        <div style="color: #94a3b8; font-weight: 600; margin-bottom: 2rem;">📦 المخزون: {{ $product->stock }}</div>
+        <div style="color: #94a3b8; font-weight: 600; margin-bottom: 2rem;">📁 ملف رقمي قابل للتحميل</div>
         
-        <a href="https://wa.me/963982617848?text=مرحبا، أريد طلب {{ $product->name }} بسعر {{ $product->price }}ل.س" class="whatsapp-buy" id="whatsapp-{{ $product->id }}">
+        <a href="https://wa.me/963982617848?text=مرحبا، أريد طلب المنتج الرقمي: {{ urlencode($product->name) }} بسعر {{ $product->price }} ل.س" class="whatsapp-buy" id="whatsapp-{{ $product->id }}">
           💬 اطلب عبر واتساب
         </a>
       </div>
     </article>
     @empty
     <div class="no-products">
-      <div class="icon-large">🔍</div>
-      <h2 class="no-title">لا توجد منتجات مطابقة</h2>
+      <div class="icon-large">💻</div>
+      <h2 class="no-title">لا توجد منتجات رقمية مطابقة</h2>
       <p class="no-text">جرب تعديل شروط البحث أو الفئة</p>
-      <a href="{{ route('products.index') }}" class="btn-store" style="padding: 1.5rem 3rem;">عرض جميع المنتجات</a>
+      <a href="{{ route('products.digital') }}" class="btn-store" style="padding: 1.5rem 3rem;">عرض جميع المنتجات الرقمية</a>
     </div>
     @endforelse
   </div>
@@ -320,7 +336,7 @@ function updateWhatsAppLink(productId) {
     const discount = appliedDiscounts[productId];
     
     if (discount) {
-        whatsappLink.href = `https://wa.me/963982617848?text=مرحبا، أريد طلب المنتج برقم ${productId} مع تطبيق الكود ${code} (خصم ${discount.percentage}%)`;
+        whatsappLink.href = `https://wa.me/963982617848?text=مرحبا، أريد طلب المنتج الرقمي برقم ${productId} مع تطبيق الكود ${code} (خصم ${discount.percentage}%)`;
     }
 }
 
@@ -335,4 +351,3 @@ document.querySelectorAll('[class*="discount-code-input-"]').forEach(input => {
 });
 </script>
 @endsection
-

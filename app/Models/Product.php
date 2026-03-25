@@ -20,6 +20,8 @@ class Product extends Model
         'price',
         'image',
         'stock',
+        'is_digital',
+        'file_path',
     ];
 
     /**
@@ -31,6 +33,7 @@ class Product extends Model
     {
         return [
             'price' => 'decimal:2',
+            'is_digital' => 'boolean',
         ];
     }
 

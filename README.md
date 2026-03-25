@@ -1,59 +1,147 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🛍️ MHD Print Lab - متجر إلكتروني شامل
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+متجر إلكتروني مبني بـ Laravel 12 مع دعم المنتجات الرقمية والمادية، نظام الخصومات، وواجهة إدارة متقدمة.
 
-## About Laravel
+## ✨ المميزات
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### 🛒 للزائر:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- **تصفح المنتجات** بفلترة وبحث متقدم
+- **نظام الخصومات** (عامة وخاصة بالمنتج)
+- **الطلب عبر WhatsApp** مباشرة
+- **منتجات رقمية** قابلة للتحميل
+- **تصميم responsive** مع Tailwind CSS
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 👨‍💼 لوحة الإدارة:
 
-## Learning Laravel
+- **إدارة المنتجات** (إضافة/تعديل/حذف)
+- **إدارة الفئات** الديناميكية
+- **نظام الخصومات** المتقدم
+- **رفع الملفات** للمنتجات الرقمية
+- **إحصائيات شاملة**
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+### 💻 المنتجات الرقمية:
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- **رفع الملفات** (PDF, DOC, DOCX, TXT, ZIP)
+- **قسم منفصل** للمنتجات الرقمية
+- **تسليم فوري** عبر البريد الإلكتروني
+- **حماية الملفات** وإدارة الوصول
 
-## Laravel Sponsors
+## 🚀 التثبيت والتشغيل
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### متطلبات النظام:
 
-### Premium Partners
+- PHP 8.2+
+- MySQL 8.0+
+- Node.js 18+
+- Composer
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+### خطوات التثبيت:
 
-## Contributing
+```bash
+# 1. تحميل المشروع
+git clone <repository-url>
+cd Mm
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+# 2. تثبيت dependencies
+composer install
+npm install
 
-## Code of Conduct
+# 3. إعداد البيئة
+cp .env.example .env
+php artisan key:generate
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+# 4. إعداد قاعدة البيانات
+php artisan migrate
+php artisan db:seed
 
-## Security Vulnerabilities
+# 5. بناء assets
+npm run build
+php artisan storage:link
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+# 6. تشغيل الخادم
+php artisan serve
+```
 
-## License
+## 🌐 النشر على Railway
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### إعداد Railway:
+
+1. **ربط المشروع:**
+
+    ```bash
+    git add .
+    git commit -m "Ready for Railway deployment"
+    git push origin main
+    ```
+
+2. **في Railway Dashboard:**
+    - أضف MySQL Database
+    - حدث Environment Variables
+    - اضغط Deploy
+
+3. **بعد النشر:**
+    ```bash
+    php artisan migrate:fresh --seed --force
+    php artisan storage:link
+    ```
+
+### متغيرات البيئة المطلوبة:
+
+```env
+APP_NAME="MHD Print Lab"
+APP_ENV=production
+APP_KEY=base64_key_here
+APP_DEBUG=false
+DB_CONNECTION=mysql
+DB_HOST=${{ MYSQLHOST }}
+DB_PORT=${{ MYSQLPORT }}
+DB_DATABASE=${{ MYSQLDATABASE }}
+DB_USERNAME=${{ MYSQLUSER }}
+DB_PASSWORD=${{ MYSQLPASSWORD }}
+```
+
+## 📁 هيكل المشروع
+
+```
+Mm/
+├── app/
+│   ├── Http/Controllers/
+│   │   ├── ProductController.php
+│   │   └── VisitorProductController.php
+│   └── Models/
+│       ├── Product.php
+│       ├── Category.php
+│       └── Discount.php
+├── database/
+│   ├── migrations/
+│   └── seeders/
+├── resources/
+│   ├── views/
+│   │   ├── products/
+│   │   │   ├── visitor-index.blade.php
+│   │   │   └── digital-index.blade.php
+│   │   └── admin/
+│   └── css/
+├── routes/
+│   └── web.php
+└── storage/
+    └── app/public/digital_products/
+```
+
+## 🔧 التقنيات المستخدمة
+
+- **Backend:** Laravel 12, PHP 8.2
+- **Frontend:** Blade Templates, Tailwind CSS
+- **Database:** MySQL
+- **Build Tool:** Vite
+- **Hosting:** Railway
+- **Version Control:** Git
+
+## 📞 الدعم
+
+لأي استفسارات أو مشاكل، يرجى فتح issue في المشروع.
+
+## 📄 الترخيص
+
+هذا المشروع مرخص تحت رخصة MIT.
