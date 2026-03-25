@@ -4,12 +4,11 @@
     "builder": "NIXPACKS"
   },
   "deploy": {
-    "startCommand": "php artisan migrate:fresh --seed --force && vendor/bin/heroku-php-apache2 public/",
+    "startCommand": "php artisan migrate:fresh --seed --force && php -S 0.0.0.0:$PORT -t public",
     "restartPolicy": {
       "type": "ON_FAILURE",
       "maxRetries": 3
     }
   }
 }
-
 
