@@ -4,10 +4,4 @@
         "builder": "NIXPACKS"
     },
     "deploy": {
-        "startCommand": "npm run build && php artisan migrate:fresh --seed --force && php -S 0.0.0.0:$PORT -t public",
-        "restartPolicy": {
-            "type": "ON_FAILURE",
-            "maxRetries": 3
-        }
-    }
-}
+    "startCommand": "npm run build && mkdir -p storage/app/public && php artisan storage:link && php artisan migrate:fresh --seed --force && php -S 0.0.0.0:$PORT -t public",
