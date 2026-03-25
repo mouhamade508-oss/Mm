@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class CategoryController extends Controller
 {
@@ -34,7 +35,7 @@ class CategoryController extends Controller
             'description' => 'nullable|string|max:500',
         ]);
 
-        $validated['slug'] = \Str::slug($validated['name']);
+        $validated['slug'] = Str::slug($validated['name']);
 
         Category::create($validated);
 

@@ -123,7 +123,7 @@
                     </h2>
 
                     <div>
-                        <label for="stock" class="block text-gray-700 font-bold mb-3 flex items-center gap-2">
+                        <label for="stock" class="text-gray-700 font-bold mb-3 flex items-center gap-2">
                             <span class="text-xl">📊</span> عدد القطع المتاحة <span class="text-red-500">*</span>
                         </label>
                         <input type="number" id="stock" name="stock" value="{{ old('stock', $product->stock) }}" required 
