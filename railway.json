@@ -4,7 +4,7 @@
         "builder": "NIXPACKS"
     },
     "deploy": {
-        "startCommand": "npm run build && mkdir -p storage/app/public/digital_products && php artisan storage:link && php artisan migrate:fresh --seed --force && php -S 0.0.0.0:$PORT -t public",
+        "startCommand": "npm run build && mkdir -p storage/app/public/products && mkdir -p storage/app/public/digital_products && php artisan storage:link && php artisan migrate:fresh --seed --force && php -S 0.0.0.0:$PORT -t public",
         "restartPolicy": {
             "type": "ON_FAILURE",
             "maxRetries": 3

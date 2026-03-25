@@ -24,7 +24,7 @@ class ProductSeeder extends Seeder
                 'description' => 'طابعة ليزر أسود وأبيض عالية السرعة 40 صفحة/دقيقة، مثالية للمكاتب والشركات الصغيرة. جودة طباعة 1200 dpi، دعم شبكة Ethernet، سعة ورق 350 ورقة، توفير طاقة حتى 50%.',
                 'category_id' => $electronics->id,
                 'price' => 1599.99,
-                'image' => 'products/printer-hp.jpg',
+                'image' => null, // لا صورة افتراضية
                 'stock' => 25,
             ]);
 
@@ -34,7 +34,7 @@ class ProductSeeder extends Seeder
                 'description' => 'قالب HTML/CSS/JS جاهز للاستخدام مع تصميم responsive، يتضمن 10 صفحات، دعم Bootstrap 5، ملفات PSD، ودليل الاستخدام الكامل.',
                 'category_id' => $electronics->id,
                 'price' => 99.99,
-                'image' => 'products/website-template.jpg',
+                'image' => null, // لا صورة افتراضية
                 'stock' => 100,
                 'is_digital' => true,
                 'file_path' => 'digital_products/website-template.zip',
