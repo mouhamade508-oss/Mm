@@ -38,7 +38,70 @@
         }
         
         body { font-family: 'Tajawal', sans-serif; }
-        
+
+        .page-loader {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at center, rgba(15, 23, 42, 0.90), rgba(15, 23, 42, 0.99));
+            backdrop-filter: blur(2px);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            transition: opacity 0.35s ease, visibility 0.35s ease;
+        }
+
+        .page-loader.loaded {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .loader-box {
+            text-align: center;
+            color: #dbeafe;
+            max-width: min(420px, 90vw);
+        }
+
+        .loader-title {
+            margin-bottom: 1rem;
+            letter-spacing: 0.2em;
+            font-weight: 700;
+            font-size: 1rem;
+            text-transform: uppercase;
+            opacity: 0.95;
+        }
+
+        .skeleton-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 85px);
+            gap: 0.7rem;
+            justify-content: center;
+        }
+
+        .skeleton-card {
+            width: 85px;
+            height: 110px;
+            border-radius: 12px;
+            background: linear-gradient(90deg, #1e3a8a 0%, #1f2a4a 50%, #1e3a8a 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .skeleton-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            transform: translateX(-100%);
+            background: linear-gradient(90deg, transparent 0%, rgba(148, 163, 184, 0.45) 50%, transparent 100%);
+            animation: shimmer 1.3s linear infinite;
+        }
+
+        @keyframes shimmer {
+            to { transform: translateX(100%); }
+        }
+
         .header-pro {
             background: rgba(15, 23, 42, 0.97);
             backdrop-filter: blur(20px);
@@ -622,6 +685,18 @@
     </style>
 </head>
 <body>
+    <div id="page-loader" class="page-loader">
+        <div class="loader-box">
+            <div class="loader-title">جارٍ تحميل المحتوى ...</div>
+            <div class="skeleton-grid">
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+            </div>
+        </div>
+    </div>
+
     <!-- Header Pro -->
     <header class="header-pro">
         <div class="header-inner">
@@ -773,5 +848,27 @@
             © 2026 MHD Print Lab. جميع الحقوق محفوظة. | تم التطوير بعناية ✨
         </div>
     </footer>
+
+    <script>
+        function hidePageLoader() {
+            const loader = document.getElementById('page-loader');
+            if (!loader) return;
+            loader.classList.add('loaded');
+            setTimeout(() => loader.remove(), 400);
+        }
+
+        // إذا الصفحة تم تحميلها بالكامل
+        window.addEventListener('load', hidePageLoader);
+
+        // حتى لو كان DOM جاهز، نريد أن نظهرها لحظات بسيطة كتحسين تجربة المستخدم
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                const loader = document.getElementById('page-loader');
+                if (loader && !loader.classList.contains('loaded')) {
+                    hidePageLoader();
+                }
+            }, 800);
+        });
+    </script>
 </body>
 </html>
