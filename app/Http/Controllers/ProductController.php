@@ -14,7 +14,7 @@ class ProductController extends Controller
 
     public function index(Request $request)
     {
-        $query = Product::query();
+        $query = Product::whereNull('parent_id');
 
         // Search by name
         if ($request->filled('search')) {
@@ -130,5 +130,119 @@ class ProductController extends Controller
         $product->delete();
 
         return redirect()->route('admin.products.index')->with('success', '✅ تم حذف المنتج بنجاح!');
+    }
+
+    // Variant management methods
+    public function variants(Product $product)
+    {
+        $variants = $product->variants;
+        return view('admin.products.variants.index', compact('product', 'variants'));
+    }
+
+    public function createVariant(Product $product)
+    {
+        return view('admin.products.variants.create', compact('product'));
+    }
+
+    public function storeVariant(Request $request, Product $product)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'price' => 'required|numeric|min:0',
+            'stock' => 'required|integer|min:0',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'is_digital' => 'boolean',
+            'file_path' => 'nullable|file|mimes:pdf,doc,docx,txt,zip|max:10240',
+        ]);
+
+        $validated['category_id'] = $product->category_id;
+        $validated['parent_id'] = $product->id;
+
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('products', 'public');
+            $validated['image'] = $path;
+        }
+
+        if ($request->hasFile('file_path')) {
+            $filePath = $request->file('file_path')->store('digital_products', 'public');
+            $validated['file_path'] = $filePath;
+        }
+
+        Product::create($validated);
+
+        return redirect()->route('admin.products.variants', $product)->with('success', '✅ تم إضافة المتغير بنجاح!');
+    }
+
+    public function editVariant(Product $product, Product $variant)
+    {
+        // Ensure the variant belongs to the product
+        if ($variant->parent_id !== $product->id) {
+            abort(404);
+        }
+
+        return view('admin.products.variants.edit', compact('product', 'variant'));
+    }
+
+    public function updateVariant(Request $request, Product $product, Product $variant)
+    {
+        // Ensure the variant belongs to the product
+        if ($variant->parent_id !== $product->id) {
+            abort(404);
+        }
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'price' => 'required|numeric|min:0',
+            'stock' => 'required|integer|min:0',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'is_digital' => 'boolean',
+            'file_path' => 'nullable|file|mimes:pdf,doc,docx,txt,zip|max:10240',
+        ]);
+
+        if ($request->hasFile('image')) {
+            // Delete old image
+            if ($variant->image) {
+                Storage::disk('public')->delete($variant->image);
+            }
+            $path = $request->file('image')->store('products', 'public');
+            $validated['image'] = $path;
+        }
+
+        if ($request->hasFile('file_path')) {
+            // Delete old file
+            if ($variant->file_path) {
+                Storage::disk('public')->delete($variant->file_path);
+            }
+            $filePath = $request->file('file_path')->store('digital_products', 'public');
+            $validated['file_path'] = $filePath;
+        }
+
+        $variant->update($validated);
+
+        return redirect()->route('admin.products.variants', $product)->with('success', '✅ تم تحديث المتغير بنجاح!');
+    }
+
+    public function destroyVariant(Product $product, Product $variant)
+    {
+        // Ensure the variant belongs to the product
+        if ($variant->parent_id !== $product->id) {
+            abort(404);
+        }
+
+        // Delete image if exists
+        if ($variant->image) {
+            Storage::disk('public')->delete($variant->image);
+        }
+
+        // Delete digital file if exists
+        if ($variant->file_path) {
+            Storage::disk('public')->delete($variant->file_path);
+        }
+
+        $variant->delete();
+
+        return redirect()->route('admin.products.variants', $product)->with('success', '✅ تم حذف المتغير بنجاح!');
     }
 }

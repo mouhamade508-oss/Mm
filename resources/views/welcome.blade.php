@@ -657,7 +657,7 @@
           </div>
         @endif
 
-        <h3 class="product-name">{{ Str::limit($product->name, 50) }}</h3>
+        <h3 class="product-name"><a href="{{ route('product.show', $product) }}" style="color: inherit; text-decoration: none;">{{ Str::limit($product->name, 50) }}</a></h3>
         <p class="product-desc">{{ Str::limit($product->description, 120) }}</p>
         
         <!-- السعر والخصم -->

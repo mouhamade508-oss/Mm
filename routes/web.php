@@ -30,6 +30,14 @@ Route::middleware('admin')->prefix('admin')->name('admin.')->group(function () {
     Route::put('/products/{product}', [App\Http\Controllers\ProductController::class, 'update'])->name('products.update');
     Route::delete('/products/{product}', [App\Http\Controllers\ProductController::class, 'destroy'])->name('products.destroy');
 
+    // Product Variants routes
+    Route::get('/products/{product}/variants', [App\Http\Controllers\ProductController::class, 'variants'])->name('products.variants');
+    Route::get('/products/{product}/variants/create', [App\Http\Controllers\ProductController::class, 'createVariant'])->name('products.variants.create');
+    Route::post('/products/{product}/variants', [App\Http\Controllers\ProductController::class, 'storeVariant'])->name('products.variants.store');
+    Route::get('/products/{product}/variants/{variant}/edit', [App\Http\Controllers\ProductController::class, 'editVariant'])->name('products.variants.edit');
+    Route::put('/products/{product}/variants/{variant}', [App\Http\Controllers\ProductController::class, 'updateVariant'])->name('products.variants.update');
+    Route::delete('/products/{product}/variants/{variant}', [App\Http\Controllers\ProductController::class, 'destroyVariant'])->name('products.variants.destroy');
+
     // Discounts routes
     Route::get('/discounts', [App\Http\Controllers\DiscountController::class, 'index'])->name('discounts.index');
     Route::get('/discounts/create', [App\Http\Controllers\DiscountController::class, 'create'])->name('discounts.create');
@@ -41,4 +49,7 @@ Route::middleware('admin')->prefix('admin')->name('admin.')->group(function () {
 
 // Public route for validating discount codes
 Route::post('/api/validate-discount', [App\Http\Controllers\DiscountController::class, 'validate'])->name('validate-discount');
+
+// Public product details
+Route::get('/product/{product}', [App\Http\Controllers\VisitorProductController::class, 'show'])->name('product.show');
 

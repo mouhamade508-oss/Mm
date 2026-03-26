@@ -22,6 +22,7 @@ class Product extends Model
         'stock',
         'is_digital',
         'file_path',
+        'parent_id',
     ];
 
     /**
@@ -43,6 +44,22 @@ class Product extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
+    }
+
+    /**
+     * Get the parent product (if this is a variant).
+     */
+    public function parent(): BelongsTo
+    {
+        return $this->belongsTo(Product::class, 'parent_id');
+    }
+
+    /**
+     * Get the product variants.
+     */
+    public function variants(): HasMany
+    {
+        return $this->hasMany(Product::class, 'parent_id');
     }
 
     /**

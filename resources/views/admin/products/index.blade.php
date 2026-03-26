@@ -150,6 +150,10 @@
 
                             <!-- Actions -->
                             <div class="flex gap-2 pt-4 border-t">
+                                <a href="{{ route('admin.products.variants', $product) }}" 
+                                   class="flex-1 bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white font-bold py-2 px-3 rounded-lg text-center text-sm transition">
+                                    🎨 متغيرات
+                                </a>
                                 <a href="{{ route('admin.products.edit', $product) }}" 
                                    class="flex-1 bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white font-bold py-2 px-3 rounded-lg text-center text-sm transition">
                                     ✏️ تعديل

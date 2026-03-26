@@ -202,7 +202,7 @@
         @endif
       </div>
       <div class="card-body" style="padding: 2.5rem;">
-        <h3 style="font-size: 1.6rem; font-weight: 800; margin-bottom: 1rem;">{{ Str::limit($product->name, 60) }}</h3>
+        <h3 style="font-size: 1.6rem; font-weight: 800; margin-bottom: 1rem;"><a href="{{ route('product.show', $product) }}" style="color: inherit; text-decoration: none;">{{ Str::limit($product->name, 60) }}</a></h3>
         <p style="color: #64748b; margin-bottom: 1.8rem; line-height: 1.7;">{{ Str::limit($product->description, 100) }}</p>
         
         <div style="margin-bottom: 1.5rem;">
