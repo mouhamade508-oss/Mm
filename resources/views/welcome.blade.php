@@ -9,6 +9,28 @@
   --whatsapp-green: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
 }
 
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .hero-store {
   background: var(--blue-hero);
   color: white;
@@ -17,6 +39,15 @@
   border-radius: 0 0 var(--card-radius) var(--card-radius);
   box-shadow: var(--blue-glow);
   margin-bottom: clamp(2rem, 5vw, 4rem);
+}
+
+.hero-store h1 {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 900;
+  margin-bottom: 1rem;
+  color: white;
+  letter-spacing: -0.5px;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
 .hero-store h2 {
@@ -32,6 +63,87 @@
   max-width: 600px;
   margin: 0 auto clamp(1.5rem, 4vw, 2.5rem);
   padding: 0 0.5rem;
+}
+
+.hero-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(0.95rem, 2.5vw, 1.3rem) clamp(1.5rem, 3vw, 2.5rem);
+  border-radius: 16px;
+  font-weight: 700;
+  text-decoration: none;
+  font-size: clamp(0.95rem, 2vw, 1.1rem);
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  border: 2px solid transparent;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  font-family: 'Tajawal', sans-serif;
+}
+
+.hero-btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+  z-index: 0;
+}
+
+.hero-btn:hover::before {
+  width: 300px;
+  height: 300px;
+}
+
+.hero-btn-primary {
+  background: var(--blue-hero);
+  color: white;
+  z-index: 1;
+}
+
+.hero-btn-primary:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 15px 40px rgba(59, 130, 246, 0.5);
+}
+
+.hero-btn-primary:active {
+  transform: translateY(-2px);
+}
+
+.hero-btn-secondary {
+  background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
+  color: white;
+  z-index: 1;
+}
+
+.hero-btn-secondary:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 15px 40px rgba(234, 88, 12, 0.5);
+  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+}
+
+.hero-btn-secondary:active {
+  transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+  .hero-btn {
+    padding: 0.9rem 1.3rem;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-btn {
+    width: 100%;
+    padding: 1rem 1.5rem;
+  }
 }
 
 .filters-section {
@@ -581,13 +693,19 @@
 
 <!-- Hero -->
 <section class="hero-store">
-  <h1>🛍️ MHD Print Lab</h1>
-  <p>اكتشف مجموعتنا المميزة من المنتجات بأسعار تنافسية - اطلب عبر واتساب بسهولة!</p>
+  <div style="max-width: 700px; margin: 0 auto;">
+    <h1 style="font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 900; margin-bottom: 1rem; letter-spacing: -0.5px; animation: fadeInDown 0.8s ease;">🛍️ MHD Print Lab</h1>
+    <p style="font-size: clamp(1rem, 2vw, 1.3rem); opacity: 0.95; line-height: 1.8; margin-bottom: 2.5rem; font-weight: 500; animation: fadeInUp 0.8s ease 0.2s both;">اكتشف مجموعتنا المميزة من المنتجات بأسعار تنافسية - اطلب عبر واتساب بسهولة حيث يتوفر شحن سريع لجميع المحافظات!</p>
+  </div>
   
-  <!-- Navigation -->
-  <div style="margin-top: 2rem; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-    <a href="{{ route('home') }}" class="btn-store" style="background: var(--blue-hero); padding: 0.8rem 1.5rem; font-size: 0.9rem;">🛍️ جميع المنتجات</a>
-    <a href="{{ route('products.digital') }}" class="btn-store" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8); padding: 0.8rem 1.5rem; font-size: 0.9rem;">💻 المنتجات الرقمية</a>
+  <!-- Navigation Buttons -->
+  <div style="display: flex; gap: clamp(0.8rem, 2vw, 1.5rem); justify-content: center; flex-wrap: wrap; animation: fadeInUp 0.8s ease 0.4s both;">
+    <a href="{{ route('home') }}" class="hero-btn hero-btn-primary">
+      <span style="font-size: 1.2rem; margin-right: 0.5rem;">🛍️</span>جميع المنتجات
+    </a>
+    <a href="{{ route('products.digital') }}" class="hero-btn hero-btn-secondary">
+      <span style="font-size: 1.2rem; margin-right: 0.5rem;">💻</span>المنتجات الرقمية
+    </a>
   </div>
 </section>
 
