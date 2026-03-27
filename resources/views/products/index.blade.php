@@ -1,5 +1,10 @@
 @extends('layouts.pro-store')
 
+@section('meta_title', config('app.name', 'MHD Print Lab') . ' - كل المنتجات')
+@section('meta_description', 'استعرض جميع المنتجات المتاحة وأختر ما يناسبك مع فلترة حسب الفئة والسعر.')
+@section('meta_keywords', 'كل المنتجات, طباعة, متجر, فئات, خصومات')
+@section('meta_canonical', url('/products'))
+
 @section('content')
 <style>
 /* تزيين مخصص أزرق جميل - كود Blade نقي */

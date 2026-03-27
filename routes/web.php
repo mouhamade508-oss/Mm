@@ -53,3 +53,6 @@ Route::post('/api/validate-discount', [App\Http\Controllers\DiscountController::
 // Public product details
 Route::get('/product/{product}', [App\Http\Controllers\VisitorProductController::class, 'show'])->name('product.show');
 
+// Sitemap
+Route::get('/sitemap-dynamic.xml', [App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap');
+

@@ -1,5 +1,36 @@
 @extends('layouts.pro-store')
 
+@section('meta_title', $product->name . ' - ' . config('app.name', 'MHD Print Lab'))
+@section('meta_description', 
+    Str::limit(strip_tags($product->description ?? $product->name), 160, '...')
+)
+@section('meta_keywords', $product->category?->name . ', ' . $product->name . ', طباعة')
+@section('meta_canonical', route('product.show', $product))
+
+@push('meta')
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org/",
+        "@type": "Product",
+        "name": "{{ $product->name }}",
+        "description": "{{ Str::limit(strip_tags($product->description ?? $product->name), 300, '...') }}",
+        "sku": "{{ $product->id }}",
+        "brand": {
+            "@type": "Brand",
+            "name": "{{ config('app.name', 'MHD Print Lab') }}"
+        },
+        "offers": {
+            "@type": "Offer",
+            "url": "{{ route('product.show', $product) }}",
+            "priceCurrency": "SAR",
+            "price": "{{ number_format($product->price, 2, '.', '') }}",
+            "availability": "{{ $product->stock > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock'}}",
+            "itemCondition": "https://schema.org/NewCondition"
+        }
+    }
+    </script>
+@endpush
+
 @section('content')
 <style>
 :root {

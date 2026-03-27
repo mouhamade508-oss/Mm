@@ -1,5 +1,10 @@
 @extends('layouts.pro-store')
 
+@section('meta_title', config('app.name', 'MHD Print Lab') . ' - المنتجات الرقمية')
+@section('meta_description', 'اكتشف أفضل المنتجات الرقمية للتحميل والتصميم الفوري مع خصومات خاصة.')
+@section('meta_keywords', 'منتجات رقمية, تحميل, تصميم, طباعة رقمية')
+@section('meta_canonical', url('/digital-products'))
+
 @section('content')
 <style>
 :root {

@@ -1,2 +1,4 @@
 User-agent: *
-Disallow:
+Allow: /
+
+Sitemap: https://mm-production-c7c9.up.railway.app/sitemap-dynamic.xml
