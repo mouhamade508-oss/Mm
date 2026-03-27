@@ -1,6 +1,6 @@
 @extends('layouts.pro-store')
 
-@section('meta_title', config('app.name', 'MHD Print Lab') . ' - الصفحة الرئيسية')
+@section('meta_title', config('app.name', 'MHD Print Lab'))
 @section('meta_description', 'تسوّق أضخم تشكيلة من منتجات الطباعة الرقمية والمطبوعة مع خصومات فورية وخدمة توصيل سريعة.')
 @section('meta_keywords', 'طباعة, منتجات, متجر, خصم, شحن, تصميم')
 @section('meta_canonical', url('/'))

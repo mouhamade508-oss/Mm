@@ -36,7 +36,7 @@ class SitemapController extends Controller
             ];
         }
 
-        $payload = view('sitemap', compact('urls'));
+        $payload = '<?xml version="1.0" encoding="UTF-8"?>' . view('sitemap', compact('urls'))->render();
 
         return response($payload, 200)
             ->header('Content-Type', 'application/xml');

@@ -5,25 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>@yield('meta_title', config('app.name', 'MHD Print Lab') . ' - متجر احترافي')</title>
+    <title>@yield('meta_title', config('app.name', 'MHD'))</title>
     <meta name="description" content="@yield('meta_description', 'أفضل منتجات طباعة وتصميم احترافية في السعودية وباقات أسعار منافسة للعرب')" />
     <meta name="keywords" content="@yield('meta_keywords', 'طباعة, متجر, منتجات, تصميم, خصومات, شحن')" />
     <meta name="robots" content="index,follow" />
     <link rel="canonical" href="@yield('meta_canonical', url()->current())" />
 
     <meta property="og:type" content="@yield('og_type', 'website')" />
-    <meta property="og:title" content="@yield('meta_title', config('app.name', 'MHD Print Lab') . ' - متجر احترافي')" />
+    <meta property="og:title" content="@yield('meta_title', config('app.name', 'MHD'))" />
     <meta property="og:description" content="@yield('meta_description', 'أفضل منتجات طباعة وتصميم احترافية في السعودية وباقات أسعار منافسة للعرب')" />
     <meta property="og:url" content="@yield('meta_canonical', url()->current())" />
     <meta property="og:site_name" content="{{ config('app.name', 'MHD Print Lab') }}" />
     <meta property="og:locale" content="ar_SA" />
 
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="@yield('meta_title', config('app.name', 'MHD Print Lab') . ' - متجر احترافي')" />
+    <meta name="twitter:title" content="@yield('meta_title', config('app.name', 'MHD'))" />
     <meta name="twitter:description" content="@yield('meta_description', 'أفضل منتجات طباعة وتصميم احترافية في السعودية وباقات أسعار منافسة للعرب')" />
     <meta name="twitter:url" content="@yield('meta_canonical', url()->current())" />
 
     @stack('meta')
+
+    <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
 
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     
