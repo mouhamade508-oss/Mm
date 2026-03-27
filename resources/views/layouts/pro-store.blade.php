@@ -6,6 +6,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>@yield('meta_title', config('app.name', 'MHD'))</title>
+    <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
     <meta name="description" content="@yield('meta_description', 'أفضل منتجات طباعة وتصميم احترافية في السعودية وباقات أسعار منافسة للعرب')" />
     <meta name="keywords" content="@yield('meta_keywords', 'طباعة, متجر, منتجات, تصميم, خصومات, شحن')" />
     <meta name="robots" content="index,follow" />

@@ -699,7 +699,10 @@
 <!-- Hero -->
 <section class="hero-store">
   <div style="max-width: 700px; margin: 0 auto;">
-    <h1 style="font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 900; margin-bottom: 1rem; letter-spacing: -0.5px; animation: fadeInDown 0.8s ease;">🛍️ MHD Print Lab</h1>
+    <h1 style="font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 900; margin-bottom: 1rem; letter-spacing: -0.5px; animation: fadeInDown 0.8s ease; display: flex; align-items: center; justify-content: center; gap: 1rem;">
+      <img src="{{ asset('images/logo.png') }}" alt="MHD Print Lab Logo" style="height: clamp(2rem, 5vw, 3.5rem); width: auto;">
+      MHD Print Lab
+    </h1>
     <p style="font-size: clamp(1rem, 2vw, 1.3rem); opacity: 0.95; line-height: 1.8; margin-bottom: 2.5rem; font-weight: 500; animation: fadeInUp 0.8s ease 0.2s both;">اكتشف مجموعتنا المميزة من المنتجات بأسعار تنافسية - اطلب عبر واتساب بسهولة حيث يتوفر شحن سريع لجميع المحافظات!</p>
   </div>
   
