@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Discount;
+use App\Models\Game;
 use Illuminate\Http\Request;
 
 class VisitorProductController extends Controller
@@ -79,6 +80,30 @@ class VisitorProductController extends Controller
         return view('products.digital-index', compact('products', 'categories', 'generalDiscounts'));
     }
 
+    public function gamesAndApps(Request $request)
+    {
+        $query = Game::where('is_active', true);
+
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+
+        $products = $query->paginate(12);
+
+        // Get all categories
+        $categories = Category::all();
+
+        // Get all active general discounts
+        $generalDiscounts = Discount::where('type', 'general')
+            ->where('is_active', true)
+            ->where('valid_from', '<=', now())
+            ->where('valid_until', '>=', now())
+            ->where('used_count', '<', \DB::raw('usage_limit'))
+            ->get();
+
+        return view('games.index', compact('products', 'categories', 'generalDiscounts'));
+    }
+
     public function show(Product $product)
     {
         // If this is a variant, redirect to parent
@@ -108,6 +133,22 @@ class VisitorProductController extends Controller
             ->get();
 
         return view('products.show', compact('product', 'category', 'variants', 'relatedProducts', 'generalDiscounts'));
+    }
+
+    public function showGame(Game $game)
+    {
+        // تحميل فئات اللعبة النشطة فقط
+        $categories = $game->activeCategories()->get();
+
+        // Get all active general discounts
+        $generalDiscounts = Discount::where('type', 'general')
+            ->where('is_active', true)
+            ->where('valid_from', '<=', now())
+            ->where('valid_until', '>=', now())
+            ->where('used_count', '<', \DB::raw('usage_limit'))
+            ->get();
+
+        return view('games.show', compact('game', 'categories', 'generalDiscounts'));
     }
 }
 

@@ -703,7 +703,7 @@
       <img src="{{ asset('images/logo.png') }}" alt="MHD Print Lab Logo" style="height: clamp(2rem, 5vw, 3.5rem); width: auto;">
       MHD Print Lab
     </h1>
-    <p style="font-size: clamp(1rem, 2vw, 1.3rem); opacity: 0.95; line-height: 1.8; margin-bottom: 2.5rem; font-weight: 500; animation: fadeInUp 0.8s ease 0.2s both;">اكتشف مجموعتنا المميزة من المنتجات بأسعار تنافسية - اطلب عبر واتساب بسهولة حيث يتوفر شحن سريع لجميع المحافظات!</p>
+    <p style="font-size: clamp(1rem, 2vw, 1.3rem); opacity: 0.95; line-height: 1.8; margin-bottom: 2.5rem; font-weight: 500; animation: fadeInUp 0.8s ease 0.2s both;">اكتشف مجموعتنا المميزة من المنتجات بأسعار تنافسية - اطلب  بسهولة حيث يتوفر شحن سريع لجميع المحافظات!</p>
   </div>
   
   <!-- Navigation Buttons -->
@@ -713,6 +713,9 @@
     </a>
     <a href="{{ route('products.digital') }}" class="hero-btn hero-btn-secondary">
       <span style="font-size: 1.2rem; margin-right: 0.5rem;">💻</span>المنتجات الرقمية
+    </a>
+    <a href="{{ route('games.apps') }}" class="hero-btn hero-btn-secondary">
+      <span style="font-size: 1.2rem; margin-right: 0.5rem;">🎮</span>ألعاب وتطبيقات
     </a>
   </div>
 </section>
@@ -725,15 +728,26 @@
       
       <select name="category" class="input-filter">
         <option value="">📂 جميع الفئات</option>
-        <option value="إلكترونيات" {{ request('category') == 'إلكترونيات' ? 'selected' : '' }}>📱 إلكترونيات</option>
-        <option value="ملابس" {{ request('category') == 'ملابس' ? 'selected' : '' }}>👕 ملابس</option>
-        <option value="إكسسوارات" {{ request('category') == 'إكسسوارات' ? 'selected' : '' }}>💍 إكسسوارات</option>
-        <option value="منزليات" {{ request('category') == 'منزليات' ? 'selected' : '' }}>🏠 منزليات</option>
+        @foreach($categories as $category)
+          @php
+            $icon = match($category->name) {
+              'إلكترونيات' => '📱',
+              'ملابس' => '👕',
+              'إكسسوارات' => '💍',
+              'منزليات' => '🏠',
+              'ألعاب وتطبيقات' => '🎮',
+              default => '📂'
+            };
+          @endphp
+          <option value="{{ $category->id }}" {{ request('category') == $category->id ? 'selected' : '' }}>
+            {{ $icon }} {{ $category->name }}
+          </option>
+        @endforeach
       </select>
       
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-        <input type="number" name="min_price" value="{{ request('min_price') }}" class="input-filter" placeholder="الأدنى" min="0" step="0.01">
-        <input type="number" name="max_price" value="{{ request('max_price') }}" class="input-filter" placeholder="الأقصى" min="0" step="0.01">
+        <input type="number" name="min_price" value="{{ request('min_price') }}" class="input-filter" placeholder="السعر الادنى"min="0" step="0.01">
+        <input type="number" name="max_price" value="{{ request('max_price') }}" class="input-filter" placeholder="السعر الأقصى" min="0" step="0.01">
       </div>
       
       <button type="submit" class="btn-filter">🔍 فلترة النتائج</button>
@@ -815,7 +829,7 @@
         <div class="product-stock">📦 متوفر: {{ $product->stock }} قطعة</div>
         <a href="https://wa.me/963982617848?text=مرحبا%21%20أريد%20طلب%20%22{{ urlencode($product->name) }}%22%20{{ $product->is_digital ? 'المنتج الرقمي' : '' }}%20السعر%3A%20{{ $product->price }}%20ر.س%20{{ urlencode($product->description) }}" 
            class="whatsapp-btn" target="_blank" id="whatsapp-{{ $product->id }}">
-           اطلب عبر واتساب
+          اطلب الان
         </a>
       </div>
     </div>

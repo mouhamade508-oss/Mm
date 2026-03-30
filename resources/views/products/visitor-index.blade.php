@@ -225,7 +225,7 @@
         <div style="color: #94a3b8; font-weight: 600; margin-bottom: 2rem;">📦 المخزون: {{ $product->stock }}</div>
         
         <a href="https://wa.me/963982617848?text=مرحبا، أريد طلب {{ $product->name }} بسعر {{ $product->price }}ل.س" class="whatsapp-buy" id="whatsapp-{{ $product->id }}">
-          💬 اطلب عبر واتساب
+          💬 اطلب الان
         </a>
       </div>
     </article>

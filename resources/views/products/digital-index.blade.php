@@ -169,7 +169,16 @@
         <select name="category" class="input-modern" onchange="this.form.submit()">
           <option value="">📂 جميع الفئات</option>
           @foreach($categories as $cat)
-            <option value="{{ $cat->id }}" {{ request('category') == $cat->id ? 'selected' : '' }}>{{ $cat->name }}</option>
+            @php
+              $icon = match($cat->name) {
+                'إلكترونيات' => '📱',
+                'ملابس' => '👕',
+                'إكسسوارات' => '💍',
+                'منزليات' => '🏠',
+                default => '📂'
+              };
+            @endphp
+            <option value="{{ $cat->id }}" {{ request('category') == $cat->id ? 'selected' : '' }}>{{ $icon }} {{ $cat->name }}</option>
           @endforeach
         </select>
         <input type="hidden" name="search" value="{{ request('search') }}">
@@ -246,7 +255,7 @@
         <div style="color: #94a3b8; font-weight: 600; margin-bottom: 2rem;">📁 ملف رقمي قابل للتحميل</div>
         
         <a href="https://wa.me/963982617848?text=مرحبا، أريد طلب المنتج الرقمي: {{ urlencode($product->name) }} بسعر {{ $product->price }} ل.س" class="whatsapp-buy" id="whatsapp-{{ $product->id }}">
-          💬 اطلب عبر واتساب
+          💬 اطلب الان
         </a>
       </div>
     </article>

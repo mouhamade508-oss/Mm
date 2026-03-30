@@ -867,7 +867,7 @@
         </div>
 
         <div style="text-align: center; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid rgba(59, 130, 246, 0.2); opacity: 0.7; font-size: 0.9rem;">
-            © 2026 MHD Print Lab. جميع الحقوق محفوظة. | تم التطوير بعناية ✨
+            © 2026 MHD Print Lab. جميع الحقوق محفوظة. 
         </div>
     </footer>
 

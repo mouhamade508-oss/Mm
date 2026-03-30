@@ -191,6 +191,24 @@
                         🎁 أكواد الخصم
                     </a>
                 </li>
+                <li>
+                    <a href="{{ route('admin.game-recharge.index') }}" 
+                       class="{{ Route::is('admin.game-recharge.*') ? 'active' : '' }}">
+                        🎮 طلبات شحن الألعاب
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('admin.games.index') }}" 
+                       class="{{ Route::is('admin.games.*') ? 'active' : '' }}">
+                        🎯 إدارة الألعاب
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('admin.game-categories.index') }}" 
+                       class="{{ Route::is('admin.game-categories.*') ? 'active' : '' }}">
+                        📋 فئات الألعاب
+                    </a>
+                </li>
             </ul>
         </aside>
 

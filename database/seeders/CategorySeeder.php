@@ -33,6 +33,11 @@ class CategorySeeder extends Seeder
                 'name' => 'منزليات',
                 'slug' => 'home',
                 'description' => 'المنتجات المنزلية والديكور'
+            ],
+            [
+                'name' => 'ألعاب وتطبيقات',
+                'slug' => 'games-apps',
+                'description' => 'شحن رصيد الألعاب والتطبيقات'
             ]
         ];
 

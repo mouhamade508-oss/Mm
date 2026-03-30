@@ -463,7 +463,7 @@
     <!-- WhatsApp Button -->
     <a href="https://wa.me/963982617848?text=مرحبا%21%20أريد%20طلب%20%22{{ urlencode($product->name) }}%22%20{{ $product->is_digital ? 'المنتج الرقمي' : '' }}%20السعر%3A%20{{ $product->price }}%20ر.س%20{{ urlencode($product->description) }}" 
        class="whatsapp-btn" target="_blank" id="whatsapp-btn">
-       اطلب عبر واتساب
+      اطلب
     </a>
   </div>
 </div>

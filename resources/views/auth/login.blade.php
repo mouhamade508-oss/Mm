@@ -155,7 +155,7 @@
         <div class="form-group">
           <label class="label-modern">📧 البريد الإلكتروني</label>
           <input type="email" name="email" class="input-modern" value="{{ old('email') }}" required 
-                 placeholder="mouhamad.deop@gmail.com" autofocus>
+                 placeholder=" البريد الإلكتروني" autofocus>
         </div>
 
         <div class="form-group">
@@ -172,9 +172,9 @@
       </form>
 
       <div class="admin-info">
-        <strong>👨‍💼 الحساب الإداري:</strong><br>
-        mouhamad.deop@gmail.com<br>
-        admin123
+        <strong>👨‍💼 </strong><br>
+       <br>
+       
       </div>
     </div>
   </div>
