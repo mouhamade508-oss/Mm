@@ -14,6 +14,146 @@
   --whatsapp-green: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
 }
 
+/* News Ticker Styles */
+.news-ticker-container {
+  /* Blue-to-red bold stripe for high contrast and visibility */
+  background: linear-gradient(90deg, #0ea5e9 0%, #3b82f6 30%, #ef4444 70%, #dc2626 100%);
+  color: white;
+  padding: 0.6rem 0.8rem;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 6px 25px rgba(59,130,246,0.25);
+  border-bottom: 3px solid rgba(255,255,255,0.08);
+}
+
+.news-ticker {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.news-ticker-icon {
+  font-size: 1.2rem;
+  flex-shrink: 0;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+.news-ticker-content {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+.news-ticker-content::before,
+.news-ticker-content::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  width: 50px;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.news-ticker-content::before {
+  left: 0;
+  background: linear-gradient(to right, rgba(30, 58, 138, 1), transparent);
+}
+
+.news-ticker-content::after {
+  right: 0;
+  background: linear-gradient(to left, rgba(30, 58, 138, 1), transparent);
+}
+
+.news-item {
+  display: inline-block;
+  white-space: nowrap;
+  /* faster scrolling for quicker visibility */
+  animation: scroll 8s linear infinite;
+  padding-right: 1.5rem;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.news-item:not(:last-child)::after {
+  content: ' • ';
+  color: rgba(255, 255, 255, 0.7);
+  margin-left: 1rem;
+}
+
+.news-link {
+  color: #fbbf24;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.news-link:hover {
+  color: #f59e0b;
+  text-decoration: underline;
+}
+
+@keyframes scroll {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+
+.news-ticker-controls {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.ticker-control-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.8rem;
+}
+
+.ticker-control-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+}
+
+.news-ticker.paused .news-item {
+  animation-play-state: paused;
+}
+
+@media (max-width: 768px) {
+  .news-ticker-container {
+    padding: 0.5rem 0.6rem;
+  }
+
+  .news-ticker {
+    gap: 0.5rem;
+  }
+
+  .news-item {
+    font-size: 0.9rem;
+    /* mobile: faster for quick visibility */
+    animation-duration: 6s !important;
+  }
+
+  .news-ticker-controls {
+    display: none; /* Hide controls on mobile for cleaner look */
+  }
+}
+
 @keyframes fadeInDown {
   from {
     opacity: 0;
@@ -695,6 +835,32 @@
   }
 }
 </style>
+
+{{-- News Ticker --}}
+@if($activeNews->count() > 0)
+<div class="news-ticker-container">
+    <div class="news-ticker">
+        <div class="news-ticker-icon">📰</div>
+        <div class="news-ticker-content">
+            @foreach($activeNews as $news)
+                <div class="news-item">
+                    @if($news->link)
+                        <a href="{{ $news->link }}" target="_blank" class="news-link">
+                            {{ $news->title }}
+                        </a>
+                    @else
+                        <span>{{ $news->title }}</span>
+                    @endif
+                </div>
+            @endforeach
+        </div>
+        <div class="news-ticker-controls">
+            <button onclick="pauseTicker()" id="pauseBtn" class="ticker-control-btn">⏸️</button>
+            <button onclick="resumeTicker()" id="resumeBtn" class="ticker-control-btn" style="display: none;">▶️</button>
+        </div>
+    </div>
+</div>
+@endif
 
 <!-- Hero -->
 <section class="hero-store">

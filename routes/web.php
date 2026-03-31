@@ -65,6 +65,9 @@ Route::middleware('admin')->prefix('admin')->name('admin.')->group(function () {
 
     // Game Categories routes
     Route::resource('game-categories', App\Http\Controllers\Admin\GameCategoryController::class);
+
+    // News routes
+    Route::resource('news', App\Http\Controllers\Admin\NewsController::class);
 });
 
 // Public route for validating discount codes

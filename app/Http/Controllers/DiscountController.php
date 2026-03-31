@@ -37,14 +37,25 @@ class DiscountController extends Controller
             'percentage' => 'required|numeric|min:0.01|max:100',
             'type' => 'required|in:general,specific',
             'product_id' => 'required_if:type,specific|nullable|exists:products,id',
-            'valid_from' => 'required|date|after:today',
-            'valid_until' => 'required|date|after:valid_from',
+            'valid_from' => 'required|date_format:Y-m-d\TH:i',
+            'valid_until' => 'required|date_format:Y-m-d\TH:i|after:valid_from',
             'usage_limit' => 'required|integer|min:1',
             'is_active' => 'sometimes|boolean',
         ]);
 
         try {
-            Discount::create($validated);
+            Discount::create([
+                'code' => strtoupper($validated['code']),
+                'description' => $validated['description'],
+                'percentage' => $validated['percentage'],
+                'type' => $validated['type'],
+                'product_id' => $validated['type'] === 'specific' ? $validated['product_id'] : null,
+                'valid_from' => \Carbon\Carbon::createFromFormat('Y-m-d\TH:i', $validated['valid_from']),
+                'valid_until' => \Carbon\Carbon::createFromFormat('Y-m-d\TH:i', $validated['valid_until']),
+                'usage_limit' => $validated['usage_limit'],
+                'used_count' => 0,
+                'is_active' => $request->has('is_active'),
+            ]);
             return redirect()->route('admin.discounts.index')
                 ->with('success', 'تم إنشاء الكود الخصم بنجاح');
         } catch (\Exception $e) {
@@ -72,14 +83,24 @@ class DiscountController extends Controller
             'percentage' => 'required|numeric|min:0.01|max:100',
             'type' => 'required|in:general,specific',
             'product_id' => 'required_if:type,specific|nullable|exists:products,id',
-            'valid_from' => 'required|date',
-            'valid_until' => 'required|date|after:valid_from',
+            'valid_from' => 'required|date_format:Y-m-d\TH:i',
+            'valid_until' => 'required|date_format:Y-m-d\TH:i|after:valid_from',
             'usage_limit' => 'required|integer|min:1',
             'is_active' => 'sometimes|boolean',
         ]);
 
         try {
-            $discount->update($validated);
+            $discount->update([
+                'code' => strtoupper($validated['code']),
+                'description' => $validated['description'],
+                'percentage' => $validated['percentage'],
+                'type' => $validated['type'],
+                'product_id' => $validated['type'] === 'specific' ? $validated['product_id'] : null,
+                'valid_from' => \Carbon\Carbon::createFromFormat('Y-m-d\TH:i', $validated['valid_from']),
+                'valid_until' => \Carbon\Carbon::createFromFormat('Y-m-d\TH:i', $validated['valid_until']),
+                'usage_limit' => $validated['usage_limit'],
+                'is_active' => $request->has('is_active'),
+            ]);
             return redirect()->route('admin.discounts.index')
                 ->with('success', 'تم تحديث الكود الخصم بنجاح');
         } catch (\Exception $e) {

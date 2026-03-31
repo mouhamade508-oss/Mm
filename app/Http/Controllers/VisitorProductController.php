@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Section;
 use App\Models\Discount;
 use App\Models\Game;
+use App\Models\News;
 use Illuminate\Http\Request;
 
 class VisitorProductController extends Controller
@@ -43,7 +44,10 @@ class VisitorProductController extends Controller
             ->where('used_count', '<', \DB::raw('usage_limit'))
             ->get();
 
-        return view('welcome', compact('products', 'categories', 'generalDiscounts'));
+        // Get active news for ticker
+        $activeNews = News::active()->get();
+
+        return view('welcome', compact('products', 'categories', 'generalDiscounts', 'activeNews'));
     }
 
     public function digitalProducts(Request $request)

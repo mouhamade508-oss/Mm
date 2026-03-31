@@ -140,8 +140,9 @@
                         <label for="valid_from" class="flex items-center text-gray-700 font-bold mb-3 gap-2">
                             <span class="text-xl">📅</span> تاريخ البداية <span class="text-red-500">*</span>
                         </label>
-                        <input type="date" id="valid_from" name="valid_from" value="{{ old('valid_from') }}" required 
+                        <input type="datetime-local" id="valid_from" name="valid_from" value="{{ old('valid_from') }}" required 
                                class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition">
+                        <p class="text-gray-500 text-sm mt-2">💡 يمكنك إنشاء عرض يبدأ خلال ساعات قليلة</p>
                         @error('valid_from')
                             <p class="text-red-500 text-sm mt-2">{{ $message }}</p>
                         @enderror
@@ -152,11 +153,33 @@
                         <label for="valid_until" class="flex items-center text-gray-700 font-bold mb-3 gap-2">
                             <span class="text-xl">📅</span> تاريخ الانتهاء <span class="text-red-500">*</span>
                         </label>
-                        <input type="date" id="valid_until" name="valid_until" value="{{ old('valid_until') }}" required 
+                        <input type="datetime-local" id="valid_until" name="valid_until" value="{{ old('valid_until') }}" required 
                                class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition">
+                        <p class="text-gray-500 text-sm mt-2">💡 مثال: عرض لمدة 24 ساعة فقط</p>
                         @error('valid_until')
                             <p class="text-red-500 text-sm mt-2">{{ $message }}</p>
                         @enderror
+                    </div>
+                </div>
+
+                <!-- Quick Time Presets -->
+                <div class="mt-6 p-4 bg-blue-50 rounded-lg border-2 border-blue-200">
+                    <h3 class="font-bold text-blue-800 mb-3 flex items-center gap-2">
+                        <span>⚡</span> إعدادات سريعة للوقت
+                    </h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                        <button type="button" onclick="setTimePreset(1)" class="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm font-medium">
+                            ساعة واحدة
+                        </button>
+                        <button type="button" onclick="setTimePreset(6)" class="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm font-medium">
+                            6 ساعات
+                        </button>
+                        <button type="button" onclick="setTimePreset(24)" class="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm font-medium">
+                            24 ساعة
+                        </button>
+                        <button type="button" onclick="setTimePreset(72)" class="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm font-medium">
+                            3 أيام
+                        </button>
                     </div>
                 </div>
             </div>
@@ -238,6 +261,27 @@
 
     // Update preview on initial load
     previewDiscount.textContent = percentageInput.value || '0';
+
+    // Quick time preset functions
+    function setTimePreset(hours) {
+        const now = new Date();
+        const validFrom = document.getElementById('valid_from');
+        const validUntil = document.getElementById('valid_until');
+
+        // Set valid_from to now
+        validFrom.value = now.toISOString().slice(0, 16);
+
+        // Set valid_until to now + hours
+        const futureTime = new Date(now.getTime() + (hours * 60 * 60 * 1000));
+        validUntil.value = futureTime.toISOString().slice(0, 16);
+    }
+
+    // Add event listeners for quick time buttons
+    document.getElementById('preset-1h').addEventListener('click', () => setTimePreset(1));
+    document.getElementById('preset-6h').addEventListener('click', () => setTimePreset(6));
+    document.getElementById('preset-24h').addEventListener('click', () => setTimePreset(24));
+    document.getElementById('preset-3d').addEventListener('click', () => setTimePreset(72));
+
 </script>
 
 <style>

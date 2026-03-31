@@ -8,7 +8,7 @@
     
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     
-    @vite('resources/css/app.css')
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     
     <style>
         * {
@@ -192,6 +192,12 @@
                     </a>
                 </li>
                 <li>
+                    <a href="{{ route('admin.news.index') }}" 
+                       class="{{ Route::is('admin.news.*') ? 'active' : '' }}">
+                        📰 إدارة الأخبار
+                    </a>
+                </li>
+                <li>
                     <a href="{{ route('admin.game-recharge.index') }}" 
                        class="{{ Route::is('admin.game-recharge.*') ? 'active' : '' }}">
                         🎮 طلبات شحن الألعاب
@@ -234,5 +240,7 @@
             </div>
         </div>
     </div>
+
+    @vite(['resources/js/app.js'])
 </body>
 </html>
