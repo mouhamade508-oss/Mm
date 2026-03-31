@@ -1,7 +1,8 @@
+@import "./pro-store.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import "./pro-store.css";
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
