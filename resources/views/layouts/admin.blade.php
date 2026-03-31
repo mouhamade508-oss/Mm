@@ -19,7 +19,7 @@
 
         body {
             font-family: 'Tajawal', sans-serif;
-            background-color: #f1f5f9;
+            background-color: #ffffff;
             color: #1e293b;
         }
 

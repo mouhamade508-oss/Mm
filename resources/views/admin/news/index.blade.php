@@ -15,10 +15,15 @@
                     </h1>
                     <p class="text-muted mb-0">إدارة أخبار الموقع والتحكم في عرضها</p>
                 </div>
-                <a href="{{ route('admin.news.create') }}" class="btn btn-primary btn-lg">
-                    <i class="fas fa-plus me-2"></i>
-                    إضافة خبر جديد
-                </a>
+                <div class="d-flex gap-2 align-items-center">
+                    <button id="themeToggle" class="btn btn-outline-dark btn-sm" title="تبديل الوضع">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <a href="{{ route('admin.news.create') }}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-plus me-2"></i>
+                        إضافة خبر جديد
+                    </a>
+                </div>
             </div>
 
             <!-- Stats Cards -->
@@ -125,109 +130,74 @@
                         </div>
                     @endif
 
-                    <div class="table-responsive">
-                        <table class="table table-hover" id="newsTable">
-                            <thead class="table-light">
-                                <tr>
-                                    <th class="border-0">#</th>
-                                    <th class="border-0">العنوان</th>
-                                    <th class="border-0">المحتوى</th>
-                                    <th class="border-0">الحالة</th>
-                                    <th class="border-0">الترتيب</th>
-                                    <th class="border-0">تاريخ النشر</th>
-                                    <th class="border-0 text-center">الإجراءات</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse($news as $item)
-                                    <tr class="news-row" data-status="{{ $item->is_active ? 'active' : 'inactive' }}">
-                                        <td>
-                                            <span class="badge bg-secondary">{{ $item->id }}</span>
-                                        </td>
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                <div class="ms-3">
-                                                    <h6 class="mb-0 text-truncate" style="max-width: 200px;" title="{{ $item->title }}">
-                                                        {{ Str::limit($item->title, 40) }}
-                                                    </h6>
-                                                    @if($item->link)
-                                                        <small class="text-muted">
-                                                            <i class="fas fa-link me-1"></i>
-                                                            <a href="{{ $item->link }}" target="_blank" class="text-decoration-none">{{ Str::limit($item->link, 30) }}</a>
-                                                        </small>
-                                                    @endif
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <p class="mb-0 text-muted small" title="{{ $item->content }}">
-                                                {{ Str::limit($item->content, 80) }}
-                                            </p>
-                                        </td>
-                                        <td>
+                    <div id="newsGrid" class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-3">
+                        @forelse($news as $item)
+                            <div class="col news-card" data-status="{{ $item->is_active ? 'active' : 'inactive' }}">
+                                <div class="card news-item-card h-100 border-0 shadow-sm">
+                                    <div class="card-body p-3">
+                                        <div class="d-flex justify-content-between align-items-start mb-2">
+                                            <span class="badge bg-secondary">#{{ $item->id }}</span>
+
                                             @if($item->is_active)
-                                                <span class="badge bg-success rounded-pill px-3 py-2">
-                                                    <i class="fas fa-check-circle me-1"></i>
-                                                    نشط
-                                                </span>
+                                                <span class="badge bg-success">نشط</span>
                                             @else
-                                                <span class="badge bg-secondary rounded-pill px-3 py-2">
-                                                    <i class="fas fa-pause-circle me-1"></i>
-                                                    غير نشط
-                                                </span>
+                                                <span class="badge bg-secondary">غير نشط</span>
                                             @endif
-                                        </td>
-                                        <td>
-                                            <span class="badge bg-info">{{ $item->sort_order }}</span>
-                                        </td>
-                                        <td>
+                                        </div>
+
+                                        <h5 class="card-title mb-1 text-truncate" title="{{ $item->title }}">
+                                            {{ Str::limit($item->title, 50) }}
+                                        </h5>
+
+                                        <p class="card-text text-muted small mb-3" title="{{ $item->content }}">
+                                            {{ Str::limit($item->content ?: 'لا يوجد محتوى', 90) }}
+                                        </p>
+
+                                        <div class="d-flex flex-wrap gap-2 mb-3">
+                                            <span class="badge bg-info">ترتيب {{ $item->sort_order }}</span>
                                             @if($item->published_at)
-                                                <div class="small">
-                                                    <i class="fas fa-calendar me-1 text-muted"></i>
-                                                    {{ $item->published_at->format('d/m/Y') }}
-                                                    <br>
-                                                    <small class="text-muted">{{ $item->published_at->format('H:i') }}</small>
-                                                </div>
-                                            @else
-                                                <span class="text-muted small">
-                                                    <i class="fas fa-clock me-1"></i>
-                                                    فوري
+                                                <span class="badge bg-light text-dark">
+                                                    {{ $item->published_at->format('d/m/Y H:i') }}
                                                 </span>
+                                            @else
+                                                <span class="badge bg-light text-dark">نشر فوري</span>
                                             @endif
-                                        </td>
-                                        <td class="text-center">
-                                            <div class="btn-group" role="group">
-                                                <a href="{{ route('admin.news.edit', $item) }}" class="btn btn-sm btn-outline-primary" title="تعديل">
-                                                    <i class="fas fa-edit"></i>
-                                                </a>
-                                                <form action="{{ route('admin.news.destroy', $item) }}" method="POST" class="d-inline"
-                                                      onsubmit="return confirm('هل أنت متأكد من حذف هذا الخبر؟')">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-sm btn-outline-danger" title="حذف">
-                                                        <i class="fas fa-trash"></i>
-                                                    </button>
-                                                </form>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="7" class="text-center py-5">
-                                            <div class="empty-state">
-                                                <i class="fas fa-newspaper fa-4x text-muted mb-3"></i>
-                                                <h5 class="text-muted">لا توجد أخبار حالياً</h5>
-                                                <p class="text-muted mb-4">ابدأ بإضافة أول خبر لموقعك</p>
-                                                <a href="{{ route('admin.news.create') }}" class="btn btn-primary btn-lg">
-                                                    <i class="fas fa-plus me-2"></i>
-                                                    إضافة أول خبر
-                                                </a>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
+                                        </div>
+
+                                        @if($item->link)
+                                            <a href="{{ $item->link }}" target="_blank" class="d-block mb-2 text-decoration-none"><i class="fas fa-link me-1"></i>{{ Str::limit($item->link, 40) }}</a>
+                                        @endif
+
+                                        <div class="btn-group w-100" role="group">
+                                            <a href="{{ route('admin.news.edit', $item) }}" class="btn btn-sm btn-outline-primary w-50" title="تعديل">
+                                                <i class="fas fa-edit"></i>
+                                                <span class="d-none d-md-inline"> تعديل</span>
+                                            </a>
+                                            <form action="{{ route('admin.news.destroy', $item) }}" method="POST" class="w-50" onsubmit="return confirm('هل أنت متأكد من حذف هذا الخبر؟')">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-sm btn-outline-danger w-100" title="حذف">
+                                                    <i class="fas fa-trash"></i>
+                                                    <span class="d-none d-md-inline"> حذف</span>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @empty
+                            <div class="col-12">
+                                <div class="empty-state text-center py-5">
+                                    <i class="fas fa-newspaper fa-4x text-muted mb-3"></i>
+                                    <h5 class="text-muted">لا توجد أخبار حالياً</h5>
+                                    <p class="text-muted mb-4">ابدأ بإضافة أول خبر لموقعك</p>
+                                    <a href="{{ route('admin.news.create') }}" class="btn btn-primary btn-lg">
+                                        <i class="fas fa-plus me-2"></i>
+                                        إضافة أول خبر
+                                    </a>
+                                </div>
+                            </div>
+                        @endforelse
                     </div>
 
                     @if($news->hasPages())
@@ -242,74 +212,259 @@
 </div>
 
 <style>
-.border-left-primary {
-    border-left: 0.25rem solid #4e73df !important;
+body {
+    background: #ffffff !important;
 }
-.border-left-success {
-    border-left: 0.25rem solid #1cc88a !important;
-}
-.border-left-info {
-    border-left: 0.25rem solid #36b9cc !important;
-}
-.border-left-warning {
-    border-left: 0.25rem solid #f6c23e !important;
-}
-.text-primary {
-    color: #5a5c69 !important;
-}
-.text-gray-800 {
-    color: #5a5c69 !important;
-}
-.shadow {
-    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15) !important;
-}
+
 .card {
-    border: none;
-    border-radius: 0.35rem;
+    border: 0 !important;
+    border-radius: 0.8rem !important;
+    transition: transform 0.2s ease, box-shadow 0.2s ease !important;
 }
-.table-hover tbody tr:hover {
-    background-color: rgba(0, 0, 0, 0.075);
+
+.card:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.14) !important;
 }
+
+.card-header {
+    background: linear-gradient(90deg, #6c5ce7 0%, #00b894 100%) !important;
+    color: #fff !important;
+    border: 0 !important;
+    border-top-left-radius: 0.8rem !important;
+    border-top-right-radius: 0.8rem !important;
+}
+
+.card-header h6 {
+    color: #fff !important;
+}
+
+.table {
+    background: #ffffff !important;
+    border-radius: 0.75rem !important;
+    overflow: hidden !important;
+}
+
+.table thead th {
+    border: 0 !important;
+    background: #f7f7ff !important;
+    color: #495057 !important;
+    font-weight: 700 !important;
+}
+
+.table tbody tr:hover {
+    background: rgba(58, 59, 69, 0.05) !important;
+}
+
+#searchInput {
+    box-shadow: inset 0 1px 3px rgba(0,0,0,.1) !important;
+}
+
+.news-procard {
+    background: #fff !important;
+    border-radius: 0.8rem !important;
+    transition: transform .2s ease !important;
+}
+
+.news-procard:hover {
+    transform: translateY(-3px) !important;
+}
+
 .empty-state {
-    padding: 2rem 0;
+    padding: 2.5rem 0 !important;
+    color: #6c757d !important;
 }
+
+.badge {
+    font-size: 0.75rem !important;
+    font-weight: 600 !important;
+}
+
+.news-item-card {
+    border-radius: 1rem !important;
+    overflow: hidden !important;
+    transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+.news-item-card:hover {
+    transform: translateY(-4px) !important;
+    box-shadow: 0 0.8rem 1.4rem rgba(52, 58, 64, 0.2) !important;
+}
+
+.news-item-card .card-title {
+    color: #343a40 !important;
+}
+
+.news-item-card .card-text {
+    min-height: 70px !important;
+}
+
+.news-item-card a {
+    color: #4e73df !important;
+    font-size: 0.86rem !important;
+}
+
+.empty-state {
+    padding: 3rem 0 !important;
+    color: #6c757d !important;
+    background: #ffffff !important;
+    border-radius: 1rem !important;
+}
+
+.card-header {
+    background: linear-gradient(90deg, #4e73df, #36b9cc) !important;
+    color: #fff !important;
+    border-bottom: none !important;
+}
+
+.card-header h6 {
+    color: #fff !important;
+}
+
+#searchInput {
+    box-shadow: inset 0 1px 3px rgba(0,0,0,.12) !important;
+}
+
+body {
+    background: #ffffff !important;
+}
+
 .btn-group .btn {
     border-radius: 0.35rem !important;
 }
-.badge {
-    font-size: 0.75em;
+
+/* Dark Mode Styles */
+.dark-mode {
+    background: #1a1a1a !important;
+    color: #e9ecef !important;
+}
+
+.dark-mode .card {
+    background: #2d3748 !important;
+    color: #e9ecef !important;
+    border-color: #4a5568 !important;
+}
+
+.dark-mode .card-header {
+    background: linear-gradient(90deg, #2b6cb0, #3182ce) !important;
+    color: #fff !important;
+}
+
+.dark-mode .news-item-card {
+    background: #374151 !important;
+    color: #e9ecef !important;
+}
+
+.dark-mode .news-item-card .card-title {
+    color: #f7fafc !important;
+}
+
+.dark-mode .news-item-card .card-text {
+    color: #cbd5e0 !important;
+}
+
+.dark-mode .badge {
+    background: #4a5568 !important;
+    color: #e9ecef !important;
+}
+
+.dark-mode .badge.bg-success {
+    background: #38a169 !important;
+}
+
+.dark-mode .badge.bg-info {
+    background: #3182ce !important;
+}
+
+.dark-mode .badge.bg-light {
+    background: #4a5568 !important;
+    color: #e9ecef !important;
+}
+
+.dark-mode .empty-state {
+    background: #374151 !important;
+    color: #cbd5e0 !important;
+}
+
+.dark-mode .form-control {
+    background: #4a5568 !important;
+    color: #e9ecef !important;
+    border-color: #718096 !important;
+}
+
+.dark-mode .btn-outline-secondary {
+    color: #e9ecef !important;
+    border-color: #718096 !important;
+}
+
+.dark-mode .btn-outline-secondary:hover {
+    background: #718096 !important;
+    color: #1a1a1a !important;
 }
 </style>
 
 <script>
-document.getElementById('searchInput').addEventListener('keyup', function() {
-    const searchTerm = this.value.toLowerCase();
-    const rows = document.querySelectorAll('#newsTable tbody tr.news-row');
+// بحث وفلترة بطاقات
+const searchInput = document.getElementById('searchInput');
+if (searchInput) {
+    searchInput.addEventListener('keyup', function() {
+        const searchTerm = this.value.trim().toLowerCase();
+        const cards = document.querySelectorAll('#newsGrid .news-card');
 
-    rows.forEach(row => {
-        const title = row.cells[1].textContent.toLowerCase();
-        const content = row.cells[2].textContent.toLowerCase();
+        cards.forEach(card => {
+            const title = card.querySelector('.card-title')?.textContent.toLowerCase() || '';
+            const shortText = card.querySelector('.card-text')?.textContent.toLowerCase() || '';
 
-        if (title.includes(searchTerm) || content.includes(searchTerm)) {
-            row.style.display = '';
-        } else {
-            row.style.display = 'none';
-        }
+            card.style.display = (title.includes(searchTerm) || shortText.includes(searchTerm)) ? '' : 'none';
+        });
     });
-});
+}
 
 function filterNews(status) {
-    const rows = document.querySelectorAll('#newsTable tbody tr.news-row');
+    const cards = document.querySelectorAll('#newsGrid .news-card');
 
-    rows.forEach(row => {
-        const rowStatus = row.getAttribute('data-status');
+    cards.forEach(card => {
+        const rowStatus = card.getAttribute('data-status');
 
         if (status === 'all' || rowStatus === status) {
-            row.style.display = '';
+            card.style.display = '';
         } else {
-            row.style.display = 'none';
+            card.style.display = 'none';
         }
     });
+}
+
+// Dark Mode Toggle
+const themeToggle = document.getElementById('themeToggle');
+if (themeToggle) {
+    themeToggle.addEventListener('click', function() {
+        document.body.classList.toggle('dark-mode');
+        const icon = this.querySelector('i');
+        if (document.body.classList.contains('dark-mode')) {
+            icon.className = 'fas fa-sun';
+            localStorage.setItem('theme', 'dark');
+        } else {
+            icon.className = 'fas fa-moon';
+            localStorage.setItem('theme', 'light');
+        }
+    });
+
+    // Load saved theme - Default to light mode and force light mode initially
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+        document.body.classList.add('dark-mode');
+        themeToggle.querySelector('i').className = 'fas fa-sun';
+    } else {
+        // Force light mode by default
+        document.body.classList.remove('dark-mode');
+        themeToggle.querySelector('i').className = 'fas fa-moon';
+        localStorage.setItem('theme', 'light');
+    }
+
+    // Force light mode on page load to ensure white background
+    document.body.classList.remove('dark-mode');
+    localStorage.setItem('theme', 'light');
+    themeToggle.querySelector('i').className = 'fas fa-moon';
 }
 </script>
 @endsection

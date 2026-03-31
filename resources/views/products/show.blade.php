@@ -215,8 +215,6 @@
   border-radius: 0 0 var(--card-radius) var(--card-radius);
   box-shadow: var(--shadow-strong);
   margin-bottom: clamp(2rem, 5vw, 4rem);
-  margin-top: {{ $generalDiscounts->count() > 0 ? '60px' : '0' }};
-  transition: margin-top 0.3s ease;
 }
 
 .product-detail-hero h1 {

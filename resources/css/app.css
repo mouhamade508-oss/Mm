@@ -1,10 +1,10 @@
+/* Import Bootstrap and Font Awesome (must appear before other rules) */
+@import "bootstrap/dist/css/bootstrap.min.css";
+@import "@fortawesome/fontawesome-free/css/all.min.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-/* Import Bootstrap and Font Awesome (bundled via Vite) */
-@import "bootstrap/dist/css/bootstrap.min.css";
-@import "@fortawesome/fontawesome-free/css/all.min.css";
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';

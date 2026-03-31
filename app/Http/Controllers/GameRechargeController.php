@@ -202,7 +202,17 @@ class GameRechargeController extends Controller
     public function index()
     {
         $requests = GameRechargeRequest::latest()->paginate(20);
-        return view('admin.game-recharge.index', compact('requests'));
+
+        // Get statistics
+        $stats = [
+            'total' => GameRechargeRequest::count(),
+            'pending' => GameRechargeRequest::where('status', 'pending')->count(),
+            'processing' => GameRechargeRequest::where('status', 'processing')->count(),
+            'completed' => GameRechargeRequest::where('status', 'completed')->count(),
+            'rejected' => GameRechargeRequest::where('status', 'rejected')->count(),
+        ];
+
+        return view('admin.game-recharge.index', compact('requests', 'stats'));
     }
 
     public function show(GameRechargeRequest $gameRequest)
