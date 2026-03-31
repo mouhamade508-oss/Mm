@@ -991,7 +991,7 @@
         <!-- عرض الخصومات العامة -->
         @if($generalDiscounts->count() > 0)
           <div style="background: #e0f2fe; padding: 0.8rem; border-radius: 8px; margin-bottom: 1.5rem; text-align: center; font-size: 0.9rem;">
-            <span style="color: #0369a1; font-weight: 600;">🎉 كود عام: <span style="font-weight: 700;">{{ $generalDiscounts->first()->code }}</span> - {{ $generalDiscounts->first()->percentage }}%</span>
+            <span style="color: #0369a1; font-weight: 600;">الكود على شكل : <span style="font-weight: 700;">{{ $generalDiscounts->first()->code }}</span> - {{ $generalDiscounts->first()->percentage }}%</span>
           </div>
         @endif
 

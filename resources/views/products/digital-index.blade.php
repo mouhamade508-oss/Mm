@@ -242,15 +242,7 @@
           <div class="discount-message-{{ $product->id }}" style="font-size: 0.85rem; min-height: 20px;"></div>
         </div>
 
-        <!-- عرض الخصومات العامة المتاحة -->
-        @if($generalDiscounts->count() > 0)
-          <div style="background: #e0f2fe; padding: 1rem; border-radius: 12px; margin-bottom: 1.5rem; text-align: center;">
-            <p style="font-size: 0.9rem; color: #0369a1; font-weight: 600; margin: 0;">كود عام متاح: 
-              <span style="color: #0284c7; font-weight: 700;">{{ $generalDiscounts->first()->code }}</span>
-              - خصم {{ $generalDiscounts->first()->percentage }}%
-            </p>
-          </div>
-        @endif
+        <!-- تم حذف عرض كود الخصم العام التجريبي وفق طلب العميل -->
 
         <div style="color: #94a3b8; font-weight: 600; margin-bottom: 2rem;">📁 ملف رقمي قابل للتحميل</div>
         
