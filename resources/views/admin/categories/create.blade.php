@@ -57,6 +57,25 @@
                     @enderror
                 </div>
 
+                <!-- Section -->
+                <div class="mb-6">
+                    <label for="section_id" class="flex items-center text-gray-700 font-bold mb-3 gap-2">
+                        <span class="text-xl">📁</span> القسم الرئيسي
+                    </label>
+                    <select id="section_id" name="section_id" 
+                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition">
+                        <option value="">-- لا يوجد قسم --</option>
+                        @foreach($sections as $section)
+                            <option value="{{ $section->id }}" {{ old('section_id') == $section->id ? 'selected' : '' }}>
+                                {{ $section->icon ?? '📁' }} {{ $section->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('section_id') 
+                        <p class="text-red-500 text-sm mt-2">{{ $message }}</p>
+                    @enderror
+                </div>
+
                 <!-- Submit Buttons -->
                 <div class="flex gap-4 pt-6 border-t">
                     <button type="submit" class="flex-1 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-bold py-3 px-6 rounded-lg transition transform hover:scale-105">

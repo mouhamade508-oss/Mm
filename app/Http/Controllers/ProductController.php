@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\Section;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -39,10 +40,11 @@ class ProductController extends Controller
         return view('admin.products.index', compact('products'));
     }
 
-    public function create()
+    public function create(Request $request)
     {
         $categories = Category::all();
-        return view('admin.products.create', compact('categories'));
+        $selectedCategoryId = $request->query('category_id');
+        return view('admin.products.create', compact('categories', 'selectedCategoryId'));
     }
 
     public function store(Request $request)
@@ -69,6 +71,15 @@ class ProductController extends Controller
         }
 
         Product::create($validated);
+
+        // If category_id from query string, redirect to section show page
+        if ($request->filled('category_id')) {
+            $category = Category::find($request->category_id);
+            if ($category && $category->section_id) {
+                $section = $category->section;
+                return redirect()->route('admin.sections.show', $section)->with('success', '✅ تم إضافة المنتج بنجاح!');
+            }
+        }
 
         return redirect()->route('admin.products.index')->with('success', '✅ تم إضافة المنتج بنجاح!');
     }

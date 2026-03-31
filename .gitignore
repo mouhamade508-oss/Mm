@@ -25,3 +25,13 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# Local temporary and backup files
+*.bak
+tmp_*
+test_view.php
+tmp_compile.php
+tmp_compile_blade.php
+tmp_compiled.php
+tmp_stack_check.py
+tmp_view_test.php

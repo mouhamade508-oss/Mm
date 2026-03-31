@@ -9,6 +9,10 @@ Route::get('/digital-products', [App\Http\Controllers\VisitorProductController::
 Route::get('/games-and-apps', [App\Http\Controllers\VisitorProductController::class, 'gamesAndApps'])->name('games.apps');
 Route::get('/games/{game}', [App\Http\Controllers\VisitorProductController::class, 'showGame'])->name('games.show');
 
+// Sections routes
+Route::get('/section/{section:slug}', [App\Http\Controllers\VisitorProductController::class, 'showSection'])->name('section.show');
+Route::get('/section/{section:slug}/category/{category:slug}', [App\Http\Controllers\VisitorProductController::class, 'showSectionCategory'])->name('section.category.show');
+
 // Auth routes
 Route::get('/login', [App\Http\Controllers\AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [App\Http\Controllers\AuthController::class, 'login']);
@@ -20,6 +24,9 @@ Route::middleware('admin')->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', function() {
         return view('admin.dashboard');
     })->name('dashboard');
+
+    // Sections routes
+    Route::resource('sections', App\Http\Controllers\SectionController::class);
 
     // Categories routes
     Route::resource('categories', App\Http\Controllers\CategoryController::class);

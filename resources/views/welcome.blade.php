@@ -714,6 +714,9 @@
     <a href="{{ route('products.digital') }}" class="hero-btn hero-btn-secondary">
       <span style="font-size: 1.2rem; margin-right: 0.5rem;">💻</span>المنتجات الرقمية
     </a>
+    <a href="{{ route('section.show', 'electronics-and-devices') }}" class="hero-btn hero-btn-secondary">
+      <span style="font-size: 1.2rem; margin-right: 0.5rem;">⚡</span>الأجهزة والالكترونيات
+    </a>
     <a href="{{ route('games.apps') }}" class="hero-btn hero-btn-secondary">
       <span style="font-size: 1.2rem; margin-right: 0.5rem;">🎮</span>ألعاب وتطبيقات
     </a>

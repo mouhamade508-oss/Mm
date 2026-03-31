@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\Section;
 use App\Models\Discount;
 use App\Models\Game;
 use Illuminate\Http\Request;
@@ -149,6 +150,82 @@ class VisitorProductController extends Controller
             ->get();
 
         return view('games.show', compact('game', 'categories', 'generalDiscounts'));
+    }
+
+    /**
+     * Display section with all its categories and products
+     */
+    public function showSection(Section $section, Request $request)
+    {
+        $categories = $section->categories()->get();
+        
+        $query = Product::whereIn('category_id', $categories->pluck('id'))->whereNull('parent_id');
+
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+
+        if ($request->filled('category')) {
+            $query->where('category_id', $request->category);
+        }
+
+        if ($request->filled('min_price')) {
+            $query->where('price', '>=', $request->min_price);
+        }
+        if ($request->filled('max_price')) {
+            $query->where('price', '<=', $request->max_price);
+        }
+
+        $products = $query->paginate(12);
+
+        // Get all active general discounts
+        $generalDiscounts = Discount::where('type', 'general')
+            ->where('is_active', true)
+            ->where('valid_from', '<=', now())
+            ->where('valid_until', '>=', now())
+            ->where('used_count', '<', \DB::raw('usage_limit'))
+            ->get();
+
+        return view('sections.show', compact('section', 'categories', 'products', 'generalDiscounts'));
+    }
+
+    /**
+     * Display section category with products
+     */
+    public function showSectionCategory(Section $section, Category $category, Request $request)
+    {
+        // Verify category belongs to section
+        if ($category->section_id !== $section->id) {
+            abort(404);
+        }
+
+        $query = Product::where('category_id', $category->id)->whereNull('parent_id');
+
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+
+        if ($request->filled('min_price')) {
+            $query->where('price', '>=', $request->min_price);
+        }
+        if ($request->filled('max_price')) {
+            $query->where('price', '<=', $request->max_price);
+        }
+
+        $products = $query->paginate(12);
+
+        // Get all categories in this section
+        $categories = $section->categories()->get();
+
+        // Get all active general discounts
+        $generalDiscounts = Discount::where('type', 'general')
+            ->where('is_active', true)
+            ->where('valid_from', '<=', now())
+            ->where('valid_until', '>=', now())
+            ->where('used_count', '<', \DB::raw('usage_limit'))
+            ->get();
+
+        return view('sections.category-show', compact('section', 'category', 'categories', 'products', 'generalDiscounts'));
     }
 }
 

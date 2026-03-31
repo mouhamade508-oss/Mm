@@ -6,6 +6,17 @@
 <div class="px-4 py-8">
     <!-- Stats Grid -->
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-bottom: 3rem;">
+        <!-- Sections Card -->
+        <div style="background: white; border-radius: 12px; padding: 2rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border-right: 4px solid #06b6d4;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h3 style="color: #64748b; font-size: 0.9rem; margin-bottom: 0.5rem;">إجمالي الأقسام</h3>
+                    <p style="font-size: 2rem; font-weight: 800; color: #0891b2;">{{ \App\Models\Section::count() }}</p>
+                </div>
+                <div style="font-size: 3rem; opacity: 0.3;">📑</div>
+            </div>
+        </div>
+
         <!-- Categories Card -->
         <div style="background: white; border-radius: 12px; padding: 2rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border-right: 4px solid #8b5cf6;">
             <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -55,6 +66,9 @@
     <div style="background: white; border-radius: 12px; padding: 2rem; margin-bottom: 3rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
         <h2 style="font-size: 1.3rem; font-weight: 700; margin-bottom: 1.5rem; color: #1e293b;">⚡ إجراءات سريعة</h2>
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+            <a href="{{ route('admin.sections.create') }}" style="background: linear-gradient(135deg, #06b6d4, #0891b2); color: white; padding: 1.5rem; border-radius: 10px; text-decoration: none; text-align: center; font-weight: 700; transition: all 0.3s; display: block;">
+                ✨ إضافة قسم جديد
+            </a>
             <a href="{{ route('admin.categories.create') }}" style="background: linear-gradient(135deg, #8b5cf6, #6d28d9); color: white; padding: 1.5rem; border-radius: 10px; text-decoration: none; text-align: center; font-weight: 700; transition: all 0.3s; display: block;">
                 📂 إضافة فئة جديدة
             </a>
@@ -63,6 +77,9 @@
             </a>
             <a href="{{ route('admin.discounts.create') }}" style="background: linear-gradient(135deg, #f97316, #dc2626); color: white; padding: 1.5rem; border-radius: 10px; text-decoration: none; text-align: center; font-weight: 700; transition: all 0.3s; display: block;">
                 🎁 إضافة كود خصم
+            </a>
+            <a href="{{ route('admin.sections.index') }}" style="background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 1.5rem; border-radius: 10px; text-decoration: none; text-align: center; font-weight: 700; transition: all 0.3s; display: block;">
+                📑 إدارة الأقسام
             </a>
             <a href="{{ route('admin.categories.index') }}" style="background: linear-gradient(135deg, #a855f7, #9333ea); color: white; padding: 1.5rem; border-radius: 10px; text-decoration: none; text-align: center; font-weight: 700; transition: all 0.3s; display: block;">
                 📂 إدارة الفئات

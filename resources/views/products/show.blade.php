@@ -1,34 +1,35 @@
 @extends('layouts.pro-store')
 
 @section('meta_title', $product->name . ' - ' . config('app.name', 'MHD Print Lab'))
-@section('meta_description', 
-    Str::limit(strip_tags($product->description ?? $product->name), 160, '...')
-)
+
+@section('meta_description', Str::limit(strip_tags($product->description ?? $product->name), 160, '...'))
+
 @section('meta_keywords', $product->category?->name . ', ' . $product->name . ', طباعة')
+
 @section('meta_canonical', route('product.show', $product))
 
 @push('meta')
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org/",
-        "@type": "Product",
-        "name": "{{ $product->name }}",
-        "description": "{{ Str::limit(strip_tags($product->description ?? $product->name), 300, '...') }}",
-        "sku": "{{ $product->id }}",
-        "brand": {
-            "@type": "Brand",
-            "name": "{{ config('app.name', 'MHD Print Lab') }}"
-        },
-        "offers": {
-            "@type": "Offer",
-            "url": "{{ route('product.show', $product) }}",
-            "priceCurrency": "SAR",
-            "price": "{{ number_format($product->price, 2, '.', '') }}",
-            "availability": "{{ $product->stock > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock'}}",
-            "itemCondition": "https://schema.org/NewCondition"
-        }
+<script type="application/ld+json">
+{
+    "@@context": "https://schema.org/",
+    "@@type": "Product",
+    "name": "{{ $product->name }}",
+    "description": "{{ Str::limit(strip_tags($product->description ?? $product->name), 300, '...') }}",
+    "sku": "{{ $product->id }}",
+    "brand": {
+        "@type": "Brand",
+        "name": "{{ config('app.name', 'MHD Print Lab') }}"
+    },
+    "offers": {
+        "@type": "Offer",
+        "url": "{{ route('product.show', $product) }}",
+        "priceCurrency": "SAR",
+        "price": "{{ number_format($product->price, 2, '.', '') }}",
+        "availability": "{{ $product->stock > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock' }}",
+        "itemCondition": "https://schema.org/NewCondition"
     }
-    </script>
+}
+</script>
 @endpush
 
 @section('content')
@@ -103,9 +104,9 @@
 }
 
 .product-main-image:empty::before {
-  content: '🛍️';
+  content: '🖼';
   font-size: clamp(3rem, 8vw, 6rem);
-  opacity: 0.6;
+  opacity: 0.4;
 }
 
 .product-info-section {
@@ -115,6 +116,7 @@
   box-shadow: 0 20px 60px rgba(59,130,246,0.15);
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
 .product-title {
@@ -162,24 +164,30 @@
   font-size: clamp(1rem, 2vw, 1.1rem);
 }
 
-.product-category {
-  background: rgba(59,130,246,0.1);
-  padding: 1rem;
-  border-radius: 16px;
-  margin-bottom: 2rem;
-  text-align: center;
-}
-
-.product-category h3 {
-  color: #1e3a8a;
+.discount-badge {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: linear-gradient(135deg, #f97316, #ea580c);
+  color: white;
+  padding: 0.8rem 1.2rem;
+  border-radius: 12px;
   font-weight: 700;
-  margin-bottom: 0.5rem;
-  font-size: clamp(1.1rem, 2vw, 1.3rem);
+  font-size: 0.9rem;
+  box-shadow: 0 10px 25px rgba(249,115,22,0.3);
 }
 
-.product-category p {
-  color: #3b82f6;
-  font-size: clamp(0.9rem, 1.5vw, 1rem);
+.digital-badge {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 0.8rem;
+  box-shadow: 0 10px 25px rgba(59,130,246,0.3);
 }
 
 .discount-section {
@@ -255,10 +263,6 @@
 .whatsapp-btn:hover {
   transform: translateY(-3px);
   box-shadow: 0 20px 40px rgba(37,211,102,0.5);
-}
-
-.whatsapp-btn::before {
-  content: '💬 ';
 }
 
 .related-products-section {
@@ -352,7 +356,7 @@
 }
 
 .back-btn::before {
-  content: '⬅️ ';
+  content: '? ';
 }
 
 @media (max-width: 768px) {
@@ -383,13 +387,13 @@
 
 <!-- Hero -->
 <section class="product-detail-hero">
-  <h1>📦 تفاصيل المنتج</h1>
-  <p>اكتشف المزيد عن هذا المنتج واستمتع بالخصومات المتاحة</p>
+  <h1>تفاصيل المنتج</h1>
+  <p>اطلع على معلومات المنتج وخيارات الشراء المتاحة مع أفضل الأسعار.</p>
 </section>
 
 <!-- Back Button -->
 <div style="max-width: 1200px; margin: 0 auto; padding: 0 1rem;">
-  <a href="{{ route('home') }}" class="back-btn">العودة للمنتجات</a>
+  <a href="{{ route('home') }}" class="back-btn">العودة إلى الرئيسية</a>
 </div>
 
 <!-- Product Details -->
@@ -405,73 +409,66 @@
 
   <!-- Product Info -->
   <div class="product-info-section">
-    <!-- Product Discount Badge -->
     @php
       $productDiscount = $product->getActiveDiscount();
     @endphp
+    
     @if($productDiscount)
-      <div style="position: absolute; top: 20px; right: 20px; background: linear-gradient(135deg, #f97316, #ea580c); color: white; padding: 0.8rem 1.2rem; border-radius: 12px; font-weight: 700; font-size: 0.9rem; box-shadow: 0 10px 25px rgba(249,115,22,0.3);">
-        🎁 خصم {{ $productDiscount->percentage }}%
+      <div class="discount-badge">
+        خصم {{ $productDiscount->percentage }}%
       </div>
     @endif
+    
     @if($product->is_digital)
-      <div style="position: absolute; top: 20px; left: 20px; background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; padding: 0.5rem 1rem; border-radius: 12px; font-weight: 700; font-size: 0.8rem; box-shadow: 0 10px 25px rgba(59,130,246,0.3);">
-        📁 رقمي
+      <div class="digital-badge">
+        منتج رقمي
       </div>
     @endif
 
     <h1 class="product-title">{{ $product->name }}</h1>
     <p class="product-description">{{ $product->description }}</p>
 
-    <!-- Category Info -->
-    @if($category)
-      <div class="product-category">
-        <h3>📂 الفئة: {{ $category->name }}</h3>
-        <p>{{ $category->description ?? 'وصف الفئة غير متوفر' }}</p>
-      </div>
-    @endif
-
     <!-- Price Section -->
     <div class="product-price-section">
-      <div class="product-price" id="original-price">{{ number_format($product->price, 0) }} ل.س</div>
+      <div class="product-price" id="original-price">{{ number_format($product->price, 0) }} ر.س</div>
       @if($productDiscount)
         <div class="product-discount-price" id="discount-price">
-          {{ number_format($productDiscount->calculateFinalPrice($product->price), 0) }} ل.س
+          {{ number_format($productDiscount->calculateFinalPrice($product->price), 0) }} ر.س
         </div>
       @endif
     </div>
 
     <!-- Stock -->
-    <div class="product-stock">📦 متوفر: {{ $product->stock }} قطعة</div>
+    <div class="product-stock">المخزون: {{ $product->stock }} قطعة</div>
 
     <!-- Discount Section -->
     <div class="discount-section">
       <div class="discount-input-group">
-        <input type="text" id="discount-code" placeholder="أدخل كود الخصم">
-        <button type="button" onclick="validateDiscount({{ $product->id }})">تطبيق الكود</button>
+        <input type="text" id="discount-code" placeholder="أدخل رمز الخصم">
+        <button type="button" onclick="validateDiscount({{ $product->id }})">تطبيق الخصم</button>
       </div>
       <div class="discount-msg" id="discount-msg"></div>
     </div>
 
     <!-- General Discounts -->
-    @if($generalDiscounts->count() > 0)
+    @if(isset($generalDiscounts) && $generalDiscounts->count() > 0)
       <div class="general-discount-box">
-        <span>🎉 كود عام: <strong>{{ $generalDiscounts->first()->code }}</strong> - {{ $generalDiscounts->first()->percentage }}%</span>
+        <span>رمز الخصم المتاح: <strong>{{ $generalDiscounts->first()->code }}</strong> - {{ $generalDiscounts->first()->percentage }}%</span>
       </div>
     @endif
 
     <!-- WhatsApp Button -->
-    <a href="https://wa.me/963982617848?text=مرحبا%21%20أريد%20طلب%20%22{{ urlencode($product->name) }}%22%20{{ $product->is_digital ? 'المنتج الرقمي' : '' }}%20السعر%3A%20{{ $product->price }}%20ر.س%20{{ urlencode($product->description) }}" 
-       class="whatsapp-btn" target="_blank" id="whatsapp-btn">
-      اطلب
+    <a href="https://wa.me/963982617848?text=مرحباً! أريد طلب {{ urlencode($product->name . ' ' . ($product->is_digital ? '(منتج رقمي)' : '') . ' السعر: ' . $product->price . ' ر.س') }}" 
+       class="whatsapp-btn" target="_blank" id="whatsapp-btn" data-price="{{ $product->price }}">
+      اطلب عبر الواتساب
     </a>
   </div>
 </div>
 
 <!-- Related Products -->
-@if($relatedProducts->count() > 0)
+@if(isset($relatedProducts) && $relatedProducts->count() > 0)
 <section class="related-products-section">
-  <h2>🔗 منتجات مشابهة في نفس الفئة</h2>
+  <h2>منتجات ذات صلة</h2>
   <div class="related-products-grid">
     @foreach($relatedProducts as $related)
       <a href="{{ route('product.show', $related) }}" class="related-product-card">
@@ -482,7 +479,7 @@
         </div>
         <div class="related-product-info">
           <h3 class="related-product-name">{{ Str::limit($related->name, 40) }}</h3>
-          <div class="related-product-price">{{ number_format($related->price, 0) }} ل.س</div>
+          <div class="related-product-price">{{ number_format($related->price, 0) }} ر.س</div>
         </div>
       </a>
     @endforeach
@@ -491,9 +488,9 @@
 @endif
 
 <!-- Product Variants -->
-@if($variants->count() > 0)
+@if(isset($variants) && $variants->count() > 0)
 <section class="related-products-section">
-  <h2>أصناف المنتج</h2>
+  <h2>خيارات المنتج</h2>
   <div class="related-products-grid">
     @foreach($variants as $variant)
       <div class="related-product-card">
@@ -504,11 +501,11 @@
         </div>
         <div class="related-product-info">
           <h3 class="related-product-name">{{ Str::limit($variant->name, 40) }}</h3>
-          <div class="related-product-price">{{ number_format($variant->price, 0) }} ل.س</div>
-          <div class="product-stock" style="font-size: 0.8rem; margin-top: 0.5rem;">📦 متوفر: {{ $variant->stock }} قطعة</div>
-          <a href="https://wa.me/963982617848?text=مرحبا%21%20أريد%20طلب%20%22{{ urlencode($variant->name) }}%22%20{{ $variant->is_digital ? 'المنتج الرقمي' : '' }}%20السعر%3A%20{{ $variant->price }}%20ر.س%20{{ urlencode($variant->description) }}" 
+          <div class="related-product-price">{{ number_format($variant->price, 0) }} ر.س</div>
+          <div class="product-stock" style="font-size: 0.8rem; margin-top: 0.5rem;">المخزون: {{ $variant->stock }} قطعة</div>
+          <a href="https://wa.me/963982617848?text=مرحباً! أريد طلب {{ urlencode($variant->name . ' السعر: ' . $variant->price . ' ر.س') }}" 
              class="whatsapp-btn" target="_blank" style="margin-top: 1rem; padding: 0.8rem; font-size: 0.9rem;">
-             اطلب هذا المتغير
+             اطلب الآن
           </a>
         </div>
       </div>
@@ -518,10 +515,23 @@
 @endif
 
 <script>
+function updateWhatsappLink(finalPrice) {
+    const whatsappBtn = document.getElementById('whatsapp-btn');
+    if (!whatsappBtn) return;
+
+    const baseText = 'مرحباً! أريد طلب {{ $product->name }}' + 
+                     ({{ $product->is_digital ? 'true' : 'false' }} ? ' (منتج رقمي)' : '') + 
+                     ' السعر: ' + finalPrice + ' ر.س';
+    
+    whatsappBtn.href = 'https://wa.me/963982617848?text=' + encodeURIComponent(baseText);
+}
+
 function validateDiscount(productId) {
-    const code = document.getElementById('discount-code').value;
+    const code = document.getElementById('discount-code').value.trim();
+    const messageEl = document.getElementById('discount-msg');
+
     if (!code) {
-        document.getElementById('discount-msg').innerHTML = '<span style="color: #dc2626;">يرجى إدخال كود الخصم</span>';
+        messageEl.innerHTML = '<span style="color: #dc2626;">يرجى إدخال رمز الخصم</span>';
         return;
     }
 
@@ -529,32 +539,41 @@ function validateDiscount(productId) {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
         },
         body: JSON.stringify({ code: code, product_id: productId })
     })
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            const originalPrice = {{ $product->price }};
+            const originalPrice = Number({{ $product->price }});
             const discountAmount = (originalPrice * data.discount.percentage) / 100;
             const finalPrice = originalPrice - discountAmount;
 
             document.getElementById('original-price').style.textDecoration = 'line-through';
             document.getElementById('original-price').style.opacity = '0.6';
-            document.getElementById('discount-price').innerHTML = finalPrice.toLocaleString() + ' ل.س <span style="color: #22c55e; font-size: 0.8em;">(خصم ' + data.discount.percentage + '%)</span>';
-            document.getElementById('discount-msg').innerHTML = '<span style="color: #15803d;">تم تطبيق الخصم بنجاح!</span>';
 
-            // Update WhatsApp link
-            const whatsappBtn = document.getElementById('whatsapp-btn');
-            const newPrice = finalPrice;
-            whatsappBtn.href = whatsappBtn.href.replace(/السعر%3A%20\d+/, 'السعر: ' + newPrice);
+            let discountPriceEl = document.getElementById('discount-price');
+            if (!discountPriceEl) {
+                discountPriceEl = document.createElement('div');
+                discountPriceEl.id = 'discount-price';
+                discountPriceEl.className = 'product-discount-price';
+                document.querySelector('.product-price-section').appendChild(discountPriceEl);
+            }
+
+            discountPriceEl.innerHTML = Math.round(finalPrice).toLocaleString() + ' ر.س ' + 
+                                       '<span style="color: #22c55e; font-size: 0.8em;">(خصم ' + 
+                                       data.discount.percentage + '%)</span>';
+            
+            messageEl.innerHTML = '<span style="color: #15803d;">تم تطبيق الخصم بنجاح!</span>';
+            updateWhatsappLink(Math.round(finalPrice));
         } else {
-            document.getElementById('discount-msg').innerHTML = '<span style="color: #dc2626;">' + data.message + '</span>';
+            messageEl.innerHTML = '<span style="color: #dc2626;">' + (data.message || 'رمز الخصم غير صالح') + '</span>';
         }
     })
     .catch(error => {
-        document.getElementById('discount-msg').innerHTML = '<span style="color: #dc2626;">حدث خطأ في التحقق من الكود</span>';
+        console.error('Error validating discount:', error);
+        messageEl.innerHTML = '<span style="color: #dc2626;">حدث خطأ أثناء التحقق من الخصم</span>';
     });
 }
 </script>

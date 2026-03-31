@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\Section;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -22,7 +23,8 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        return view('admin.categories.create');
+        $sections = Section::all();
+        return view('admin.categories.create', compact('sections'));
     }
 
     /**
@@ -32,12 +34,19 @@ class CategoryController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|unique:categories,name|max:100',
+            'section_id' => 'nullable|exists:sections,id',
             'description' => 'nullable|string|max:500',
         ]);
 
         $validated['slug'] = Str::slug($validated['name']);
 
         Category::create($validated);
+
+        // If section_id is provided, redirect back to that section
+        if ($request->filled('section_id')) {
+            $section = Section::find($request->section_id);
+            return redirect()->route('admin.sections.show', $section)->with('success', 'تم إنشاء الفئة بنجاح');
+        }
 
         return redirect()->route('admin.categories.index')->with('success', 'تم إنشاء الفئة بنجاح');
     }
@@ -55,7 +64,8 @@ class CategoryController extends Controller
      */
     public function edit(Category $category)
     {
-        return view('admin.categories.edit', compact('category'));
+        $sections = Section::all();
+        return view('admin.categories.edit', compact('category', 'sections'));
     }
 
     /**
@@ -65,6 +75,7 @@ class CategoryController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|unique:categories,name,' . $category->id . '|max:100',
+            'section_id' => 'nullable|exists:sections,id',
             'description' => 'nullable|string|max:500',
         ]);
 
@@ -81,10 +92,19 @@ class CategoryController extends Controller
     public function destroy(Category $category)
     {
         if ($category->products()->exists()) {
-            return redirect()->route('admin.categories.index')->with('error', 'لا يمكن حذف الفئة لأنها تحتوي على منتجات');
+            return redirect()->back()->with('error', 'لا يمكن حذف الفئة لأنها تحتوي على منتجات');
         }
 
+        $sectionId = $category->section_id;
         $category->delete();
+
+        // If category belongs to a section, redirect back to that section
+        if ($sectionId) {
+            $section = Section::find($sectionId);
+            if ($section) {
+                return redirect()->route('admin.sections.show', $section)->with('success', 'تم حذف الفئة بنجاح');
+            }
+        }
 
         return redirect()->route('admin.categories.index')->with('success', 'تم حذف الفئة بنجاح');
     }
