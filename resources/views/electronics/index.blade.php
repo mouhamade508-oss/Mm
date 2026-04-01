@@ -216,7 +216,7 @@
             <div class="card-content">
               <h3 class="product-name">{{ $product->name }}</h3>
               <p class="product-description">{{ Str::limit($product->description, 100) }}</p>
-              <div class="product-price">{{ $product->price }} ريال</div>
+              <div class="product-price">{{ $product->price }} دولار</div>
               
               @if($product->requires_whatsapp && $product->whatsapp_phone)
                 <button type="button" class="whatsapp-btn" onclick="openWhatsAppModal({{ $product->id }}, '{{ $product->name }}', {{ $product->price }})">
@@ -275,7 +275,7 @@
 
       <div style="margin-bottom: 1.5rem; padding: 1.5rem; background: #f3f4f6; border-radius: 20px;">
         <div style="font-size: 0.9rem; color: #64748b; margin-bottom: 0.5rem;">السعر الإجمالي:</div>
-        <div id="totalPrice" style="font-size: 2rem; font-weight: 900; color: #ea580c;">0 ريال</div>
+        <div id="totalPrice" style="font-size: 2rem; font-weight: 900; color: #ea580c;">0 دولار</div>
       </div>
 
       <div style="display: flex; gap: 1rem;">
@@ -308,7 +308,7 @@ function closeWhatsAppModal() {
 function updateTotal() {
   const quantity = parseInt(document.getElementById('quantity').value) || 1;
   const total = currentProductData.productPrice * quantity;
-  document.getElementById('totalPrice').textContent = total.toFixed(2) + ' ريال';
+  document.getElementById('totalPrice').textContent = total.toFixed(2) + 'دولار';
 }
 
 function submitWhatsAppOrder(event) {

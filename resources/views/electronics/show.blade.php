@@ -196,7 +196,7 @@
       <!-- Product Info -->
       <div class="product-info">
         <h1>{{ $product->name }}</h1>
-        <div class="price">{{ number_format($product->price, 2) }} ريال</div>
+        <div class="price">{{ number_format($product->price, 2) }}دولار</div>
         
         <div class="description">
           {{ $product->description }}
@@ -231,7 +231,7 @@
 
             <div class="total-price-box">
               <div class="total-price-label">الإجمالي:</div>
-              <div class="total-price-value" id="totalPrice">{{ number_format($product->price, 2) }} ريال</div>
+              <div class="total-price-value" id="totalPrice">{{ number_format($product->price, 2) }}دولار</div>
             </div>
 
             <button type="submit" class="whatsapp-btn-large">📱 إرسال الطلب عبر WhatsApp</button>
@@ -262,7 +262,7 @@ function decreaseQuantity() {
 function updateTotal() {
   const quantity = parseInt(document.getElementById('quantity').value) || 1;
   const total = productPrice * quantity;
-  document.getElementById('totalPrice').textContent = total.toFixed(2) + ' ريال';
+  document.getElementById('totalPrice').textContent = total.toFixed(2) + 'دولار';
 }
 
 function submitOrder(event) {

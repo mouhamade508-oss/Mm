@@ -49,7 +49,7 @@ class WhatsAppOrder extends Model
     public function generateWhatsAppLink(): string
     {
         $phone = $this->product->whatsapp_phone;
-        $message = "مرحباً، أريد طلب {$this->quantity} من {$this->product->name}. الإجمالي: {$this->total_price} ريال. الاسم: {$this->customer_name} - الهاتف: {$this->customer_phone}";
+        $message = "مرحباً، أريد طلب {$this->quantity} من {$this->product->name}. الإجمالي: {$this->total_price}دولار. الاسم: {$this->customer_name} - الهاتف: {$this->customer_phone}";
         $encodedMessage = urlencode($message);
         return "https://wa.me/{$phone}?text={$encodedMessage}";
     }

@@ -247,7 +247,7 @@ textarea.form-control-custom {
                     class="form-control-custom" 
                     name="name" 
                     value="{{ old('name') }}" 
-                    placeholder="مثال: حزمة 100 ريال" 
+                    placeholder="مثال: حزمة 100 دولار" 
                     required
                 >
                 @error('name')

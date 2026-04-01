@@ -891,7 +891,7 @@
           <div class="category-body">
             <div class="price-display">
               <div class="price-label">السعر</div>
-              <div class="price-value">{{ number_format($category->price, 2) }} ريال</div>
+              <div class="price-value">{{ number_format($category->price, 2) }}دولار</div>
             </div>
             <div class="category-actions">
               <button onclick="openRechargeModal('{{ $game->id }}', '{{ $category->id }}', '{{ $game->name }}', '{{ $category->name }}', '{{ $category->price }}')" class="btn-select">
@@ -970,7 +970,7 @@ function openRechargeModal(gameId, categoryId, gameName, categoryName, price) {
   document.getElementById('categoryId').value = categoryId;
   document.getElementById('modalGameName').textContent = gameName;
   document.getElementById('modalCategoryName').textContent = categoryName;
-  document.getElementById('priceDisplay').value = parseFloat(price).toFixed(2) + ' ريال';
+  document.getElementById('priceDisplay').value = parseFloat(price).toFixed(2) + 'دولار';
   
   document.getElementById('rechargeModal').classList.add('active');
   document.body.style.overflow = 'hidden';
