@@ -183,7 +183,7 @@
                                 @endif
                             </div>
 
-                            <div class="col-md-2">
+                            <div class="col-md-1">
                                 <span class="badge badge-{{ $request->status == 'pending' ? 'warning' : ($request->status == 'processing' ? 'info' : ($request->status == 'completed' ? 'success' : 'danger')) }} px-3 py-2">
                                     <i class="fas fa-{{ $request->status == 'pending' ? 'clock' : ($request->status == 'processing' ? 'cog' : ($request->status == 'completed' ? 'check-circle' : 'times-circle')) }} mr-1"></i>
                                     @if($request->status == 'pending') قيد الانتظار
@@ -194,13 +194,25 @@
                                 </span>
                             </div>
 
-                            <div class="col-md-1 text-left">
-                                <a href="{{ route('admin.game-recharge.show', $request) }}" class="btn btn-primary btn-sm btn-icon-split">
-                                    <span class="icon text-white-50">
-                                        <i class="fas fa-eye"></i>
-                                    </span>
-                                    <span class="text">عرض</span>
-                                </a>
+                            <div class="col-md-2 text-left">
+                                <div class="d-flex flex-column">
+                                    <a href="{{ route('admin.game-recharge.show', $request) }}" class="btn btn-primary btn-sm btn-icon-split">
+                                        <span class="icon text-white-50">
+                                            <i class="fas fa-eye"></i>
+                                        </span>
+                                        <span class="text">عرض</span>
+                                    </a>
+                                    <form method="POST" action="{{ route('admin.game-recharge.destroy', $request) }}" class="d-inline mt-1" onsubmit="return confirm('هل أنت متأكد من حذف هذا الطلب؟')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger btn-sm btn-icon-split w-100">
+                                            <span class="icon text-white-50">
+                                                <i class="fas fa-trash"></i>
+                                            </span>
+                                            <span class="text">حذف</span>
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
 

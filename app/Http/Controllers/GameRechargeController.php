@@ -227,4 +227,11 @@ class GameRechargeController extends Controller
 
         return redirect()->back()->with('success', 'تم تحديث حالة الطلب بنجاح.');
     }
+
+    public function destroy(GameRechargeRequest $gameRequest)
+    {
+        $gameRequest->delete();
+
+        return redirect()->route('admin.game-recharge.index')->with('success', 'تم حذف الطلب بنجاح.');
+    }
 }

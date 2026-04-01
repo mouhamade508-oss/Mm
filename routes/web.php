@@ -59,6 +59,7 @@ Route::middleware('admin')->prefix('admin')->name('admin.')->group(function () {
     Route::get('/game-recharge-requests', [App\Http\Controllers\GameRechargeController::class, 'index'])->name('game-recharge.index');
     Route::get('/game-recharge-requests/{gameRequest}', [App\Http\Controllers\GameRechargeController::class, 'show'])->name('game-recharge.show');
     Route::put('/game-recharge-requests/{gameRequest}/status', [App\Http\Controllers\GameRechargeController::class, 'updateStatus'])->name('game-recharge.update-status');
+    Route::delete('/game-recharge-requests/{gameRequest}', [App\Http\Controllers\GameRechargeController::class, 'destroy'])->name('game-recharge.destroy');
 
     // Games routes
     Route::resource('games', App\Http\Controllers\Admin\GameController::class);
