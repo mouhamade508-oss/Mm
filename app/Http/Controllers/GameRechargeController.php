@@ -20,6 +20,10 @@ class GameRechargeController extends Controller
             'notes' => 'nullable|string|max:1000',
         ]);
 
+        // Get the game and category
+        $game = \App\Models\Game::find($request->game_id);
+        $gameCategory = \App\Models\GameCategory::find($request->game_category_id);
+
         // Create the request
         $gameRequest = GameRechargeRequest::create([
             'game_id' => $request->game_id,
