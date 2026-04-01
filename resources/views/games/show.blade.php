@@ -846,7 +846,7 @@
   <div class="game-hero-content">
     <div class="game-image-holder">
       @if($game->image)
-        <img src="{{ asset('storage/' . $game->image) }}" alt="{{ $game->name }}" class="game-image">
+        <img src="{{ $game->image_url }}" alt="{{ $game->name }}" class="game-image">
       @else
         <div class="game-image-placeholder">🎮</div>
       @endif
@@ -931,7 +931,9 @@
       </div>
 
       <div class="form-group">
-        <label class="form-label">📱 رقم الهاتف (اختياري)</label>
+        <label class="form-label">📱 رقم الهاتف او وسيلة للتواصا معك في حال الضرورة يمكنك وضع ملاحظه ايضا
+          
+        </label>
         <input type="tel" name="phone_number" class="form-input" placeholder="رقم الهاتف أو الايميل">
       </div>
 

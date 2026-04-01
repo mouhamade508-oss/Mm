@@ -189,7 +189,7 @@ textarea {
         <div class="form-group">
           <label class="label-modern">🖼️ الصورة الحالية</label>
           @if($product->image)
-            <img src="{{ asset('storage/' . $product->image) }}" alt="الصورة الحالية" class="current-image">
+            <img src="{{ $product->image_url }}" alt="الصورة الحالية" class="current-image">
             <p style="color: #6b7280; font-size: 0.95rem; margin-top: 0.5rem;">يمكنك استبدالها بصورة جديدة</p>
           @else
             <p style="color: #6b7280;">لا توجد صورة حالية</p>

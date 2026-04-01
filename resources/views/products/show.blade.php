@@ -1333,7 +1333,7 @@
       <a href="{{ route('product.show', $related) }}" class="related-product-card">
         <div class="related-product-image">
           @if($related->image)
-            <img src="{{ asset('storage/' . $related->image) }}" alt="{{ $related->name }}" loading="lazy">
+            <img src="{{ $related->image_url }}" alt="{{ $related->name }}" loading="lazy">
           @endif
         </div>
         <div class="related-product-info">
@@ -1355,7 +1355,7 @@
       <div class="related-product-card">
         <div class="related-product-image">
           @if($variant->image)
-            <img src="{{ asset('storage/' . $variant->image) }}" alt="{{ $variant->name }}" loading="lazy">
+            <img src="{{ $variant->image_url }}" alt="{{ $variant->name }}" loading="lazy">
           @endif
         </div>
         <div class="related-product-info">

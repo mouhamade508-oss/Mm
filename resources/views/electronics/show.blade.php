@@ -187,7 +187,7 @@
       <!-- Product Image -->
       <div class="product-image-container{{ ! $product->image ? ' empty' : '' }}">
         @if($product->image)
-          <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}">
+          <img src="{{ $product->image_url }}" alt="{{ $product->name }}">
         @else
           <span>⚙️</span>
         @endif

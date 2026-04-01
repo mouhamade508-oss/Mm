@@ -81,3 +81,18 @@ Route::get('/product/{product}', [App\Http\Controllers\VisitorProductController:
 // Sitemap
 Route::get('/sitemap-dynamic.xml', [App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap');
 
+// Debug route for image testing
+Route::get('/debug/images', function() {
+    $games = \App\Models\Game::all();
+    echo "<h2>Games:</h2>";
+    foreach ($games as $game) {
+        echo "<p>Game: {$game->name}</p>";
+        echo "<p>image (raw): {$game->image}</p>";
+        echo "<p>image_url (accessor): {$game->image_url}</p>";
+        if ($game->image_url) {
+            echo "<img src=\"{$game->image_url}\" style=\"max-width:200px;\" />";
+        }
+        echo "<hr>";
+    }
+});
+

@@ -44,12 +44,14 @@ class GameController extends Controller
             } catch (\Throwable $e) {
                 Log::error('Cloudinary upload failed: ' . $e->getMessage());
                 // Fallback to local storage if Cloudinary fails
-                $data['image'] = $request->file('image')->store('games', 'public');
-                Log::info('Fallback to local storage: ' . $data['image']);
+                $path = $request->file('image')->store('games', 'public');
+                $data['image'] = $path;
+                Log::info('Fallback to local storage: ' . $path);
             }
         }
 
-        Game::create($data);
+        $game = Game::create($data);
+        Log::info('Game created with image: ' . ($game->image ?? 'NULL') . ' | URL: ' . $game->image_url);
 
         return redirect()->route('admin.games.index')->with('success', 'تم إضافة اللعبة بنجاح');
     }
@@ -87,12 +89,14 @@ class GameController extends Controller
             } catch (\Throwable $e) {
                 Log::error('Cloudinary upload failed: ' . $e->getMessage());
                 // Fallback to local storage if Cloudinary fails
-                $data['image'] = $request->file('image')->store('games', 'public');
-                Log::info('Fallback to local storage: ' . $data['image']);
+                $path = $request->file('image')->store('games', 'public');
+                $data['image'] = $path;
+                Log::info('Fallback to local storage: ' . $path);
             }
         }
 
         $game->update($data);
+        Log::info('Game updated. New image: ' . ($game->image ?? 'NULL') . ' | URL: ' . $game->image_url);
 
         return redirect()->route('admin.games.index')->with('success', 'تم تحديث اللعبة بنجاح');
     }

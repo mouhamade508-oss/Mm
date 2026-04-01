@@ -197,7 +197,7 @@
     <article class="card-modern">
       <div class="image-container" style="height: 280px; background: linear-gradient(135deg, #eff6ff, #dbeafe); display: flex; align-items: center; justify-content: center; position: relative;">
         @if($product->image)
-          <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" style="width: 100%; height: 100%; object-fit: cover;">
+          <img src="{{ $product->image_url }}" alt="{{ $product->name }}" style="width: 100%; height: 100%; object-fit: cover;">
         @else
           <div style="font-size: 5rem; opacity: 0.5;">💻</div>
         @endif

@@ -82,7 +82,8 @@ class ProductController extends Controller
             $validated['file_path'] = $filePath;
         }
 
-        Product::create($validated);
+        $product = Product::create($validated);
+        Log::info('Product created: ' . $product->id . ' with image: ' . ($product->image ?? 'NULL') . ' | URL: ' . $product->image_url);
 
         // If category_id from query string, redirect to section show page
         if ($request->filled('category_id')) {
@@ -140,6 +141,7 @@ class ProductController extends Controller
         }
 
         $product->update($validated);
+        Log::info('Product updated: ' . $product->id . ' with image: ' . ($product->image ?? 'NULL') . ' | URL: ' . $product->image_url);
 
         return redirect()->route('admin.products.index')->with('success', '✅ تم تحديث المنتج بنجاح!');
     }

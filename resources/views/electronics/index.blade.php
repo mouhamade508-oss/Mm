@@ -206,7 +206,7 @@
         @foreach($products as $product)
           <div class="card-electronics">
             @if($product->image)
-              <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" class="product-image">
+              <img src="{{ $product->image_url }}" alt="{{ $product->name }}" class="product-image">
             @else
               <div class="product-image" style="display: flex; align-items: center; justify-content: center;">
                 <span style="font-size: 4rem;">⚙️</span>

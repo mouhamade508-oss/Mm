@@ -947,7 +947,7 @@
     <div class="product-card">
       <div class="product-image">
         @if($product->image)
-          <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" loading="lazy">
+          <img src="{{ $product->image_url }}" alt="{{ $product->name }}" loading="lazy">
         @endif
       </div>
       <div class="product-info">
