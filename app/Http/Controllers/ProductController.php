@@ -63,12 +63,12 @@ class ProductController extends Controller
 
         if ($request->hasFile('image')) {
             try {
-                $uploadedImage = Cloudinary::upload($request->file('image')->getRealPath(), [
+                $uploadResult = Cloudinary::uploadApi()->upload($request->file('image')->getRealPath(), [
                     'folder' => 'products',
                     'resource_type' => 'auto',
-                ])->getSecurePath();
-                $validated['image'] = $uploadedImage;
-            } catch (\Exception $e) {
+                ]);
+                $validated['image'] = $uploadResult['secure_url'] ?? $uploadResult['url'];
+            } catch (\Throwable $e) {
                 $validated['image'] = $request->file('image')->store('products', 'public');
             }
         }
@@ -113,12 +113,12 @@ class ProductController extends Controller
 
         if ($request->hasFile('image')) {
             try {
-                $uploadedImage = Cloudinary::upload($request->file('image')->getRealPath(), [
+                $uploadResult = Cloudinary::uploadApi()->upload($request->file('image')->getRealPath(), [
                     'folder' => 'products',
                     'resource_type' => 'auto',
-                ])->getSecurePath();
-                $validated['image'] = $uploadedImage;
-            } catch (\Exception $e) {
+                ]);
+                $validated['image'] = $uploadResult['secure_url'] ?? $uploadResult['url'];
+            } catch (\Throwable $e) {
                 $validated['image'] = $request->file('image')->store('products', 'public');
             }
         }
