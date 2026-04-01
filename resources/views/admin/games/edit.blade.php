@@ -288,7 +288,7 @@ textarea.form-control-custom {
                     <div class="current-image">
                         <div class="current-image-title">الصورة الحالية:</div>
                         <div class="image-preview">
-                            <img src="{{ asset('storage/' . $game->image) }}" alt="{{ $game->name }}">
+                            <img src="{{ $game->image_url }}" alt="{{ $game->name }}">
                         </div>
                     </div>
                 @endif

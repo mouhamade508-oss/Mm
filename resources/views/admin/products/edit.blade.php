@@ -198,7 +198,7 @@
                     @if($product->image)
                         <div class="mb-6 p-4 bg-blue-50 rounded-lg border-2 border-blue-200">
                             <p class="text-sm text-gray-600 font-semibold mb-3">الصورة الحالية:</p>
-                            <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" class="h-48 rounded-lg object-cover border-2 border-white shadow">
+                            <img src="{{ $product->image_url }}" alt="{{ $product->name }}" class="h-48 rounded-lg object-cover border-2 border-white shadow">
                         </div>
                     @endif
 

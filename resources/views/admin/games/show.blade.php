@@ -374,8 +374,8 @@
         <!-- Image -->
         <div class="game-image-card">
             <div class="game-image-wrapper">
-                @if($game->image)
-                    <img src="{{ asset('storage/' . $game->image) }}" alt="{{ $game->name }}">
+                @if($game->image_url)
+                    <img src="{{ $game->image_url }}" alt="{{ $game->name }}">
                 @else
                     <div style="text-align: center; color: #94a3b8;">
                         <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🎮</div>

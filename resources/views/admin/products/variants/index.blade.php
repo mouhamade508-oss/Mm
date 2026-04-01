@@ -37,7 +37,7 @@
                         <!-- Variant Image -->
                         <div class="relative w-full h-48 bg-gradient-to-br from-gray-200 to-gray-300 overflow-hidden">
                             @if($variant->image)
-                                <img src="{{ asset('storage/' . $variant->image) }}" alt="{{ $variant->name }}" class="w-full h-full object-cover">
+                                <img src="{{ $variant->image_url }}" alt="{{ $variant->name }}" class="w-full h-full object-cover">
                             @else
                                 <div class="w-full h-full flex items-center justify-center text-gray-400">
                                     <span class="text-5xl">🎨</span>

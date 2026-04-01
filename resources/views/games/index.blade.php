@@ -702,7 +702,7 @@
     <a href="{{ route('games.show', $product) }}" class="product-card" style="text-decoration: none; color: inherit;">
       <div class="product-image">
         @if($product->image)
-          <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" loading="lazy">
+          <img src="{{ $product->image_url }}" alt="{{ $product->name }}" loading="lazy">
         @else
           <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 3rem;">🎮</div>
         @endif

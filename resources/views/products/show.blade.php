@@ -1136,8 +1136,8 @@
   <!-- Product Image -->
   <div class="product-image-section">
     <div class="product-main-image">
-      @if($product->image)
-        <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" loading="lazy">
+      @if($product->image_url)
+        <img src="{{ $product->image_url }}" alt="{{ $product->name }}" loading="lazy">
       @endif
     </div>
   </div>

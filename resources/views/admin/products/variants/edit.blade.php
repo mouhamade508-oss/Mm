@@ -57,7 +57,7 @@
                         <input type="file" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('image') border-red-500 @enderror" id="image" name="image" accept="image/*">
                         @if($variant->image)
                             <div class="mt-2">
-                                <img src="{{ asset('storage/' . $variant->image) }}" alt="{{ $variant->name }}" class="w-20 h-20 object-cover rounded-lg border">
+                                <img src="{{ $variant->image_url }}" alt="{{ $variant->name }}" class="w-20 h-20 object-cover rounded-lg border">
                                 <p class="text-sm text-gray-500 mt-1">اترك فارغاً للاحتفاظ بالصورة الحالية</p>
                             </div>
                         @endif

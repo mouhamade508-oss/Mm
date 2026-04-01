@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Game;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -32,7 +33,8 @@ class GameController extends Controller
         $data = $request->only(['name', 'description', 'is_active']);
 
         if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('games', 'public');
+            $uploaded = $request->file('image')->storeOnCloudinary(['folder' => 'games']);
+            $data['image'] = $uploaded->getSecurePath();
         }
 
         Game::create($data);
@@ -63,11 +65,9 @@ class GameController extends Controller
         $data = $request->only(['name', 'description', 'is_active']);
 
         if ($request->hasFile('image')) {
-            // Delete old image
-            if ($game->image) {
-                Storage::disk('public')->delete($game->image);
-            }
-            $data['image'] = $request->file('image')->store('games', 'public');
+            // Upload new image to Cloudinary
+            $uploaded = $request->file('image')->storeOnCloudinary(['folder' => 'games']);
+            $data['image'] = $uploaded->getSecurePath();
         }
 
         $game->update($data);

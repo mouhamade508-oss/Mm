@@ -346,7 +346,7 @@
                     <!-- Image Container -->
                     <div class="game-image-container">
                         @if($game->image)
-                            <img src="{{ asset('storage/' . $game->image) }}" alt="{{ $game->name }}">
+                            <img src="{{ $game->image_url }}" alt="{{ $game->name }}">
                         @else
                             <div class="no-image-placeholder">🎮</div>
                         @endif

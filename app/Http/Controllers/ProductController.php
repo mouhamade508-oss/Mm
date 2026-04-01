@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Section;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -61,8 +62,8 @@ class ProductController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('products', 'public');
-            $validated['image'] = $path;
+            $uploaded = $request->file('image')->storeOnCloudinary(['folder' => 'products']);
+            $validated['image'] = $uploaded->getSecurePath();
         }
 
         if ($request->hasFile('file_path')) {
@@ -104,12 +105,8 @@ class ProductController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-            // Delete old image
-            if ($product->image) {
-                Storage::disk('public')->delete($product->image);
-            }
-            $path = $request->file('image')->store('products', 'public');
-            $validated['image'] = $path;
+            $uploaded = $request->file('image')->storeOnCloudinary(['folder' => 'products']);
+            $validated['image'] = $uploaded->getSecurePath();
         }
 
         if ($request->hasFile('file_path')) {
