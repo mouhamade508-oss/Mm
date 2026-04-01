@@ -12,7 +12,7 @@ class GameRechargeRequest extends Model
         'game_name',
         'category_name',
         'player_id',
-        'proof_image',
+        'proof_code',
         'transaction_number',
         'customer_name',
         'customer_phone',

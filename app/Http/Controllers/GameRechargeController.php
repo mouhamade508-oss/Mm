@@ -16,19 +16,9 @@ class GameRechargeController extends Controller
             'customer_name' => 'required|string|max:255',
             'phone_number' => 'nullable|string|max:255',
             'game_account' => 'required|string|max:255',
-            'proof_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
+            'proof_code' => 'required|string|max:255',
             'notes' => 'nullable|string|max:1000',
         ]);
-
-        // Handle file upload
-        $proofImagePath = null;
-        if ($request->hasFile('proof_image')) {
-            $proofImagePath = $request->file('proof_image')->store('game-recharge-proofs', 'public');
-        }
-
-        // Get the game and category
-        $game = \App\Models\Game::find($request->game_id);
-        $gameCategory = \App\Models\GameCategory::find($request->game_category_id);
 
         // Create the request
         $gameRequest = GameRechargeRequest::create([
@@ -37,7 +27,7 @@ class GameRechargeController extends Controller
             'game_name' => $game->name,
             'category_name' => $gameCategory->name,
             'player_id' => $request->game_account,
-            'proof_image' => $proofImagePath,
+            'proof_code' => $request->proof_code,
             'customer_name' => $request->customer_name,
             'customer_phone' => $request->phone_number,
             'notes' => $request->notes,
@@ -70,6 +60,7 @@ class GameRechargeController extends Controller
             'player_id' => $gameRequest->player_id,
             'customer_name' => $gameRequest->customer_name,
             'customer_phone' => $gameRequest->customer_phone,
+            'proof_code' => $gameRequest->proof_code,
         ]);
 
         // Send Telegram notification
@@ -109,8 +100,8 @@ class GameRechargeController extends Controller
                 $message .= "<i>" . htmlspecialchars($gameRequest->notes) . "</i>\n";
             }
             
-            if($gameRequest->proof_image) {
-                $message .= "\n✅ تم إرسال صورة إثبات\n";
+            if($gameRequest->proof_code) {
+                $message .= "\n<b>🔢 كود إثبات الدفع:</b> <code>{$gameRequest->proof_code}</code>\n";
             }
             
             $message .= "\n━━━━━━━━━━━━━━━━━━━━━━\n";

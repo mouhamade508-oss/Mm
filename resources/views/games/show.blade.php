@@ -919,7 +919,7 @@
       <p id="modalCategoryName"></p>
     </div>
 
-    <form method="POST" action="{{ route('game-recharge.store') }}" enctype="multipart/form-data" id="rechargeForm">
+    <form method="POST" action="{{ route('game-recharge.store') }}" id="rechargeForm">
       @csrf
 
       <input type="hidden" id="gameId" name="game_id">
@@ -932,7 +932,7 @@
 
       <div class="form-group">
         <label class="form-label">📱 رقم الهاتف او وسيلة للتواصا معك في حال الضرورة يمكنك وضع ملاحظه ايضا
-          
+
         </label>
         <input type="tel" name="phone_number" class="form-input" placeholder="رقم الهاتف أو الايميل">
       </div>
@@ -948,12 +948,8 @@
       </div>
 
       <div class="form-group">
-        <label class="form-label">📸 إرسال إثبات البيع (اختياري)</label>
-        <label class="form-file">
-          <input type="file" name="proof_image" accept="image/*">
-          <div class="file-text">📤 اضغط لاختيار صورة</div>
-          <div class="file-hint">JPG, PNG (حتى 5MB)</div>
-        </label>
+        <label class="form-label">� كود إثبات الدفع *</label>
+        <input type="text" name="proof_code" class="form-input" placeholder="أدخل كود إثبات الدفع" required>
       </div>
 
       <textarea name="notes" class="form-textarea" placeholder="ملاحظات إضافية (اختيارية)"></textarea>
