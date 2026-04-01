@@ -62,8 +62,15 @@ class ProductController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-            $uploaded = $request->file('image')->storeOnCloudinary(['folder' => 'products']);
-            $validated['image'] = $uploaded->getSecurePath();
+            try {
+                $uploadedImage = Cloudinary::upload($request->file('image')->getRealPath(), [
+                    'folder' => 'products',
+                    'resource_type' => 'auto',
+                ])->getSecurePath();
+                $validated['image'] = $uploadedImage;
+            } catch (\Exception $e) {
+                $validated['image'] = $request->file('image')->store('products', 'public');
+            }
         }
 
         if ($request->hasFile('file_path')) {
@@ -105,8 +112,15 @@ class ProductController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-            $uploaded = $request->file('image')->storeOnCloudinary(['folder' => 'products']);
-            $validated['image'] = $uploaded->getSecurePath();
+            try {
+                $uploadedImage = Cloudinary::upload($request->file('image')->getRealPath(), [
+                    'folder' => 'products',
+                    'resource_type' => 'auto',
+                ])->getSecurePath();
+                $validated['image'] = $uploadedImage;
+            } catch (\Exception $e) {
+                $validated['image'] = $request->file('image')->store('products', 'public');
+            }
         }
 
         if ($request->hasFile('file_path')) {

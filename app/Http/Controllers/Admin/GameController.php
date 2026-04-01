@@ -33,8 +33,16 @@ class GameController extends Controller
         $data = $request->only(['name', 'description', 'is_active']);
 
         if ($request->hasFile('image')) {
-            $uploaded = $request->file('image')->storeOnCloudinary(['folder' => 'games']);
-            $data['image'] = $uploaded->getSecurePath();
+            try {
+                $uploaded = Cloudinary::upload($request->file('image')->getRealPath(), [
+                    'folder' => 'games',
+                    'resource_type' => 'auto',
+                ])->getSecurePath();
+                $data['image'] = $uploaded;
+            } catch (\Exception $e) {
+                // Fallback to local storage if Cloudinary fails
+                $data['image'] = $request->file('image')->store('games', 'public');
+            }
         }
 
         Game::create($data);
@@ -65,9 +73,16 @@ class GameController extends Controller
         $data = $request->only(['name', 'description', 'is_active']);
 
         if ($request->hasFile('image')) {
-            // Upload new image to Cloudinary
-            $uploaded = $request->file('image')->storeOnCloudinary(['folder' => 'games']);
-            $data['image'] = $uploaded->getSecurePath();
+            try {
+                $uploaded = Cloudinary::upload($request->file('image')->getRealPath(), [
+                    'folder' => 'games',
+                    'resource_type' => 'auto',
+                ])->getSecurePath();
+                $data['image'] = $uploaded;
+            } catch (\Exception $e) {
+                // Fallback to local storage if Cloudinary fails
+                $data['image'] = $request->file('image')->store('games', 'public');
+            }
         }
 
         $game->update($data);
