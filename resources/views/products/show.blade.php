@@ -1244,10 +1244,10 @@
 
     <!-- Price Section -->
     <div class="product-price-section">
-      <div class="product-price" id="original-price">{{ number_format((float) $product->price, 0) }} ر.س</div>
+      <div class="product-price" id="original-price">{{ number_format((float) $product->price, 0) }} ل.س</div>
       @if($productDiscount)
         <div class="product-discount-price" id="discount-price">
-          {{ number_format((float) $productDiscount->calculateFinalPrice($product->price), 0) }} ر.س
+          {{ number_format((float) $productDiscount->calculateFinalPrice($product->price), 0) }} ل.س
         </div>
       @endif
     </div>
@@ -1275,7 +1275,7 @@
     @endif
 
     <!-- WhatsApp Button -->
-    <a href="https://wa.me/963982617848?text=مرحباً! أريد طلب {{ urlencode($product->name . ' ' . ($product->is_digital ? '(منتج رقمي)' : '') . ' السعر: ' . $product->price . ' ر.س') }}" 
+    <a href="https://wa.me/963982617848?text=مرحباً! أريد طلب {{ urlencode($product->name . ' ' . ($product->is_digital ? '(منتج رقمي)' : '') . ' السعر: ' . $product->price . ' ل.س') }}" 
        class="whatsapp-btn ripple" target="_blank" id="whatsapp-btn" data-price="{{ $product->price }}" title="اضغط للطلب عبر WhatsApp مباشرة">
       اطلب عبر الواتساب
     </a>
@@ -1338,7 +1338,7 @@
         </div>
         <div class="related-product-info">
           <h3 class="related-product-name">{{ Str::limit($related->name, 40) }}</h3>
-          <div class="related-product-price">{{ number_format($related->price, 0) }} ر.س</div>
+          <div class="related-product-price">{{ number_format($related->price, 0) }} ل.س</div>
         </div>
       </a>
     @endforeach
@@ -1360,9 +1360,9 @@
         </div>
         <div class="related-product-info">
           <h3 class="related-product-name">{{ Str::limit($variant->name, 40) }}</h3>
-          <div class="related-product-price">{{ number_format($variant->price, 0) }} ر.س</div>
+          <div class="related-product-price">{{ number_format($variant->price, 0) }} ل.س</div>
           <div class="product-stock" style="font-size: 0.8rem; margin-top: 0.5rem;">المخزون: {{ $variant->stock }} قطعة</div>
-          <a href="https://wa.me/963982617848?text=مرحباً! أريد طلب {{ urlencode($variant->name . ' السعر: ' . $variant->price . ' ر.س') }}" 
+          <a href="https://wa.me/963982617848?text=مرحباً! أريد طلب {{ urlencode($variant->name . ' السعر: ' . $variant->price . ' ل.س') }}" 
              class="whatsapp-btn ripple" target="_blank" style="margin-top: 1rem; padding: 0.8rem; font-size: 0.9rem;" title="اضغط لطلب هذا الخيار عبر WhatsApp">
              اطلب الآن
           </a>
@@ -1380,7 +1380,7 @@ function updateWhatsappLink(finalPrice) {
 
     const baseText = 'مرحباً! أريد طلب {{ $product->name }}' + 
                      ({{ $product->is_digital ? 'true' : 'false' }} ? ' (منتج رقمي)' : '') + 
-                     ' السعر: ' + finalPrice + ' ر.س';
+                     ' السعر: ' + finalPrice + ' ل.س';
     
     whatsappBtn.href = 'https://wa.me/963982617848?text=' + encodeURIComponent(baseText);
 }
@@ -1420,7 +1420,7 @@ function validateDiscount(productId) {
                 document.querySelector('.product-price-section').appendChild(discountPriceEl);
             }
 
-            discountPriceEl.innerHTML = Math.round(finalPrice).toLocaleString() + ' ر.س ' + 
+            discountPriceEl.innerHTML = Math.round(finalPrice).toLocaleString() + ' ل.س ' + 
                                        '<span style="color: #22c55e; font-size: 0.8em;">(خصم ' + 
                                        data.discount.percentage + '%)</span>';
             
@@ -1557,7 +1557,7 @@ function shareOnWhatsApp(event) {
     const productName = "{{ $product->name }}";
     const productPrice = "{{ $product->price }}";
     const productUrl = getShareUrl();
-    const text = `تحقق من هذا المنتج: ${productName} - السعر: ${productPrice} ر.س\n${productUrl}`;
+    const text = `تحقق من هذا المنتج: ${productName} - السعر: ${productPrice} ل.س\n${productUrl}`;
     const whatsappUrl = "https://wa.me/?text=" + encodeURIComponent(text);
     window.open(whatsappUrl, '_blank');
     closeShareModal();

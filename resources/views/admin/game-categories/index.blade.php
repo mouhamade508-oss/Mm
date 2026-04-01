@@ -339,7 +339,7 @@
                         <!-- Price -->
                         <div class="category-price">
                             <div class="price-label">السعر</div>
-                            <div class="price-value">{{ number_format($category->price, 2) }} ر.س</div>
+                            <div class="price-value">{{ number_format($category->price, 2) }} ل.س</div>
                         </div>
 
                         <!-- Description -->

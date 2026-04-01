@@ -864,7 +864,7 @@
         @if($categories->count() > 0)
           <div class="stat">
             <div class="stat-label">السعر من</div>
-            <div class="stat-value">{{ number_format($categories->min('price'), 0) }} ر.س</div>
+            <div class="stat-value">{{ number_format($categories->min('price'), 0) }} ل.س</div>
           </div>
         @endif
       </div>

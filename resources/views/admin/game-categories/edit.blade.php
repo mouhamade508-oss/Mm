@@ -283,7 +283,7 @@ textarea.form-control-custom {
                         placeholder="0.00"
                         required
                     >
-                    <div class="price-currency">ر.س</div>
+                    <div class="price-currency">ل.س</div>
                 </div>
                 <div class="info-box">
                     ℹ️ السعر الحالي: {{ number_format($gameCategory->price, 2) }}دولار

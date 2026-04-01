@@ -287,7 +287,7 @@ textarea.form-control-custom {
                         placeholder="0.00"
                         required
                     >
-                    <div class="price-currency">ر.س</div>
+                    <div class="price-currency">ل.س</div>
                 </div>
                 <div class="price-info">اكتب السعر برقم صحيح أو عشري (مثال: 100 أو 99.99)</div>
                 @error('price')

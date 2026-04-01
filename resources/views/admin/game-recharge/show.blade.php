@@ -419,7 +419,7 @@ body {
         </div>
         <div class="info-item">
           <span class="info-label">السعر</span>
-          <span class="info-value">{{ number_format($gameRequest->gameCategory->price, 2) }} ر.س</span>
+          <span class="info-value">{{ number_format($gameRequest->gameCategory->price, 2) }} ل.س</span>
         </div>
       @endif
 

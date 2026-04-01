@@ -267,7 +267,7 @@
                 <div class="detail-icon">💰</div>
                 <div class="detail-content">
                     <div class="detail-label">السعر</div>
-                    <div class="detail-value price-highlight">{{ number_format($gameCategory->price, 2) }} ر.س</div>
+                    <div class="detail-value price-highlight">{{ number_format($gameCategory->price, 2) }} ل.س</div>
                 </div>
             </div>
 

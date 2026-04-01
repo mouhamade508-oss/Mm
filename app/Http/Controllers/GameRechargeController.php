@@ -94,7 +94,7 @@ class GameRechargeController extends Controller
             $message .= "الفئة: <b>" . ($gameRequest->category_name ?? 'N/A') . "</b>\n";
             
             if($gameRequest->gameCategory) {
-                $message .= "السعر: <b>" . number_format($gameRequest->gameCategory->price, 2) . " ر.س</b>\n";
+                $message .= "السعر: <b>" . number_format($gameRequest->gameCategory->price, 2) . "ل.س</b>\n";
             }
             
             $message .= "\n<b>👤 بيانات العميل:</b>\n";

@@ -404,7 +404,7 @@
                 @foreach($game->categories as $category)
                     <div class="category-mini-card">
                         <div class="cat-name">{{ $category->name }}</div>
-                        <div class="cat-price">{{ number_format($category->price, 2) }} ر.س</div>
+                        <div class="cat-price">{{ number_format($category->price, 2) }} ل.س</div>
                         
                         @if($category->description)
                             <div style="font-size: 0.85rem; color: #64748b; margin: 0.8rem 0; line-height: 1.4;">
