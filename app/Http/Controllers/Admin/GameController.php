@@ -7,6 +7,7 @@ use App\Models\Game;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 
 class GameController extends Controller
 {
@@ -39,9 +40,12 @@ class GameController extends Controller
                     'resource_type' => 'auto',
                 ]);
                 $data['image'] = $uploadResult['secure_url'] ?? $uploadResult['url'];
+                Log::info('Cloudinary upload successful: ' . $data['image']);
             } catch (\Throwable $e) {
+                Log::error('Cloudinary upload failed: ' . $e->getMessage());
                 // Fallback to local storage if Cloudinary fails
                 $data['image'] = $request->file('image')->store('games', 'public');
+                Log::info('Fallback to local storage: ' . $data['image']);
             }
         }
 
@@ -79,9 +83,12 @@ class GameController extends Controller
                     'resource_type' => 'auto',
                 ]);
                 $data['image'] = $uploadResult['secure_url'] ?? $uploadResult['url'];
+                Log::info('Cloudinary upload successful: ' . $data['image']);
             } catch (\Throwable $e) {
+                Log::error('Cloudinary upload failed: ' . $e->getMessage());
                 // Fallback to local storage if Cloudinary fails
                 $data['image'] = $request->file('image')->store('games', 'public');
+                Log::info('Fallback to local storage: ' . $data['image']);
             }
         }
 

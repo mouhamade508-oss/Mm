@@ -8,6 +8,7 @@ use App\Models\Section;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 
 
 class ProductController extends Controller
@@ -68,8 +69,11 @@ class ProductController extends Controller
                     'resource_type' => 'auto',
                 ]);
                 $validated['image'] = $uploadResult['secure_url'] ?? $uploadResult['url'];
+                Log::info('Cloudinary upload successful: ' . $validated['image']);
             } catch (\Throwable $e) {
+                Log::error('Cloudinary upload failed: ' . $e->getMessage());
                 $validated['image'] = $request->file('image')->store('products', 'public');
+                Log::info('Fallback to local storage: ' . $validated['image']);
             }
         }
 
@@ -118,8 +122,11 @@ class ProductController extends Controller
                     'resource_type' => 'auto',
                 ]);
                 $validated['image'] = $uploadResult['secure_url'] ?? $uploadResult['url'];
+                Log::info('Cloudinary upload successful: ' . $validated['image']);
             } catch (\Throwable $e) {
+                Log::error('Cloudinary upload failed: ' . $e->getMessage());
                 $validated['image'] = $request->file('image')->store('products', 'public');
+                Log::info('Fallback to local storage: ' . $validated['image']);
             }
         }
 
