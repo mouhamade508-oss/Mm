@@ -711,7 +711,7 @@
         <h3 class="product-name">{{ $product->name }}</h3>
         <p class="product-desc">{{ $product->description }}</p>
         @if($product->activeCategories->count() > 0)
-          <div class="product-price">من {{ number_format($product->activeCategories->min('price'), 2) }}دولار</div>
+          <div class="product-price">من {{ number_format($product->activeCategories->min('price'), 2) }}ليره </div>
           <div class="product-stock">
             <span>✅</span> متوفر
           </div>
@@ -756,7 +756,7 @@
       </div>
 
       <div id="priceSection" style="margin-bottom: 1rem; background: #e0f2fe; padding: 1rem; border-radius: 12px; text-align: center; display: none;">
-        <span style="font-size: 0.9rem; color: #0369a1;">السعر: <strong id="categoryPrice">0</strong>دولار</span>
+        <span style="font-size: 0.9rem; color: #0369a1;">السعر: <strong id="categoryPrice">0</strong>ليره سورية</span>
       </div>
       
       <div style="margin-bottom: 1rem;">

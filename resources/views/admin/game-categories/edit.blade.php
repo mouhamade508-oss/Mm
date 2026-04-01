@@ -243,7 +243,7 @@ textarea.form-control-custom {
                     class="form-control-custom" 
                     name="name" 
                     value="{{ old('name', $gameCategory->name) }}" 
-                    placeholder="مثال: حزمة 100 دولار" 
+                    placeholder="مثال: حزمة 100 ليره" 
                     required
                 >
                 @error('name')
@@ -286,7 +286,7 @@ textarea.form-control-custom {
                     <div class="price-currency">ل.س</div>
                 </div>
                 <div class="info-box">
-                    ℹ️ السعر الحالي: {{ number_format($gameCategory->price, 2) }}دولار
+                    ℹ️ السعر الحالي: {{ number_format($gameCategory->price, 2) }}ليره
                 </div>
                 @error('price')
                     <div class="error-message">{{ $message }}</div>

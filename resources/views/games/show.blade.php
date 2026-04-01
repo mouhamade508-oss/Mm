@@ -891,7 +891,7 @@
           <div class="category-body">
             <div class="price-display">
               <div class="price-label">السعر</div>
-              <div class="price-value">{{ number_format($category->price, 2) }}دولار</div>
+              <div class="price-value">{{ number_format($category->price, 2) }}ليره</div>
             </div>
             <div class="category-actions">
               <button onclick="openRechargeModal('{{ $game->id }}', '{{ $category->id }}', '{{ $game->name }}', '{{ $category->name }}', '{{ $category->price }}')" class="btn-select">

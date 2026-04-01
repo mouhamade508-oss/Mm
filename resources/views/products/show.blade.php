@@ -1244,10 +1244,10 @@
 
     <!-- Price Section -->
     <div class="product-price-section">
-      <div class="product-price" id="original-price">{{ number_format((float) $product->price, 0) }} ل.س</div>
+      <div class="product-price" id="original-price">{{ number_format((float) $product->price, 0) }} دولار</div>
       @if($productDiscount)
         <div class="product-discount-price" id="discount-price">
-          {{ number_format((float) $productDiscount->calculateFinalPrice($product->price), 0) }} ل.س
+          {{ number_format((float) $productDiscount->calculateFinalPrice($product->price), 0) }} دولار
         </div>
       @endif
     </div>

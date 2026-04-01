@@ -36,7 +36,7 @@
               <td style="padding: 1.5rem; color: #64748b;">{{ $order->customer_name }}</td>
               <td style="padding: 1.5rem; color: #64748b;">{{ $order->customer_phone }}</td>
               <td style="padding: 1.5rem; text-align: center; color: #1e293b; font-weight: 700;">{{ $order->quantity }}</td>
-              <td style="padding: 1.5rem; color: #ea580c; font-weight: 700;">{{ $order->total_price }}دولار</td>
+              <td style="padding: 1.5rem; color: #ea580c; font-weight: 700;">{{ $order->total_price }}ليره</td>
               <td style="padding: 1.5rem;">
                 <form action="{{ route('admin.whatsapp-orders.update-status', $order->id) }}" method="POST" style="display: inline;">
                   @csrf
