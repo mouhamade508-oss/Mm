@@ -79,6 +79,9 @@ Route::post('/api/validate-discount', [App\Http\Controllers\DiscountController::
 // Public search endpoint
 Route::get('/api/search', [App\Http\Controllers\SearchController::class, 'search'])->name('api.search');
 
+// Quick View endpoint
+Route::get('/api/quick-view/{product}', [App\Http\Controllers\QuickViewController::class, 'show'])->name('api.quick-view');
+
 // Public product details
 Route::get('/product/{product}', [App\Http\Controllers\VisitorProductController::class, 'show'])->name('product.show');
 

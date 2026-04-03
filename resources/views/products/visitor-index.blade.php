@@ -224,9 +224,14 @@
 
         <div style="color: #94a3b8; font-weight: 600; margin-bottom: 2rem;">📦 المخزون: {{ $product->stock }}</div>
         
-        <a href="https://wa.me/963982617848?text=مرحبا، أريد طلب {{ $product->name }} بسعر {{ $product->price }}ل.س" class="whatsapp-buy" id="whatsapp-{{ $product->id }}">
-          💬 اطلب الان
-        </a>
+        <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem;">
+          <button type="button" onclick="openQuickView({{ $product->id }})" class="btn-store" style="flex: 1; background: linear-gradient(135deg, #3b82f6, #1d4ed8); padding: 1rem;">
+            👁️ عرض سريع
+          </button>
+          <a href="https://wa.me/963982617848?text=مرحبا، أريد طلب {{ $product->name }} بسعر {{ $product->price }}ل.س" class="whatsapp-buy" id="whatsapp-{{ $product->id }}" style="flex: 2;">
+            💬 اطلب الان
+          </a>
+        </div>
       </div>
     </article>
     @empty
@@ -237,6 +242,47 @@
       <a href="{{ route('products.index') }}" class="btn-store" style="padding: 1.5rem 3rem;">عرض جميع المنتجات</a>
     </div>
     @endforelse
+  </div>
+
+  <!-- Pagination -->
+  @if($products->hasPages())
+  <nav style="display: flex; justify-content: center; gap: 0.5rem; margin: 4rem 0; flex-wrap: wrap;">
+    @if($products->onFirstPage())
+      <span style="padding: 0.8rem 1.2rem; color: #cbd5e1; cursor: not-allowed;">← السابق</span>
+    @else
+      <a href="{{ $products->previousPageUrl() }}" style="padding: 0.8rem 1.2rem; background: #3b82f6; color: white; border-radius: 8px; text-decoration: none; transition: all 0.3s;" onmouseover="this.style.background='#1d4ed8'" onmouseout="this.style.background='#3b82f6'">← السابق</a>
+    @endif
+
+    @foreach($products->getUrlRange(1, $products->lastPage()) as $page => $url)
+      @if($page == $products->currentPage())
+        <span style="padding: 0.8rem 1.2rem; background: #1e40af; color: white; border-radius: 8px; font-weight: 700;">{{ $page }}</span>
+      @else
+        <a href="{{ $url }}" style="padding: 0.8rem 1.2rem; background: #e0e7ff; color: #1e40af; border-radius: 8px; text-decoration: none; transition: all 0.3s;" onmouseover="this.style.background='#3b82f6'; this.style.color='white'" onmouseout="this.style.background='#e0e7ff'; this.style.color='#1e40af'">{{ $page }}</a>
+      @endif
+    @endforeach
+
+    @if($products->hasMorePages())
+      <a href="{{ $products->nextPageUrl() }}" style="padding: 0.8rem 1.2rem; background: #3b82f6; color: white; border-radius: 8px; text-decoration: none; transition: all 0.3s;" onmouseover="this.style.background='#1d4ed8'" onmouseout="this.style.background='#3b82f6'">التالي →</a>
+    @else
+      <span style="padding: 0.8rem 1.2rem; color: #cbd5e1; cursor: not-allowed;">التالي →</span>
+    @endif
+  </nav>
+  @endif
+
+  <!-- Quick View Modal -->
+  <div id="quick-view-modal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.7); z-index: 9999; align-items: center; justify-content: center;">
+    <div style="background: white; border-radius: 24px; max-width: 600px; width: 90%; max-height: 90vh; overflow-y: auto; position: relative; box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);">
+      <!-- Close Button -->
+      <button type="button" onclick="closeQuickView()" style="position: absolute; top: 1.5rem; right: 1.5rem; background: #f3f4f6; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 1.5rem; z-index: 10000; transition: all 0.3s;">✕</button>
+
+      <!-- Modal Content -->
+      <div id="quick-view-content" style="padding: 2.5rem;">
+        <div style="text-align: center; padding: 3rem;">
+          <div style="font-size: 3rem; margin-bottom: 1rem; animation: spin 2s linear infinite;">⏳</div>
+          <p style="color: #64748b; font-size: 1.1rem;">جاري تحميل المنتج...</p>
+        </div>
+      </div>
+    </div>
   </div>
 
   <div style="text-align: center; margin: 4rem 0; padding: 2rem; background: linear-gradient(135deg, #f0f9ff, #e0f2fe); border-radius: 24px;">
@@ -332,6 +378,75 @@ document.querySelectorAll('[class*="discount-code-input-"]').forEach(input => {
             validateDiscount(productId);
         }
     });
+});
+
+// ============ Quick View Functions ============
+function openQuickView(productId) {
+    const modal = document.getElementById('quick-view-modal');
+    const content = document.getElementById('quick-view-content');
+    
+    modal.style.display = 'flex';
+    content.innerHTML = '<div style="text-align: center; padding: 3rem;"><div style="font-size: 3rem; margin-bottom: 1rem; animation: spin 2s linear infinite;">⏳</div><p style="color: #64748b; font-size: 1.1rem;">جاري تحميل المنتج...</p></div>';
+    
+    fetch(`/api/quick-view/${productId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const product = data.product;
+                let html = `
+                    <div style="margin-bottom: 2rem;">
+                        <div style="background: linear-gradient(135deg, #eff6ff, #dbeafe); border-radius: 16px; height: 300px; display: flex; align-items: center; justify-content: center; overflow: hidden; margin-bottom: 1.5rem;">
+                            ${product.image_url ? `<img src="${product.image_url}" alt="${product.name}" style="width: 100%; height: 100%; object-fit: cover;">` : '<div style="font-size: 4rem; opacity: 0.5;">🛍️</div>'}
+                        </div>
+                        
+                        <h2 style="font-size: 1.8rem; font-weight: 900; margin-bottom: 1rem; color: #0f172a;">${product.name}</h2>
+                        
+                        <p style="color: #64748b; margin-bottom: 1.5rem; line-height: 1.8;">${product.description}</p>
+                        
+                        <div style="margin-bottom: 1.5rem;">
+                            <div style="font-size: 2rem; font-weight: 900; background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #60a5fa 100%); -webkit-background-clip: text; margin-bottom: 0.5rem;">
+                                ${product.price.toLocaleString()} <span style="font-size: 0.5em;">ل.س</span>
+                            </div>
+                            ${product.discount ? `<div style="font-size: 1.3rem; color: #22c55e; font-weight: 700;">السعر بعد الخصم: ${product.discount.final_price.toLocaleString()} ل.س (-${product.discount.percentage}%)</div>` : ''}
+                        </div>
+                        
+                        <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 12px; margin-bottom: 1.5rem;">
+                            <p style="margin: 0.5rem 0; color: #475569;"><strong>📦 المخزون:</strong> ${product.stock} وحدة</p>
+                            <p style="margin: 0.5rem 0; color: #475569;"><strong>📂 الفئة:</strong> ${product.category}</p>
+                            <p style="margin: 0.5rem 0; color: #475569;"><strong>🔖 حالة:</strong> ${product.active ? '<span style="color: #22c55e;">✓ متاح</span>' : '<span style="color: #ef4444;">✗ غير متاح</span>'}</p>
+                        </div>
+                        
+                        <a href="https://wa.me/963982617848?text=مرحبا، أريد طلب ${product.name} بسعر ${product.price}ل.س" style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); color: white; text-decoration: none; padding: 1.2rem; border-radius: 16px; font-weight: 800; text-align: center; display: block; box-shadow: 0 15px 35px rgba(34,197,94,0.4); transition: all 0.4s;">
+                            💬 اطلب الآن عبر WhatsApp
+                        </a>
+                    </div>
+                `;
+                content.innerHTML = html;
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            content.innerHTML = '<div style="text-align: center; padding: 3rem; color: #ef4444;"><p>حدث خطأ في تحميل المنتج</p></div>';
+        });
+}
+
+function closeQuickView() {
+    const modal = document.getElementById('quick-view-modal');
+    modal.style.display = 'none';
+}
+
+// Close modal when clicking outside
+document.getElementById('quick-view-modal')?.addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeQuickView();
+    }
+});
+
+// Close modal with Escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeQuickView();
+    }
 });
 </script>
 @endsection
