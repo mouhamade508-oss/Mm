@@ -624,6 +624,58 @@
   color: white;
 }
 
+.pagination-wrapper {
+  display: flex;
+  justify-content: center;
+  margin: clamp(1.5rem, 4vw, 3rem) 0;
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.22), rgba(30, 41, 59, 0.22));
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  border-radius: 999px;
+  padding: 0.4rem;
+  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.12);
+}
+
+.pagination-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.6rem 1.2rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: linear-gradient(135deg, #0284c7, #0284c7 40%, #0ea5e9);
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.pagination-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(2, 132, 199, 0.4);
+}
+
+.pagination-btn.disabled {
+  background: #cbd5e1;
+  border-color: #94a3b8;
+  color: #475569;
+  cursor: default;
+  box-shadow: none;
+}
+
+.pagination-info {
+  color: #e2e8f0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  padding: 0 0.6rem;
+}
+
 .admin-link {
   text-align: center;
   margin-top: clamp(2rem, 5vw, 4rem);
@@ -1073,7 +1125,23 @@
   @endforelse
 </div>
 
-{{ $products->appends(request()->query())->links() }}
+<div class="pagination-wrapper">
+    <div class="pagination-controls">
+        @if ($products->onFirstPage())
+            <span class="pagination-btn disabled">◀ السابق</span>
+        @else
+            <a href="{{ $products->appends(request()->query())->previousPageUrl() }}" class="pagination-btn">◀ السابق</a>
+        @endif
+
+        <span class="pagination-info">صفحة {{ $products->currentPage() }} من {{ $products->lastPage() }}</span>
+
+        @if ($products->hasMorePages())
+            <a href="{{ $products->appends(request()->query())->nextPageUrl() }}" class="pagination-btn">التالي ▶</a>
+        @else
+            <span class="pagination-btn disabled">التالي ▶</span>
+        @endif
+    </div>
+</div>
 
 <!-- Admin Link -->
 <div class="admin-link">
