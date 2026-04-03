@@ -12,8 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('game_recharge_requests', function (Blueprint $table) {
-            $table->dropColumn('proof_image');
-            $table->string('proof_code')->nullable();
+            if (Schema::hasColumn('game_recharge_requests', 'proof_image')) {
+                $table->renameColumn('proof_image', 'proof_code');
+            } elseif (!Schema::hasColumn('game_recharge_requests', 'proof_code')) {
+                $table->string('proof_code')->nullable();
+            }
         });
     }
 
@@ -23,8 +26,9 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('game_recharge_requests', function (Blueprint $table) {
-            $table->dropColumn('proof_code');
-            $table->string('proof_image')->nullable();
+            if (Schema::hasColumn('game_recharge_requests', 'proof_code')) {
+                $table->renameColumn('proof_code', 'proof_image');
+            }
         });
     }
 };

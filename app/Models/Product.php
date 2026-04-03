@@ -25,6 +25,7 @@ class Product extends Model
         'is_digital',
         'file_path',
         'parent_id',
+        'currency',
     ];
 
     protected $appends = ['image_url'];

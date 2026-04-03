@@ -140,7 +140,7 @@
                             
                             <div class="mb-4 space-y-2 text-sm text-gray-600">
                                 <p><span class="font-semibold">📂 الفئة:</span> {{ $product->category ? $product->category->name : 'بدون فئة' }}</p>
-                                <p><span class="font-semibold">💵 السعر:</span> <span class="text-lg font-bold text-blue-600">{{ number_format($product->price, 0) }} ل.س</span></p>
+                                <p><span class="font-semibold">💵 السعر:</span> <span class="text-lg font-bold text-blue-600">{{ number_format($product->price, 0) }} {{ $product->currency == 'USD' ? '$' : 'ل.س' }}</span></p>
                                 <p><span class="font-semibold">📦 المخزون:</span> 
                                     <span class="inline-block bg-slate-100 text-slate-700 px-3 py-1 rounded-full text-xs font-bold">
                                         {{ $product->stock }} قطعة

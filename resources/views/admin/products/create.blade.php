@@ -70,7 +70,7 @@
                         <span class="text-3xl">🏷️</span> الفئة والسعر
                     </h2>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <!-- Category -->
                         <div>
                             <label for="category_id" class="flex items-center text-gray-700 font-bold mb-3 gap-2">
@@ -96,14 +96,27 @@
                             <label for="price" class="flex items-center text-gray-700 font-bold mb-3 gap-2">
                                 <span class="text-xl">💵</span> السعر <span class="text-red-500">*</span>
                             </label>
-                            <div class="relative">
-                                <input type="number" id="price" name="price" value="{{ old('price') }}" required 
-                                       step="0.01" min="0"
-                                       placeholder="0.00"
-                                       class="w-full px-4 py-3 pr-12 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition">
-                                <span class="absolute left-4 top-3 text-gray-500 font-bold">ل.س</span>
-                            </div>
+                            <input type="number" id="price" name="price" value="{{ old('price') }}" required 
+                                   step="0.01" min="0"
+                                   placeholder="0.00"
+                                   class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition">
                             @error('price') 
+                                <p class="text-red-500 text-sm mt-2">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <!-- Currency -->
+                        <div>
+                            <label for="currency" class="flex items-center text-gray-700 font-bold mb-3 gap-2">
+                                <span class="text-xl">💱</span> العملة <span class="text-red-500">*</span>
+                            </label>
+                            <select id="currency" name="currency" required 
+                                    class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition">
+                                <option value="">-- اختر العملة --</option>
+                                <option value="SYP" {{ old('currency', 'SYP') == 'SYP' ? 'selected' : '' }}>الليره السورية (ل.س)</option>
+                                <option value="USD" {{ old('currency') == 'USD' ? 'selected' : '' }}>الدولار الأمريكي ($)</option>
+                            </select>
+                            @error('currency') 
                                 <p class="text-red-500 text-sm mt-2">{{ $message }}</p>
                             @enderror
                         </div>

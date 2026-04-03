@@ -156,7 +156,7 @@
           @endif
           <div class="product-info">
             <div class="product-name">{{ $product->name }}</div>
-            <div class="product-price">{{ $product->price }}دولار</div>
+            <div class="product-price">{{ number_format($product->price, 0) }} {{ $product->currency == 'USD' ? '$' : 'ل.س' }}</div>
             <a href="{{ route('product.show', $product) }}" style="display: inline-block; background: #3b82f6; color: white; padding: 0.5rem 1rem; border-radius: 6px; text-decoration: none; font-size: 0.9rem; margin-top: 1rem;">عرض المنتج</a>
           </div>
         </div>

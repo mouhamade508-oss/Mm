@@ -196,7 +196,7 @@
       <!-- Product Info -->
       <div class="product-info">
         <h1>{{ $product->name }}</h1>
-        <div class="price">{{ number_format($product->price, 2) }}دولار</div>
+        <div class="price">{{ number_format($product->price, 2) }}{{ $product->currency == 'USD' ? '$' : 'ل.س' }}</div>
         
         <div class="description">
           {{ $product->description }}
@@ -231,7 +231,7 @@
 
             <div class="total-price-box">
               <div class="total-price-label">الإجمالي:</div>
-              <div class="total-price-value" id="totalPrice">{{ number_format($product->price, 2) }}دولار</div>
+              <div class="total-price-value" id="totalPrice">{{ number_format($product->price, 2) }}{{ $product->currency == 'USD' ? '$' : 'ل.س' }}</div>
             </div>
 
             <button type="submit" class="whatsapp-btn-large">📱 إرسال الطلب عبر WhatsApp</button>
@@ -244,6 +244,7 @@
 
 <script>
 const productPrice = {{ $product->price }};
+const productCurrency = "{{ $product->currency == 'USD' ? '$' : 'ل.س' }}";
 
 function increaseQuantity() {
   const input = document.getElementById('quantity');
@@ -262,7 +263,7 @@ function decreaseQuantity() {
 function updateTotal() {
   const quantity = parseInt(document.getElementById('quantity').value) || 1;
   const total = productPrice * quantity;
-  document.getElementById('totalPrice').textContent = total.toFixed(2) + 'دولار';
+  document.getElementById('totalPrice').textContent = total.toFixed(2) + productCurrency;
 }
 
 function submitOrder(event) {

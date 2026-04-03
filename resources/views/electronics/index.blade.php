@@ -216,10 +216,10 @@
             <div class="card-content">
               <h3 class="product-name">{{ $product->name }}</h3>
               <p class="product-description">{{ Str::limit($product->description, 100) }}</p>
-              <div class="product-price">{{ $product->price }}ليره</div>
+              <div class="product-price">{{ number_format($product->price, 0) }}{{ $product->currency == 'USD' ? '$' : 'ل.س' }}</div>
               
               @if($product->requires_whatsapp && $product->whatsapp_phone)
-                <button type="button" class="whatsapp-btn" onclick="openWhatsAppModal({{ $product->id }}, '{{ $product->name }}', {{ $product->price }})">
+                <button type="button" class="whatsapp-btn" onclick="openWhatsAppModal({{ $product->id }}, '{{ $product->name }}', {{ $product->price }}, '{{ $product->currency == 'USD' ? '$' : 'ل.س' }}')">
                   📱 طلب عبر WhatsApp
                 </button>
               @else
@@ -293,8 +293,8 @@
 <script>
 let currentProductData = {};
 
-function openWhatsAppModal(productId, productName, productPrice) {
-  currentProductData = { productId, productName, productPrice };
+function openWhatsAppModal(productId, productName, productPrice, productCurrency) {
+  currentProductData = { productId, productName, productPrice, productCurrency };
   document.getElementById('productId').value = productId;
   document.getElementById('quantity').value = 1;
   updateTotal();
@@ -308,7 +308,7 @@ function closeWhatsAppModal() {
 function updateTotal() {
   const quantity = parseInt(document.getElementById('quantity').value) || 1;
   const total = currentProductData.productPrice * quantity;
-  document.getElementById('totalPrice').textContent = total.toFixed(2) + 'دولار';
+  document.getElementById('totalPrice').textContent = total.toFixed(2) + currentProductData.productCurrency;
 }
 
 function submitWhatsAppOrder(event) {

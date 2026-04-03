@@ -1244,10 +1244,10 @@
 
     <!-- Price Section -->
     <div class="product-price-section">
-      <div class="product-price" id="original-price">{{ number_format((float) $product->price, 0) }} دولار</div>
+      <div class="product-price" id="original-price">{{ number_format((float) $product->price, 0) }} {{ $product->currency == 'USD' ? '$' : 'ل.س' }}</div>
       @if($productDiscount)
         <div class="product-discount-price" id="discount-price">
-          {{ number_format((float) $productDiscount->calculateFinalPrice($product->price), 0) }} دولار
+          {{ number_format((float) $productDiscount->calculateFinalPrice($product->price), 0) }} {{ $product->currency == 'USD' ? '$' : 'ل.س' }}
         </div>
       @endif
     </div>
@@ -1338,7 +1338,7 @@
         </div>
         <div class="related-product-info">
           <h3 class="related-product-name">{{ Str::limit($related->name, 40) }}</h3>
-          <div class="related-product-price">{{ number_format($related->price, 0) }} ل.س</div>
+          <div class="related-product-price">{{ number_format($related->price, 0) }} {{ $related->currency == 'USD' ? '$' : 'ل.س' }}</div>
         </div>
       </a>
     @endforeach
@@ -1360,7 +1360,7 @@
         </div>
         <div class="related-product-info">
           <h3 class="related-product-name">{{ Str::limit($variant->name, 40) }}</h3>
-          <div class="related-product-price">{{ number_format($variant->price, 0) }} ل.س</div>
+          <div class="related-product-price">{{ number_format($variant->price, 0) }} {{ $variant->currency == 'USD' ? '$' : 'ل.س' }}</div>
           <div class="product-stock" style="font-size: 0.8rem; margin-top: 0.5rem;">المخزون: {{ $variant->stock }} قطعة</div>
           <a href="https://wa.me/963982617848?text=مرحباً! أريد طلب {{ urlencode($variant->name . ' السعر: ' . $variant->price . ' ل.س') }}" 
              class="whatsapp-btn ripple" target="_blank" style="margin-top: 1rem; padding: 0.8rem; font-size: 0.9rem;" title="اضغط لطلب هذا الخيار عبر WhatsApp">

@@ -164,7 +164,7 @@
           <div class="product-info">
             <div class="product-name">{{ $product->name }}</div>
             <p style="color: #999; font-size: 0.9rem; margin-bottom: 1rem;">{{ Str::limit($product->description, 60) }}</p>
-            <div class="product-price">{{ $product->price }}دولار</div>
+            <div class="product-price">{{ number_format($product->price, 0) }} {{ $product->currency == 'USD' ? '$' : 'ل.س' }}</div>
             <a href="{{ route('product.show', $product) }}" class="view-btn">عرض المنتج</a>
           </div>
         </div>
