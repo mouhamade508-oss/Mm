@@ -657,8 +657,21 @@
 }
 
 .pagination-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(2, 132, 199, 0.4);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 8px 22px rgba(2, 132, 199, 0.45);
+}
+
+.pagination-btn.animate {
+  animation: bounceButton 1.5s ease-in-out infinite;
+}
+
+@keyframes bounceButton {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-4px) scale(1.03);
+  }
 }
 
 .pagination-btn.disabled {
@@ -1130,13 +1143,13 @@
         @if ($products->onFirstPage())
             <span class="pagination-btn disabled">◀ السابق</span>
         @else
-            <a href="{{ $products->appends(request()->query())->previousPageUrl() }}" class="pagination-btn">◀ السابق</a>
+            <a href="{{ $products->appends(request()->query())->previousPageUrl() }}" class="pagination-btn animate">◀ السابق</a>
         @endif
 
         <span class="pagination-info">صفحة {{ $products->currentPage() }} من {{ $products->lastPage() }}</span>
 
         @if ($products->hasMorePages())
-            <a href="{{ $products->appends(request()->query())->nextPageUrl() }}" class="pagination-btn">التالي ▶</a>
+            <a href="{{ $products->appends(request()->query())->nextPageUrl() }}" class="pagination-btn animate">التالي ▶</a>
         @else
             <span class="pagination-btn disabled">التالي ▶</span>
         @endif
