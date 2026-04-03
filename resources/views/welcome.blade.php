@@ -45,6 +45,60 @@
   50% { transform: scale(1.1); }
 }
 
+/* Loading Overlay */
+#page-loading-overlay {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(10, 10, 30, 0.9) 0%, rgba(26, 26, 46, 0.9) 50%, rgba(15, 52, 96, 0.9) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  z-index: 9999;
+  color: #fff;
+  font-family: 'Tajawal', sans-serif;
+  text-align: center;
+  transition: opacity 0.35s ease;
+  backdrop-filter: blur(8px);
+}
+
+#page-loading-overlay.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+#page-loading-overlay .mhd-logo {
+  font-size: 4rem;
+  font-weight: 900;
+  background: linear-gradient(45deg, #ffd700, #ffed4e, #ffd700);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+  animation: mhdPulse 2s ease-in-out infinite;
+  margin-bottom: 1rem;
+  letter-spacing: 0.2em;
+}
+
+@keyframes mhdPulse {
+  0%, 100% {
+    transform: scale(1);
+    text-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+  }
+  50% {
+    transform: scale(1.05);
+    text-shadow: 0 0 40px rgba(255, 215, 0, 0.7);
+  }
+}
+
+#page-loading-overlay .loading-text {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #e5e7eb;
+  margin-top: 0.5rem;
+  opacity: 0.8;
+}
+
 .news-ticker-content {
   flex: 1;
   overflow: hidden;
@@ -837,6 +891,11 @@
   }
 }
 </style>
+
+<div id="page-loading-overlay">
+  <div class="mhd-logo">MHD</div>
+  <p class="loading-text">جاري تحميل الصفحة... يرجى الانتظار</p>
+</div>
 
 {{-- News Ticker --}}
 @if($activeNews->count() > 0)
@@ -1755,6 +1814,7 @@ updateCountdownTimers(); // Initial call
     </div>
   </div>
 </section>
+@endif
 
 <script>
 // Modern countdown timers for flash sales
@@ -1789,7 +1849,36 @@ function updateModernCountdownTimers() {
 setInterval(updateModernCountdownTimers, 1000);
 updateModernCountdownTimers(); // Initial call
 </script>
-@endif
+
+<script>
+    const pageLoadingOverlay = document.getElementById('page-loading-overlay');
+
+    function hidePageLoading() {
+        if (!pageLoadingOverlay) return;
+        pageLoadingOverlay.classList.add('hidden');
+        setTimeout(() => {
+            if (pageLoadingOverlay.parentNode) {
+                pageLoadingOverlay.parentNode.removeChild(pageLoadingOverlay);
+            }
+        }, 600);
+    }
+
+    if (pageLoadingOverlay) {
+        window.addEventListener('load', hidePageLoading);
+        document.addEventListener('readystatechange', () => {
+            if (document.readyState === 'interactive' || document.readyState === 'complete') {
+                hidePageLoading();
+            }
+        });
+
+        document.querySelectorAll('form').forEach(form => {
+            form.addEventListener('submit', () => {
+                pageLoadingOverlay.classList.remove('hidden');
+                pageLoadingOverlay.style.pointerEvents = 'all';
+            });
+        });
+    }
+</script>
 
 @endsection
 
