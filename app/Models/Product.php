@@ -7,9 +7,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Laravel\Scout\Searchable;
 
 class Product extends Model
 {
+    use Searchable;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -29,6 +32,21 @@ class Product extends Model
     ];
 
     protected $appends = ['image_url'];
+
+    public function searchableAs()
+    {
+        return 'products_index';
+    }
+
+    public function toSearchableArray()
+    {
+        return [
+            'name' => $this->name,
+            'description' => $this->description,
+            'category_id' => $this->category_id,
+            'currency' => $this->currency,
+        ];
+    }
 
     public function getImageUrlAttribute()
     {

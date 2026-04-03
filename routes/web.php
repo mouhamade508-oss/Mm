@@ -76,6 +76,9 @@ Route::post('/api/game-recharge-requests', [App\Http\Controllers\GameRechargeCon
 Route::post('/game-recharge', [App\Http\Controllers\GameRechargeController::class, 'store'])->name('game-recharge.store');
 Route::post('/api/validate-discount', [App\Http\Controllers\DiscountController::class, 'validate'])->name('validate-discount');
 
+// Public search endpoint
+Route::get('/api/search', [App\Http\Controllers\SearchController::class, 'search'])->name('api.search');
+
 // Public product details
 Route::get('/product/{product}', [App\Http\Controllers\VisitorProductController::class, 'show'])->name('product.show');
 

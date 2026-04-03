@@ -33,10 +33,35 @@
 <link rel="stylesheet" href="{{ asset('css/custom-styles.css') }}">
     <style>
         /* Pro Store Styles - Nike/Adidas Level */
+        /* White Theme (Default) */
         :root {
             --primary-blue: linear-gradient(135deg, #0f172a 0%, #1e40af 50%, #3b82f6 100%);
             --glass-bg: rgba(255,255,255,0.1);
             --glass-border: rgba(255,255,255,0.2);
+
+            --body-bg: #f8fafc;
+            --text-color: #0f172a;
+            --card-bg: #ffffff;
+            --card-border: rgba(59, 130, 246, 0.1);
+            --link-color: #3b82f6;
+        }
+
+        /* Blue Glow Theme */
+        body.dark-mode {
+            --body-bg: #e0f2fe;
+            --text-color: #0f172a;
+            --card-bg: #ffffff;
+            --card-border: rgba(59, 165, 255, 0.3);
+            --link-color: #3b82f6;
+            background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 50%, #7dd3fc 100%);
+            box-shadow: inset 0 0 100px rgba(59, 165, 255, 0.2);
+            animation: backgroundGlow 5s ease-in-out infinite;
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: var(--body-bg);
+            color: var(--text-color);
         }
         
         @keyframes slideDown {
@@ -224,6 +249,77 @@
             transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
             font-family: 'Tajawal', sans-serif;
         }
+
+        .theme-toggle {
+            background: rgba(15, 23, 42, 0.45);
+            color: #cbd5e1;
+            border: 1px solid rgba(148, 163, 184, 0.5);
+            border-radius: 999px;
+            padding: 0.55rem 0.75rem;
+            cursor: pointer;
+            transition: transform 0.2s ease, background 0.25s ease;
+            font-size: 1rem;
+            line-height: 1;
+            height: 2.4rem;
+            width: 2.4rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .theme-toggle:hover {
+            transform: translateY(-1px) scale(1.04);
+            background: rgba(15, 23, 42, 0.65);
+        }
+
+        .search-spinner {
+            position: absolute;
+            top: 50%;
+            right: 12px;
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255, 255, 255, 0.45);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            transform: translateY(-50%);
+        }
+
+        @keyframes blueGlow {
+            0%, 100% {
+                box-shadow: 0 0 30px rgba(59, 165, 255, 0.4);
+            }
+            50% {
+                box-shadow: 0 0 50px rgba(59, 165, 255, 0.7);
+            }
+        }
+
+        @keyframes headerGlow {
+            0%, 100% {
+                box-shadow: 0 8px 32px rgba(59, 165, 255, 0.3);
+            }
+            50% {
+                box-shadow: 0 8px 40px rgba(59, 165, 255, 0.5);
+            }
+        }
+
+        @keyframes logoGlow {
+            0%, 100% {
+                box-shadow: 0 0 20px rgba(59, 165, 255, 0.3);
+            }
+            50% {
+                box-shadow: 0 0 30px rgba(59, 165, 255, 0.5);
+            }
+        }
+
+        @keyframes backgroundGlow {
+            0%, 100% {
+                box-shadow: inset 0 0 100px rgba(59, 165, 255, 0.2);
+            }
+            50% {
+                box-shadow: inset 0 0 150px rgba(59, 165, 255, 0.3);
+            }
+        }
         
         .search-input::placeholder {
             color: #cbd5e1;
@@ -245,6 +341,52 @@
             color: #94a3b8;
             width: 18px;
             height: 18px;
+        }
+
+        .live-search-results {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: min(95%, 700px);
+            z-index: 1200;
+            backdrop-filter: blur(4px);
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid rgba(148, 163, 184, 0.25);
+            border-radius: 12px;
+            color: #e2e8f0;
+            box-shadow: 0 12px 38px rgba(0, 0, 0, 0.45);
+            padding: 1rem;
+        }
+
+        .live-search-results .results-card {
+            width: 100%;
+        }
+
+        .live-search-results .results-header {
+            font-weight: 700;
+            margin-bottom: 0.8rem;
+            color: #60a5fa;
+        }
+
+        .live-search-results .results-content p {
+            margin: 0.45rem 0;
+            font-size: 0.95rem;
+        }
+
+        .live-search-result-item {
+            padding: 0.5rem;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            transition: background 0.2s ease;
+            text-decoration: none;
+            color: #fff;
+            display: block;
+            margin-bottom: 0.35rem;
+        }
+
+        .live-search-result-item:hover {
+            background: rgba(96, 165, 250, 0.25);
         }
         
         .cart-icon {
@@ -392,13 +534,38 @@
         
         .categories-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 3rem;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1.2rem;
+            margin: 0 auto 3rem;
             padding: 0 1rem;
             max-width: 1400px;
-            margin-left: auto;
-            margin-right: auto;
+            width: min(100%, 1400px);
+            transition: all 0.3s ease;
+        }
+
+        .categories-grid .category-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            color: var(--text-color);
+        }
+
+        .category-card {
+            border-radius: 14px;
+            box-shadow: 0 10px 28px rgba(15, 23, 42, 0.12);
+            padding: 1rem;
+            text-align: center;
+            min-height: 160px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+        }
+
+        .category-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 14px 36px rgba(0, 0, 0, 0.25);
         }
         
         .category-card {
@@ -706,6 +873,42 @@
                 height: 24px !important;
             }
         }
+
+        /* Blue Glow Effects with Animation */
+        body.dark-mode .category-card {
+            box-shadow: 0 0 30px rgba(59, 165, 255, 0.4);
+            animation: blueGlow 3s ease-in-out infinite;
+        }
+
+        body.dark-mode .category-card:hover {
+            box-shadow: 0 0 60px rgba(59, 165, 255, 0.6);
+            animation: blueGlow 2s ease-in-out infinite;
+        }
+
+        body.dark-mode .header-pro {
+            box-shadow: 0 8px 32px rgba(59, 165, 255, 0.3);
+            animation: headerGlow 4s ease-in-out infinite;
+        }
+
+        body.dark-mode .logo-pro {
+            box-shadow: 0 0 20px rgba(59, 165, 255, 0.3);
+            animation: logoGlow 3.5s ease-in-out infinite;
+        }
+
+        body.dark-mode .theme-toggle {
+            box-shadow: 0 0 15px rgba(59, 165, 255, 0.4);
+            animation: buttonGlow 2.5s ease-in-out infinite;
+        }
+
+        body.dark-mode .theme-toggle:hover {
+            box-shadow: 0 0 30px rgba(59, 165, 255, 0.6);
+            animation: buttonGlow 1.5s ease-in-out infinite;
+        }
+
+        body.dark-mode .search-input:focus {
+            box-shadow: 0 0 0 4px rgba(59,165,255,0.4), 0 0 20px rgba(59,165,255,0.3);
+            animation: blueGlow 2s ease-in-out infinite;
+        }
     </style>
 </head>
 <body>
@@ -792,8 +995,10 @@
                     <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                     </svg>
-                    <input type="search" class="search-input" placeholder="🔍 ابحث عن المنتجات...">
+                    <input id="js-live-search" type="search" class="search-input" placeholder="🔍 ابحث عن المنتجات..." autocomplete="off">
+                    <div id="js-search-spinner" class="search-spinner" style="display:none;"></div>
                 </div>
+                <button id="theme-toggle" type="button" class="theme-toggle" title="تبديل الوضع المظلم">🌙</button>
                 @auth
                     <span style="color: #cbd5e1; font-weight: 500; font-size: 0.95rem; transition: color 0.3s ease;">👋 مرحبا، {{ Auth::user()?->name ?? session('admin_user')['name'] ?? 'المستخدم' }}</span>
                     <svg class="cart-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -812,6 +1017,13 @@
 
     <main>
         @yield('content')
+
+        <div id="live-search-results" class="live-search-results" style="display: none;">
+            <div class="results-card">
+                <div class="results-header">نتائج البحث</div>
+                <div id="search-results-content" class="results-content"></div>
+            </div>
+        </div>
     </main>
 
     <!-- Footer Pro -->
@@ -881,10 +1093,71 @@
             setTimeout(() => loader.remove(), 400);
         }
 
-        // إذا الصفحة تم تحميلها بالكامل
+        function applyTheme(theme) {
+            if (!theme) {
+                theme = localStorage.getItem('mhd_theme') || 'light';
+            }
+            const body = document.body;
+            if (theme === 'blue') {
+                body.classList.add('dark-mode');
+                document.getElementById('theme-toggle').textContent = '☀️';
+            } else {
+                body.classList.remove('dark-mode');
+                document.getElementById('theme-toggle').textContent = '🌊';
+            }
+            localStorage.setItem('mhd_theme', theme);
+        }
+
+        function searchProducts(query) {
+            const spinner = document.getElementById('js-search-spinner');
+            const resultPanel = document.getElementById('live-search-results');
+            const resultContent = document.getElementById('search-results-content');
+
+            if (!query.trim()) {
+                resultPanel.style.display = 'none';
+                return;
+            }
+
+            spinner.style.display = 'block';
+            fetch(`/api/search?q=${encodeURIComponent(query)}`)
+                .then(response => response.json())
+                .then(data => {
+                    spinner.style.display = 'none';
+                    let html = '';
+
+                    if (data.products.length === 0 && data.categories.length === 0) {
+                        html = '<p>لا توجد نتائج. حاول كلمة أخرى.</p>';
+                    }
+
+                    if (data.categories.length > 0) {
+                        html += '<div><strong>الفئات:</strong></div>';
+                        data.categories.forEach(category => {
+                            const link = `/section/${category.slug}`;
+                            html += `<a class="live-search-result-item" href="${link}">${category.name}</a>`;
+                        });
+                    }
+
+                    if (data.products.length > 0) {
+                        html += '<div style="margin-top: 0.8rem;"><strong>المنتجات:</strong></div>';
+                        data.products.forEach(product => {
+                            const link = `/product/${product.id}`;
+                            html += `<a class="live-search-result-item" href="${link}">${product.name} - ${product.price} ${product.currency}</a>`;
+                        });
+                    }
+
+                    resultContent.innerHTML = html;
+                    resultPanel.style.display = 'block';
+                })
+                .catch(err => {
+                    spinner.style.display = 'none';
+                    resultContent.innerHTML = '<p>حدث خطأ أثناء البحث، حاول مرة أخرى.</p>';
+                    resultPanel.style.display = 'block';
+                    console.error(err);
+                });
+        }
+
         window.addEventListener('load', hidePageLoader);
 
-        // حتى لو كان DOM جاهز، نريد أن نظهرها لحظات بسيطة كتحسين تجربة المستخدم
         document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
                 const loader = document.getElementById('page-loader');
@@ -893,9 +1166,39 @@
                 }
             }, 800);
 
-            // إضافة lazy-loading لكل الصور لتحسين الأداء
             document.querySelectorAll('img:not([loading])').forEach(img => {
                 img.setAttribute('loading', 'lazy');
+            });
+
+            // Theme toggle
+            applyTheme();
+            const themeToggle = document.getElementById('theme-toggle');
+            if (themeToggle) {
+                themeToggle.addEventListener('click', () => {
+                    const currentTheme = document.body.classList.contains('dark-mode') ? 'blue' : 'light';
+                    applyTheme(currentTheme === 'blue' ? 'light' : 'blue');
+                });
+            }
+
+            // Live search
+            const searchInput = document.getElementById('js-live-search');
+            if (searchInput) {
+                let debounceTimeout;
+                searchInput.addEventListener('input', (event) => {
+                    clearTimeout(debounceTimeout);
+                    debounceTimeout = setTimeout(() => {
+                        searchProducts(event.target.value);
+                    }, 300);
+                });
+            }
+
+            // Close panel when clicking outside
+            document.addEventListener('click', (event) => {
+                const panel = document.getElementById('live-search-results');
+                const target = event.target;
+                if (panel && !panel.contains(target) && target.id !== 'js-live-search') {
+                    panel.style.display = 'none';
+                }
             });
         });
     </script>
