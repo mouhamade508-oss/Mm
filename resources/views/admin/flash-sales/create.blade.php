@@ -15,6 +15,7 @@
         <form method="POST" action="{{ route('admin.flash-sales.store') }}">
             @csrf
 
+            <input type="hidden" name="timezone" id="timezone" value="{{ old('timezone', config('app.timezone')) }}">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Product Selection -->
                 <div>
@@ -139,5 +140,11 @@ document.getElementById('sale_price').addEventListener('input', function() {
         document.getElementById('discount_percentage').value = discount;
     }
 });
+
+// Save the visitor timezone from browser so we can convert datetime-local correctly
+const tzInput = document.getElementById('timezone');
+if (tzInput && Intl && Intl.DateTimeFormat) {
+    tzInput.value = Intl.DateTimeFormat().resolvedOptions().timeZone;
+}
 </script>
 @endsection

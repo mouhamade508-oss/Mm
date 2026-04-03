@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\FlashSale;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class FlashSaleController extends Controller
@@ -31,7 +32,7 @@ class FlashSaleController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'product_id' => 'required|exists:products,id',
@@ -40,10 +41,19 @@ class FlashSaleController extends Controller
             'discount_percentage' => 'required|numeric|min:0|max:100',
             'start_at' => 'required|date',
             'end_at' => 'required|date|after:start_at',
-            'is_active' => 'boolean'
+            'is_active' => 'nullable|boolean',
+            'timezone' => 'nullable|string'
         ]);
 
-        FlashSale::create($request->all());
+        $timezone = $validated['timezone'] ?? config('app.timezone');
+
+        // Convert user-selected datetime-local to UTC to avoid timezone shift issues
+        $validated['start_at'] = Carbon::createFromFormat('Y-m-d\TH:i', $validated['start_at'], $timezone)->setTimezone('UTC');
+        $validated['end_at'] = Carbon::createFromFormat('Y-m-d\TH:i', $validated['end_at'], $timezone)->setTimezone('UTC');
+
+        $validated['is_active'] = isset($validated['is_active']) ? (bool)$validated['is_active'] : true;
+
+        FlashSale::create($validated);
 
         return redirect()->route('admin.flash-sales.index')
             ->with('success', 'تم إضافة عرض الفلاش بنجاح');
@@ -70,7 +80,7 @@ class FlashSaleController extends Controller
      */
     public function update(Request $request, FlashSale $flashSale)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'product_id' => 'required|exists:products,id',
@@ -79,10 +89,18 @@ class FlashSaleController extends Controller
             'discount_percentage' => 'required|numeric|min:0|max:100',
             'start_at' => 'required|date',
             'end_at' => 'required|date|after:start_at',
-            'is_active' => 'boolean'
+            'is_active' => 'nullable|boolean',
+            'timezone' => 'nullable|string'
         ]);
 
-        $flashSale->update($request->all());
+        $timezone = $validated['timezone'] ?? config('app.timezone');
+
+        $validated['start_at'] = Carbon::createFromFormat('Y-m-d\TH:i', $validated['start_at'], $timezone)->setTimezone('UTC');
+        $validated['end_at'] = Carbon::createFromFormat('Y-m-d\TH:i', $validated['end_at'], $timezone)->setTimezone('UTC');
+
+        $validated['is_active'] = isset($validated['is_active']) ? (bool)$validated['is_active'] : true;
+
+        $flashSale->update($validated);
 
         return redirect()->route('admin.flash-sales.index')
             ->with('success', 'تم تحديث عرض الفلاش بنجاح');

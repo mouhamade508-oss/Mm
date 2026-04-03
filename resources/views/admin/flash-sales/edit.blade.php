@@ -15,6 +15,7 @@
         <form method="POST" action="{{ route('admin.flash-sales.update', $flashSale) }}">
             @csrf
             @method('PUT')
+            <input type="hidden" name="timezone" id="timezone" value="{{ old('timezone', config('app.timezone')) }}">
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Product Selection -->
@@ -131,5 +132,11 @@ document.getElementById('sale_price').addEventListener('input', function() {
         document.getElementById('discount_percentage').value = discount;
     }
 });
+
+// Save visitor timezone in hidden field
+const tzInput = document.getElementById('timezone');
+if (tzInput && Intl && Intl.DateTimeFormat) {
+    tzInput.value = Intl.DateTimeFormat().resolvedOptions().timeZone;
+}
 </script>
 @endsection
