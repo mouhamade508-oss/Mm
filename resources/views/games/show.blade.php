@@ -846,7 +846,7 @@
   <div class="game-hero-content">
     <div class="game-image-holder">
       @if($game->image)
-        <img src="{{ $game->image_url }}" alt="{{ $game->name }}" class="game-image">
+        <img src="{{ $game->image_url }}" alt="{{ $game->name }}" class="game-image" loading="lazy">
       @else
         <div class="game-image-placeholder">🎮</div>
       @endif

@@ -150,7 +150,7 @@
       @foreach($products as $product)
         <div class="product-card">
           @if($product->image)
-            <img src="{{ $product->image_url }}" class="product-image">
+            <img src="{{ $product->image_url }}" class="product-image" loading="lazy" alt="{{ $product->name }}">
           @else
             <div class="product-image" style="display: flex; align-items: center; justify-content: center; font-size: 3rem;">📦</div>
           @endif

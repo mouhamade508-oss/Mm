@@ -892,6 +892,11 @@
                     hidePageLoader();
                 }
             }, 800);
+
+            // إضافة lazy-loading لكل الصور لتحسين الأداء
+            document.querySelectorAll('img:not([loading])').forEach(img => {
+                img.setAttribute('loading', 'lazy');
+            });
         });
     </script>
 </body>

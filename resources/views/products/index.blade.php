@@ -329,7 +329,7 @@
         <article class="card-modern">
             <div class="image-container">
                 @if($product->image)
-                    <img src="{{ $product->image_url }}" alt="{{ $product->name }}">
+                    <img src="{{ $product->image_url }}" alt="{{ $product->name }}" loading="lazy">
                 @else
                     <div style="font-size: 5rem; opacity: 0.5;">🛍️</div>
                 @endif

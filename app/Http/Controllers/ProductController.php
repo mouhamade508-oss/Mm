@@ -9,6 +9,7 @@ use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
+use Spatie\ImageOptimizer\OptimizerChainFactory;
 
 
 class ProductController extends Controller
@@ -64,8 +65,15 @@ class ProductController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->getRealPath();
             try {
-                $uploadResult = Cloudinary::uploadApi()->upload($request->file('image')->getRealPath(), [
+                OptimizerChainFactory::create()->optimize($imagePath);
+            } catch (\Throwable $e) {
+                Log::warning('Image optimization failed: ' . $e->getMessage());
+            }
+
+            try {
+                $uploadResult = Cloudinary::uploadApi()->upload($imagePath, [
                     'folder' => 'products',
                     'resource_type' => 'auto',
                 ]);
@@ -119,8 +127,15 @@ class ProductController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->getRealPath();
             try {
-                $uploadResult = Cloudinary::uploadApi()->upload($request->file('image')->getRealPath(), [
+                OptimizerChainFactory::create()->optimize($imagePath);
+            } catch (\Throwable $e) {
+                Log::warning('Image optimization failed: ' . $e->getMessage());
+            }
+
+            try {
+                $uploadResult = Cloudinary::uploadApi()->upload($imagePath, [
                     'folder' => 'products',
                     'resource_type' => 'auto',
                 ]);
@@ -193,6 +208,13 @@ class ProductController extends Controller
         $validated['parent_id'] = $product->id;
 
         if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->getRealPath();
+            try {
+                OptimizerChainFactory::create()->optimize($imagePath);
+            } catch (\Throwable $e) {
+                Log::warning('Variant image optimization failed: ' . $e->getMessage());
+            }
+
             $path = $request->file('image')->store('products', 'public');
             $validated['image'] = $path;
         }
@@ -239,6 +261,14 @@ class ProductController extends Controller
             if ($variant->image) {
                 Storage::disk('public')->delete($variant->image);
             }
+
+            $imagePath = $request->file('image')->getRealPath();
+            try {
+                OptimizerChainFactory::create()->optimize($imagePath);
+            } catch (\Throwable $e) {
+                Log::warning('Variant update image optimization failed: ' . $e->getMessage());
+            }
+
             $path = $request->file('image')->store('products', 'public');
             $validated['image'] = $path;
         }
