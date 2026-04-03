@@ -380,27 +380,31 @@
 
   <!-- Pagination -->
   @if($products->hasPages())
-  <nav style="display: flex; justify-content: center; gap: 0.5rem; margin: 4rem 0; flex-wrap: wrap;">
-    @if($products->onFirstPage())
-      <span style="padding: 0.8rem 1.2rem; color: #cbd5e1; cursor: not-allowed;">← السابق</span>
-    @else
-      <a href="{{ $products->previousPageUrl() }}" style="padding: 0.8rem 1.2rem; background: #3b82f6; color: white; border-radius: 8px; text-decoration: none; transition: all 0.3s;" onmouseover="this.style.background='#1d4ed8'" onmouseout="this.style.background='#3b82f6'">← السابق</a>
-    @endif
-
-    @foreach($products->getUrlRange(1, $products->lastPage()) as $page => $url)
-      @if($page == $products->currentPage())
-        <span style="padding: 0.8rem 1.2rem; background: #1e40af; color: white; border-radius: 8px; font-weight: 700;">{{ $page }}</span>
+  <style>
+    .pagination-wrapper { display: flex; justify-content: center; margin: clamp(1.5rem, 4vw, 3rem) 0; }
+    .pagination-controls { display: flex; align-items: center; gap: 0.8rem; background: linear-gradient(135deg, rgba(15, 23, 42, 0.22), rgba(30, 41, 59, 0.22)); border: 1px solid rgba(148, 163, 184, 0.4); border-radius: 999px; padding: 0.4rem; box-shadow: 0 12px 24px rgba(15, 23, 42, 0.12); }
+    .pagination-btn { display: inline-flex; align-items: center; justify-content: center; padding: 0.6rem 1.2rem; border-radius: 999px; border: 1px solid rgba(255, 255, 255, 0.25); background: linear-gradient(135deg, #0284c7, #0284c7 40%, #0ea5e9); color: #fff; font-size: 0.95rem; font-weight: 700; text-decoration: none; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+    .pagination-btn:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 8px 22px rgba(2, 132, 199, 0.45); }
+    .pagination-btn.animate { animation: bounceButton 1.5s ease-in-out infinite; }
+    @keyframes bounceButton { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-4px) scale(1.03); } }
+    .pagination-btn.disabled { background: #cbd5e1; border-color: #94a3b8; color: #475569; cursor: default; box-shadow: none; }
+    .pagination-info { color: #e2e8f0; font-size: 0.95rem; font-weight: 600; padding: 0 0.6rem; }
+  </style>
+  <div class="pagination-wrapper">
+    <div class="pagination-controls">
+      @if($products->onFirstPage())
+        <span class="pagination-btn disabled">◀ السابق</span>
       @else
-        <a href="{{ $url }}" style="padding: 0.8rem 1.2rem; background: #e0e7ff; color: #1e40af; border-radius: 8px; text-decoration: none; transition: all 0.3s;" onmouseover="this.style.background='#3b82f6'; this.style.color='white'" onmouseout="this.style.background='#e0e7ff'; this.style.color='#1e40af'">{{ $page }}</a>
+        <a href="{{ $products->appends(request()->query())->previousPageUrl() }}" class="pagination-btn animate">◀ السابق</a>
       @endif
-    @endforeach
-
-    @if($products->hasMorePages())
-      <a href="{{ $products->nextPageUrl() }}" style="padding: 0.8rem 1.2rem; background: #3b82f6; color: white; border-radius: 8px; text-decoration: none; transition: all 0.3s;" onmouseover="this.style.background='#1d4ed8'" onmouseout="this.style.background='#3b82f6'">التالي →</a>
-    @else
-      <span style="padding: 0.8rem 1.2rem; color: #cbd5e1; cursor: not-allowed;">التالي →</span>
-    @endif
-  </nav>
+      <span class="pagination-info">صفحة {{ $products->currentPage() }} من {{ $products->lastPage() }}</span>
+      @if($products->hasMorePages())
+        <a href="{{ $products->appends(request()->query())->nextPageUrl() }}" class="pagination-btn animate">التالي ▶</a>
+      @else
+        <span class="pagination-btn disabled">التالي ▶</span>
+      @endif
+    </div>
+  </div>
   @endif
 
   <!-- Quick View Modal -->

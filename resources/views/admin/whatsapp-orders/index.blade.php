@@ -67,8 +67,30 @@
     </div>
 
     @if($orders->hasPages())
-      <div style="margin-top: 2rem;">
-        {{ $orders->links() }}
+      <style>
+        .pagination-wrapper { display: flex; justify-content: center; margin: clamp(1.5rem, 4vw, 3rem) 0; }
+        .pagination-controls { display: flex; align-items: center; gap: 0.8rem; background: linear-gradient(135deg, rgba(15, 23, 42, 0.22), rgba(30, 41, 59, 0.22)); border: 1px solid rgba(148, 163, 184, 0.4); border-radius: 999px; padding: 0.4rem; box-shadow: 0 12px 24px rgba(15, 23, 42, 0.12); }
+        .pagination-btn { display: inline-flex; align-items: center; justify-content: center; padding: 0.6rem 1.2rem; border-radius: 999px; border: 1px solid rgba(255, 255, 255, 0.25); background: linear-gradient(135deg, #0284c7, #0284c7 40%, #0ea5e9); color: #fff; font-size: 0.95rem; font-weight: 700; text-decoration: none; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+        .pagination-btn:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 8px 22px rgba(2, 132, 199, 0.45); }
+        .pagination-btn.animate { animation: bounceButton 1.5s ease-in-out infinite; }
+        @keyframes bounceButton { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-4px) scale(1.03); } }
+        .pagination-btn.disabled { background: #cbd5e1; border-color: #94a3b8; color: #475569; cursor: default; box-shadow: none; }
+        .pagination-info { color: #e2e8f0; font-size: 0.95rem; font-weight: 600; padding: 0 0.6rem; }
+      </style>
+      <div class="pagination-wrapper">
+        <div class="pagination-controls">
+          @if($orders->onFirstPage())
+            <span class="pagination-btn disabled">◀ السابق</span>
+          @else
+            <a href="{{ $orders->appends(request()->query())->previousPageUrl() }}" class="pagination-btn animate">◀ السابق</a>
+          @endif
+          <span class="pagination-info">صفحة {{ $orders->currentPage() }} من {{ $orders->lastPage() }}</span>
+          @if($orders->hasMorePages())
+            <a href="{{ $orders->appends(request()->query())->nextPageUrl() }}" class="pagination-btn animate">التالي ▶</a>
+          @else
+            <span class="pagination-btn disabled">التالي ▶</span>
+          @endif
+        </div>
       </div>
     @endif
   @else
