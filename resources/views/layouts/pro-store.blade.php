@@ -125,7 +125,9 @@
         }
 
         .header-pro {
-            background: rgba(15, 23, 42, 0.97);
+            background: linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.85)), url('{{ asset('images/Futuristic.png') }}');
+            background-size: cover;
+            background-position: center;
             backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--glass-border);
             position: sticky;

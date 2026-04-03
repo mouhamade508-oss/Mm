@@ -177,7 +177,9 @@
 }
 
 .hero-store {
-  background: var(--blue-hero);
+  background: linear-gradient(rgba(30, 58, 138, 0.7), rgba(30, 58, 138, 0.7)), url('{{ asset('images/MHD.png') }}');
+  background-size: cover;
+  background-position: center;
   color: white;
   text-align: center;
   padding: clamp(2rem, 5vw, 6rem) 1rem;
