@@ -69,6 +69,12 @@ Route::middleware('admin')->prefix('admin')->name('admin.')->group(function () {
 
     // News routes
     Route::resource('news', App\Http\Controllers\Admin\NewsController::class);
+
+    // Flash Sales routes
+    Route::resource('flash-sales', App\Http\Controllers\Admin\FlashSaleController::class);
+
+    // Bundles routes
+    Route::resource('bundles', App\Http\Controllers\Admin\BundleController::class);
 });
 
 // Public route for validating discount codes

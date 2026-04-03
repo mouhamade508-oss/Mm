@@ -50,14 +50,25 @@
             </div>
         </div>
 
-        <!-- Stock Value Card -->
-        <div style="background: white; border-radius: 12px; padding: 2rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border-right: 4px solid #22c55e;">
+        <!-- Flash Sales Card -->
+        <div style="background: white; border-radius: 12px; padding: 2rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border-right: 4px solid #dc2626;">
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
-                    <h3 style="color: #64748b; font-size: 0.9rem; margin-bottom: 0.5rem;">قيمة المخزون</h3>
-                    <p style="font-size: 2rem; font-weight: 800; color: #059669;">{{ number_format(\App\Models\Product::query()->select(\Illuminate\Support\Facades\DB::raw('SUM(price * stock) as total'))->first()->total ?? 0, 0) }}ل.س </p>
+                    <h3 style="color: #64748b; font-size: 0.9rem; margin-bottom: 0.5rem;">عروض الفلاش النشطة</h3>
+                    <p style="font-size: 2rem; font-weight: 800; color: #dc2626;">{{ \App\Models\FlashSale::where('is_active', true)->where('start_at', '<=', now())->where('end_at', '>=', now())->count() }}</p>
                 </div>
-                <div style="font-size: 3rem; opacity: 0.3;">💰</div>
+                <div style="font-size: 3rem; opacity: 0.3;">🔥</div>
+            </div>
+        </div>
+
+        <!-- Bundles Card -->
+        <div style="background: white; border-radius: 12px; padding: 2rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border-right: 4px solid #7c3aed;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h3 style="color: #64748b; font-size: 0.9rem; margin-bottom: 0.5rem;">الباقات النشطة</h3>
+                    <p style="font-size: 2rem; font-weight: 800; color: #7c3aed;">{{ \App\Models\Bundle::where('is_active', true)->count() }}</p>
+                </div>
+                <div style="font-size: 3rem; opacity: 0.3;">📦</div>
             </div>
         </div>
     </div>
@@ -89,6 +100,12 @@
             </a>
             <a href="{{ route('admin.discounts.index') }}" style="background: linear-gradient(135deg, #ec4899, #be185d); color: white; padding: 1.5rem; border-radius: 10px; text-decoration: none; text-align: center; font-weight: 700; transition: all 0.3s; display: block;">
                 💳 إدارة أكواد الخصم
+            </a>
+            <a href="{{ route('admin.flash-sales.index') }}" style="background: linear-gradient(135deg, #dc2626, #b91c1c); color: white; padding: 1.5rem; border-radius: 10px; text-decoration: none; text-align: center; font-weight: 700; transition: all 0.3s; display: block;">
+                🔥 إدارة عروض الفلاش
+            </a>
+            <a href="{{ route('admin.bundles.index') }}" style="background: linear-gradient(135deg, #7c3aed, #6d28d9); color: white; padding: 1.5rem; border-radius: 10px; text-decoration: none; text-align: center; font-weight: 700; transition: all 0.3s; display: block;">
+                📦 إدارة الباقات
             </a>
         </div>
     </div>

@@ -125,6 +125,34 @@
 .icon-large { font-size: 6rem; margin-bottom: 2rem; opacity: 0.8; }
 .no-title { font-size: 2.5rem; font-weight: 800; margin-bottom: 1.5rem; color: #1e293b; }
 .no-text { color: #64748b; font-size: 1.3rem; margin-bottom: 3rem; }
+
+/* Flash Sale Animations */
+@keyframes flashPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+}
+
+.flash-sale-card {
+    animation: flashPulse 2s ease-in-out infinite;
+}
+
+.flash-sale-card:hover {
+    animation: flashPulse 1s ease-in-out infinite;
+}
+
+/* Bundle Animations */
+@keyframes bundleGlow {
+    0%, 100% { box-shadow: 0 10px 30px rgba(124, 58, 237, 0.3); }
+    50% { box-shadow: 0 10px 40px rgba(124, 58, 237, 0.5); }
+}
+
+.bundle-card {
+    animation: bundleGlow 3s ease-in-out infinite;
+}
+
+.bundle-card:hover {
+    animation: bundleGlow 1.5s ease-in-out infinite;
+}
 </style>
 
 <div class="py-4">
@@ -163,6 +191,112 @@
       </form>
     </div>
   </section>
+
+  <!-- Flash Sales & Bundles -->
+  @if($activeFlashSales->count() > 0 || $activeBundles->count() > 0)
+  <section class="offers-section" style="background: linear-gradient(135deg, #fef3c7, #fde68a); padding: 3rem; border-radius: var(--card-radius); margin-bottom: 3rem; box-shadow: 0 10px 30px rgba(245, 158, 11, 0.2);">
+    <h2 style="text-align: center; font-size: 2.5rem; font-weight: 900; margin-bottom: 2rem; color: #92400e;">⚡ عروض محدودة الوقت</h2>
+
+    <!-- Flash Sales -->
+    @if($activeFlashSales->count() > 0)
+    <div style="margin-bottom: 3rem;">
+      <h3 style="font-size: 1.8rem; font-weight: 700; margin-bottom: 1.5rem; color: #dc2626;">🔥 عروض فلاش</h3>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+        @foreach($activeFlashSales as $flashSale)
+        <div class="card-modern flash-sale-card" style="background: linear-gradient(135deg, #fee2e2, #fecaca); border: 2px solid #dc2626; position: relative; overflow: visible;">
+          <!-- Timer Badge -->
+          <div class="flash-timer" id="timer-{{ $flashSale->id }}" style="position: absolute; top: -10px; right: -10px; background: #dc2626; color: white; padding: 0.5rem 1rem; border-radius: 20px; font-weight: 700; font-size: 0.9rem; z-index: 10; box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);">
+            ⏰ ينتهي خلال: <span class="time-left">جاري الحساب...</span>
+          </div>
+
+          <div class="image-container" style="height: 200px; background: linear-gradient(135deg, #fef3c7, #fde68a); display: flex; align-items: center; justify-content: center;">
+            @if($flashSale->product->image)
+              <img src="{{ $flashSale->product->image_url }}" alt="{{ $flashSale->product->name }}" style="width: 100%; height: 100%; object-fit: cover;">
+            @else
+              <div style="font-size: 3rem; opacity: 0.5;">🛍️</div>
+            @endif
+          </div>
+
+          <div class="card-body" style="padding: 2rem;">
+            <h4 style="font-size: 1.4rem; font-weight: 800; margin-bottom: 1rem; color: #dc2626;">{{ $flashSale->name }}</h4>
+            <p style="color: #7f1d1d; margin-bottom: 1rem; font-weight: 600;">{{ Str::limit($flashSale->description, 80) }}</p>
+
+            <div style="margin-bottom: 1.5rem;">
+              <div style="font-size: 1.8rem; font-weight: 900; color: #dc2626; margin-bottom: 0.5rem;">
+                {{ number_format($flashSale->sale_price, 0) }} <span style="font-size: 0.6em;">ل.س</span>
+              </div>
+              <div style="font-size: 1.2rem; color: #9ca3af; text-decoration: line-through;">
+                {{ number_format($flashSale->original_price, 0) }} ل.س
+              </div>
+              <div style="font-size: 1rem; color: #059669; font-weight: 700;">
+                خصم {{ $flashSale->discount_percentage }}%
+              </div>
+            </div>
+
+            <a href="https://wa.me/963982617848?text=مرحبا، أريد شراء {{ $flashSale->product->name }} من عرض الفلاش بسعر {{ $flashSale->sale_price }}ل.س" class="whatsapp-buy" style="background: linear-gradient(135deg, #dc2626, #b91c1c);">
+              🛒 اطلب الآن - عرض محدود!
+            </a>
+          </div>
+        </div>
+        @endforeach
+      </div>
+    </div>
+    @endif
+
+    <!-- Bundles -->
+    @if($activeBundles->count() > 0)
+    <div>
+      <h3 style="font-size: 1.8rem; font-weight: 700; margin-bottom: 1.5rem; color: #7c3aed;">📦 عروض الباقات</h3>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem;">
+        @foreach($activeBundles as $bundle)
+        <div class="card-modern bundle-card" style="background: linear-gradient(135deg, #e9d5ff, #d8b4fe); border: 2px solid #7c3aed;">
+          <div class="image-container" style="height: 200px; background: linear-gradient(135deg, #f3e8ff, #e9d5ff); display: flex; align-items: center; justify-content: center;">
+            @if($bundle->image)
+              <img src="{{ Storage::url($bundle->image) }}" alt="{{ $bundle->name }}" style="width: 100%; height: 100%; object-fit: cover;">
+            @else
+              <div style="font-size: 3rem; opacity: 0.5;">📦</div>
+            @endif
+          </div>
+
+          <div class="card-body" style="padding: 2rem;">
+            <h4 style="font-size: 1.4rem; font-weight: 800; margin-bottom: 1rem; color: #7c3aed;">{{ $bundle->name }}</h4>
+            <p style="color: #6b21a8; margin-bottom: 1rem; font-weight: 600;">{{ Str::limit($bundle->description, 100) }}</p>
+
+            <!-- Products in bundle -->
+            <div style="margin-bottom: 1.5rem;">
+              <p style="font-size: 0.9rem; color: #6b21a8; font-weight: 600; margin-bottom: 0.5rem;">المنتجات في الباقة:</p>
+              <ul style="list-style: none; padding: 0; margin: 0;">
+                @foreach($bundle->bundleProducts as $bundleProduct)
+                <li style="font-size: 0.85rem; color: #6b21a8; margin-bottom: 0.3rem;">
+                  • {{ $bundleProduct->product->name }} (×{{ $bundleProduct->quantity }})
+                </li>
+                @endforeach
+              </ul>
+            </div>
+
+            <div style="margin-bottom: 1.5rem;">
+              <div style="font-size: 1.8rem; font-weight: 900; color: #7c3aed; margin-bottom: 0.5rem;">
+                {{ number_format($bundle->bundle_price, 0) }} <span style="font-size: 0.6em;">ل.س</span>
+              </div>
+              <div style="font-size: 1.2rem; color: #9ca3af; text-decoration: line-through;">
+                {{ number_format($bundle->original_price, 0) }} ل.س
+              </div>
+              <div style="font-size: 1rem; color: #059669; font-weight: 700;">
+                توفير {{ number_format($bundle->getSavings(), 0) }} ل.س ({{ $bundle->discount_percentage }}%)
+              </div>
+            </div>
+
+            <a href="https://wa.me/963982617848?text=مرحبا، أريد شراء باقة {{ $bundle->name }} بسعر {{ $bundle->bundle_price }}ل.س" class="whatsapp-buy" style="background: linear-gradient(135deg, #7c3aed, #6d28d9);">
+              🛒 اطلب الباقة الآن
+            </a>
+          </div>
+        </div>
+        @endforeach
+      </div>
+    </div>
+    @endif
+  </section>
+  @endif
 
   <!-- Products Grid -->
   <div class="products-container">
@@ -448,6 +582,38 @@ document.addEventListener('keydown', function(e) {
         closeQuickView();
     }
 });
+
+// ============ Flash Sale Countdown Timers ============
+function updateCountdownTimers() {
+    @if($activeFlashSales->count() > 0)
+    @foreach($activeFlashSales as $flashSale)
+    const timerElement = document.getElementById('timer-{{ $flashSale->id }}');
+    if (timerElement) {
+        const endTime = new Date('{{ $flashSale->end_at->toISOString() }}').getTime();
+        const now = new Date().getTime();
+        const distance = endTime - now;
+
+        if (distance > 0) {
+            const hours = Math.floor(distance / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            const timeLeftElement = timerElement.querySelector('.time-left');
+            if (timeLeftElement) {
+                timeLeftElement.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+        } else {
+            timerElement.innerHTML = '⏰ انتهى العرض';
+            timerElement.style.background = '#6b7280';
+        }
+    }
+    @endforeach
+    @endif
+}
+
+// Update timers every second
+setInterval(updateCountdownTimers, 1000);
+updateCountdownTimers(); // Initial call
 </script>
 @endsection
 

@@ -1183,7 +1183,613 @@ if (globalDiscountInput) {
         }
     });
 }
+
+// ============ Flash Sale Countdown Timers ============
+function updateCountdownTimers() {
+    @if($activeFlashSales->count() > 0)
+    @foreach($activeFlashSales as $flashSale)
+    const timerElement = document.getElementById('timer-{{ $flashSale->id }}');
+    if (timerElement) {
+        const endTime = new Date('{{ $flashSale->end_at->toISOString() }}').getTime();
+        const now = new Date().getTime();
+        const distance = endTime - now;
+
+        if (distance > 0) {
+            const hours = Math.floor(distance / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            const timeLeftElement = timerElement.querySelector('.time-left');
+            if (timeLeftElement) {
+                timeLeftElement.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+        } else {
+            timerElement.innerHTML = '⏰ انتهى العرض';
+            timerElement.style.background = '#6b7280';
+        }
+    }
+    @endforeach
+    @endif
+}
+
+// Update timers every second
+setInterval(updateCountdownTimers, 1000);
+updateCountdownTimers(); // Initial call
 </script>
+
+<!-- Modern Offers Section -->
+@if($activeFlashSales->count() > 0 || $activeBundles->count() > 0)
+<style>
+.modern-offers-section {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 25%, #0f3460 50%, #1a1a2e 75%, #16213e 100%);
+  padding: clamp(1.5rem, 5vw, 3rem) clamp(1rem, 3vw, 2rem);
+  position: relative;
+  overflow: hidden;
+  margin-top: clamp(1.5rem, 5vw, 3rem);
+}
+
+.modern-offers-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background:
+    radial-gradient(circle at 20% 80%, rgba(255,215,0,0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255,215,0,0.1) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(255,215,0,0.05) 0%, transparent 50%);
+  animation: float 20s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33% { transform: translateY(-10px) rotate(1deg); }
+  66% { transform: translateY(5px) rotate(-1deg); }
+}
+
+.modern-offers-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+}
+
+.modern-offers-header {
+  text-align: center;
+  margin-bottom: clamp(1.5rem, 3vw, 2rem);
+  animation: slideInUp 1s ease-out;
+}
+
+.modern-offers-title {
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 900;
+  background: linear-gradient(135deg, #ffd700 0%, #ffed4e 30%, #ffd700 60%, #ffed4e 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin-bottom: 0.8rem;
+  text-shadow: 0 0 25px rgba(255,215,0,0.5);
+  letter-spacing: -1px;
+}
+
+.modern-offers-subtitle {
+  font-size: clamp(0.9rem, 2vw, 1.2rem);
+  color: rgba(255,255,255,0.8);
+  font-weight: 500;
+  max-width: 450px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.modern-offers-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: clamp(1rem, 2vw, 1.5rem);
+  margin-bottom: clamp(1rem, 2vw, 1.5rem);
+}
+
+.modern-offer-card {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(25px);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: 20px;
+  overflow: hidden;
+  position: relative;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow:
+    0 8px 32px rgba(0,0,0,0.3),
+    0 0 0 1px rgba(255,215,0,0.1),
+    inset 0 1px 0 rgba(255,255,255,0.1);
+  animation: slideInUp 0.8s ease-out both;
+  animation-delay: calc(var(--card-index) * 0.1s);
+  cursor: pointer;
+}
+
+.modern-offer-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow:
+    0 20px 60px rgba(0,0,0,0.4),
+    0 0 0 1px rgba(255,215,0,0.4),
+    inset 0 1px 0 rgba(255,255,255,0.2);
+  border-color: rgba(255, 215, 0, 0.6);
+}
+
+.modern-offer-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #ffd700, #ffed4e, #ffd700, #ffed4e, #ffd700);
+  background-size: 200% 100%;
+  animation: gradientShift 4s ease-in-out infinite;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.modern-offer-card:hover::before {
+  opacity: 1;
+}
+
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.modern-offer-image {
+  height: 120px;
+  background: linear-gradient(135deg, rgba(255,215,0,0.1), rgba(255,255,255,0.05));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid rgba(255,215,0,0.2);
+}
+
+.modern-offer-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.modern-offer-card:hover .modern-offer-image img {
+  transform: scale(1.08);
+}
+
+.modern-offer-image::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255,215,0,0.1) 0%, transparent 50%, rgba(0,0,0,0.2) 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.modern-offer-card:hover .modern-offer-image::before {
+  opacity: 1;
+}
+
+.modern-offer-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: linear-gradient(135deg, #ffd700, #ffed4e, #ffd700);
+  color: #1a1a2e;
+  padding: 0.4rem 0.8rem;
+  border-radius: 40px;
+  font-weight: 800;
+  font-size: 0.7rem;
+  box-shadow: 0 4px 15px rgba(255,215,0,0.4);
+  z-index: 10;
+  animation: pulse 2s infinite;
+  border: 2px solid rgba(255,255,255,0.3);
+  backdrop-filter: blur(10px);
+}
+
+.modern-offer-content {
+  padding: 1rem;
+}
+
+.modern-offer-type {
+  display: inline-block;
+  background: linear-gradient(135deg, rgba(255,215,0,0.2), rgba(255,255,255,0.1));
+  color: #ffd700;
+  padding: 0.25rem 0.6rem;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  margin-bottom: 0.6rem;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,215,0,0.3);
+}
+
+.modern-offer-title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: white;
+  margin-bottom: 0.5rem;
+  line-height: 1.3;
+}
+
+.modern-offer-description {
+  color: rgba(255,255,255,0.8);
+  font-size: 0.75rem;
+  line-height: 1.4;
+  margin-bottom: 1rem;
+}
+
+.modern-offer-pricing {
+  margin-bottom: 1rem;
+}
+
+.modern-offer-price {
+  font-size: 1.4rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, #ffd700, #ffed4e, #ffd700);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin-bottom: 0.2rem;
+  text-shadow: 0 0 15px rgba(255,215,0,0.5);
+}
+
+.modern-offer-original-price {
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.5);
+  text-decoration: line-through;
+  margin-bottom: 0.2rem;
+}
+
+.modern-offer-savings {
+  font-size: 0.7rem;
+  color: #ffd700;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.modern-offer-products {
+  margin-bottom: 2rem;
+}
+
+.modern-offer-products-title {
+  color: rgba(255,255,255,0.9);
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 0.8rem;
+}
+
+.modern-offer-products-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.modern-offer-product-item {
+  background: rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.9);
+  padding: 0.3rem 0.8rem;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+.modern-offer-cta {
+  width: 100%;
+  background: linear-gradient(135deg, #ffd700 0%, #ffed4e 50%, #ffd700 100%);
+  color: #1a1a2e;
+  text-decoration: none;
+  padding: 0.8rem 1.2rem;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-align: center;
+  display: inline-block;
+  box-shadow: 0 6px 20px rgba(255,215,0,0.3);
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.modern-offer-cta::before {
+  content: '💬 ';
+  font-size: 1.1rem;
+}
+
+.modern-offer-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 35px rgba(255,215,0,0.5);
+}
+
+.modern-offer-cta::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.modern-offer-cta:hover::after {
+  width: 300px;
+  height: 300px;
+}
+
+.modern-flash-timer {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  background: linear-gradient(135deg, #ff4757, #ff3838);
+  color: white;
+  padding: 0.5rem 0.9rem;
+  border-radius: 40px;
+  font-weight: 800;
+  font-size: 0.7rem;
+  box-shadow: 0 4px 15px rgba(255,71,87,0.4);
+  z-index: 10;
+  animation: pulse 2s infinite;
+  border: 2px solid rgba(255,255,255,0.3);
+  backdrop-filter: blur(10px);
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 6px 20px rgba(255,215,0,0.4);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 10px 30px rgba(255,215,0,0.6);
+  }
+}
+
+@media (max-width: 1024px) {
+  .modern-offers-grid {
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 1024px) {
+  .modern-offers-grid {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .modern-offers-section {
+    padding: 2rem 1rem;
+    margin-top: 2rem;
+  }
+
+  .modern-offers-title {
+    font-size: 1.8rem;
+  }
+
+  .modern-offers-subtitle {
+    font-size: 1rem;
+  }
+
+  .modern-offers-grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+
+  .modern-offer-card {
+    margin: 0 0.3rem;
+  }
+
+  .modern-offer-content {
+    padding: 0.8rem;
+  }
+
+  .modern-offer-title {
+    font-size: 1rem;
+  }
+
+  .modern-offer-price {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .modern-offers-section {
+    padding: 1.5rem 0.5rem;
+    margin-top: 1.5rem;
+  }
+
+  .modern-offers-title {
+    font-size: 1.5rem;
+  }
+
+  .modern-offers-header {
+    margin-bottom: 1rem;
+  }
+
+  .modern-offers-grid {
+    grid-template-columns: 1fr;
+    gap: 0.8rem;
+  }
+
+  .modern-offer-card {
+    margin: 0 0.2rem;
+  }
+
+  .modern-offer-content {
+    padding: 0.7rem;
+  }
+
+  .modern-offer-title {
+    font-size: 0.95rem;
+  }
+
+  .modern-offer-price {
+    font-size: 1.1rem;
+  }
+
+  .modern-offer-cta {
+    padding: 0.7rem 1rem;
+    font-size: 0.8rem;
+  }
+}
+</style>
+
+<section class="modern-offers-section">
+  <div class="modern-offers-container">
+    <div class="modern-offers-header">
+      <h2 class="modern-offers-title">⚡ عروض محدودة الوقت</h2>
+      <p class="modern-offers-subtitle">استفد من أفضل العروض والتخفيضات المحدودة - لا تفوت الفرصة!</p>
+    </div>
+
+    <div class="modern-offers-grid">
+      <!-- Flash Sales -->
+      @if($activeFlashSales->count() > 0)
+        @foreach($activeFlashSales as $index => $flashSale)
+        <div class="modern-offer-card" style="--card-index: {{ $index }};">
+          @if($flashSale->timeRemaining() > 0)
+          <div class="modern-flash-timer" id="modern-timer-{{ $flashSale->id }}">
+            ⏰ ينتهي خلال: <span class="time-left">جاري الحساب...</span>
+          </div>
+          @endif
+
+          <div class="modern-offer-image">
+            @if($flashSale->product->image)
+              <img src="{{ $flashSale->product->image_url }}" alt="{{ $flashSale->product->name }}">
+            @else
+              <div style="font-size: 4rem; opacity: 0.6;">🛍️</div>
+            @endif
+          </div>
+
+          <div class="modern-offer-content">
+            <div class="modern-offer-type">🔥 عرض فلاش</div>
+            <h3 class="modern-offer-title">{{ $flashSale->name }}</h3>
+            <p class="modern-offer-description">{{ Str::limit($flashSale->description, 100) }}</p>
+
+            <div class="modern-offer-pricing">
+              <div class="modern-offer-price">{{ number_format($flashSale->sale_price, 0) }} <span style="font-size: 0.6em;">ل.س</span></div>
+              <div class="modern-offer-original-price">{{ number_format($flashSale->original_price, 0) }} ل.س</div>
+              <div class="modern-offer-savings">
+                <span>💰</span> خصم {{ $flashSale->discount_percentage }}%
+              </div>
+            </div>
+
+            <a href="https://wa.me/963982617848?text=مرحبا، أريد شراء {{ $flashSale->product->name }} من عرض الفلاش بسعر {{ $flashSale->sale_price }}ل.س" class="modern-offer-cta">
+              اطلب الآن - عرض محدود!
+            </a>
+          </div>
+        </div>
+        @endforeach
+      @endif
+
+      <!-- Bundles -->
+      @if($activeBundles->count() > 0)
+        @foreach($activeBundles as $index => $bundle)
+        <div class="modern-offer-card" style="--card-index: {{ $index + $activeFlashSales->count() }};">
+          <div class="modern-offer-badge">📦 باقة</div>
+
+          <div class="modern-offer-image">
+            @if($bundle->image)
+              <img src="{{ Storage::url($bundle->image) }}" alt="{{ $bundle->name }}">
+            @else
+              <div style="font-size: 4rem; opacity: 0.6;">📦</div>
+            @endif
+          </div>
+
+          <div class="modern-offer-content">
+            <div class="modern-offer-type">📦 باقة منتجات</div>
+            <h3 class="modern-offer-title">{{ $bundle->name }}</h3>
+            <p class="modern-offer-description">{{ Str::limit($bundle->description, 100) }}</p>
+
+            <div class="modern-offer-products">
+              <div class="modern-offer-products-title">المنتجات في الباقة:</div>
+              <div class="modern-offer-products-list">
+                @foreach($bundle->bundleProducts as $bundleProduct)
+                <span class="modern-offer-product-item">{{ $bundleProduct->product->name }} (×{{ $bundleProduct->quantity }})</span>
+                @endforeach
+              </div>
+            </div>
+
+            <div class="modern-offer-pricing">
+              <div class="modern-offer-price">{{ number_format($bundle->bundle_price, 0) }} <span style="font-size: 0.6em;">ل.س</span></div>
+              <div class="modern-offer-original-price">{{ number_format($bundle->original_price, 0) }} ل.س</div>
+              <div class="modern-offer-savings">
+                <span>💰</span> توفير {{ number_format($bundle->getSavings(), 0) }} ل.س ({{ $bundle->discount_percentage }}%)
+              </div>
+            </div>
+
+            <a href="https://wa.me/963982617848?text=مرحبا، أريد شراء باقة {{ $bundle->name }} بسعر {{ $bundle->bundle_price }}ل.س" class="modern-offer-cta">
+              اطلب الباقة الآن
+            </a>
+          </div>
+        </div>
+        @endforeach
+      @endif
+    </div>
+  </div>
+</section>
+
+<script>
+// Modern countdown timers for flash sales
+function updateModernCountdownTimers() {
+    @if($activeFlashSales->count() > 0)
+    @foreach($activeFlashSales as $flashSale)
+    const timerElement = document.getElementById('modern-timer-{{ $flashSale->id }}');
+    if (timerElement) {
+        const endTime = new Date('{{ $flashSale->end_at->toISOString() }}').getTime();
+        const now = new Date().getTime();
+        const distance = endTime - now;
+
+        if (distance > 0) {
+            const hours = Math.floor(distance / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            const timeLeftElement = timerElement.querySelector('.time-left');
+            if (timeLeftElement) {
+                timeLeftElement.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+        } else {
+            timerElement.innerHTML = '⏰ انتهى العرض';
+            timerElement.style.background = 'linear-gradient(135deg, #6b7280, #4b5563)';
+        }
+    }
+    @endforeach
+    @endif
+}
+
+// Update modern timers every second
+setInterval(updateModernCountdownTimers, 1000);
+updateModernCountdownTimers(); // Initial call
+</script>
+@endif
 
 @endsection
 

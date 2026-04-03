@@ -119,4 +119,20 @@ class Product extends Model
             ->where('used_count', '<', \DB::raw('usage_limit'))
             ->first();
     }
+
+    /**
+     * Get the active flash sale for this product
+     */
+    public function flashSale()
+    {
+        return $this->hasOne(FlashSale::class)->where('is_active', true)->where('start_at', '<=', now())->where('end_at', '>=', now());
+    }
+
+    /**
+     * Get all flash sales for this product
+     */
+    public function flashSales()
+    {
+        return $this->hasMany(FlashSale::class);
+    }
 }

@@ -8,6 +8,8 @@ use App\Models\Section;
 use App\Models\Discount;
 use App\Models\Game;
 use App\Models\News;
+use App\Models\FlashSale;
+use App\Models\Bundle;
 use Illuminate\Http\Request;
 
 class VisitorProductController extends Controller
@@ -47,7 +49,17 @@ class VisitorProductController extends Controller
         // Get active news for ticker
         $activeNews = News::active()->get();
 
-        return view('welcome', compact('products', 'categories', 'generalDiscounts', 'activeNews'));
+        // Get active flash sales
+        $activeFlashSales = FlashSale::where('is_active', true)
+            ->where('start_at', '<=', now())
+            ->where('end_at', '>=', now())
+            ->with('product')
+            ->get();
+
+        // Get active bundles
+        $activeBundles = Bundle::where('is_active', true)->get();
+
+        return view('welcome', compact('products', 'categories', 'generalDiscounts', 'activeNews', 'activeFlashSales', 'activeBundles'));
     }
 
     public function digitalProducts(Request $request)
