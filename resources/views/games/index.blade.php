@@ -706,7 +706,7 @@
 <!-- Products -->
 <div class="products-grid">
   @forelse($products as $product)
-    <a href="{{ route('games.show', $product) }}" class="product-card" style="text-decoration: none; color: inherit;">
+    <a href="{{ route('games.show', ['game' => $product->id, 'ref' => request()->query('ref')]) }}" class="product-card" style="text-decoration: none; color: inherit;">
       <div class="product-image">
         @if($product->image)
           <img src="{{ $product->image_url }}" alt="{{ $product->name }}" loading="lazy">

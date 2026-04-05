@@ -984,15 +984,24 @@
 // جلب ref parameter من URL إذا كان موجوداً
 const urlParams = new URLSearchParams(window.location.search);
 const refParam = urlParams.get('ref');
+console.log('Show.blade: URL ref param:', refParam);
+console.log('Show.blade: Session ref:', '{{ $currentReferralCode ?? "" }}');
+
 if (refParam) {
+  console.log('Setting ref from URL:', refParam);
   document.getElementById('refParam').value = refParam;
 } else {
   // إذا لم يكن هناك ref في URL، استخدم الكود من الجلسة إذا كان موجوداً
   const sessionRef = '{{ $currentReferralCode ?? "" }}';
   if (sessionRef) {
+    console.log('Setting ref from session:', sessionRef);
     document.getElementById('refParam').value = sessionRef;
+  } else {
+    console.log('No ref found in URL or session');
   }
 }
+
+console.log('Final refParam value:', document.getElementById('refParam').value);
 
 let gameRechargeOriginalPrice = 0;
 let gameRechargeDiscountRate = 0;

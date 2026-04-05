@@ -99,18 +99,16 @@ class VisitorProductController extends Controller
 
     public function gamesAndApps(Request $request)
     {
-        // إدارة كود الإحالة
+        // إدارة كود الإحالة - فقط عدّل إذا كان هناك ref جديد أو كوكيز
         if ($request->filled('ref')) {
-            // إذا كان هناك ref parameter مملوء، احفظه في الجلسة والـ cookie
+            // إذا كان هناك ref parameter جديد، احفظه
             session(['referral_code' => $request->ref]);
             setcookie('referral_code', $request->ref, time() + 600, '/'); // 10 دقائق
-        } elseif ($request->cookie('referral_code')) {
-            // إذا لم يكن هناك ref parameter، لكن يوجد cookie، استخدمه
+        } elseif ($request->cookie('referral_code') && !session('referral_code')) {
+            // إذا لم يكن هناك ref جديد لكن يوجد كوكيز، استخدمه
             session(['referral_code' => $request->cookie('referral_code')]);
-        } else {
-            // لا يوجد ref ولا cookie، امسح الجلسة
-            session(['referral_code' => null]);
         }
+        // إذا لم يكن هناك ref جديد ولا كوكيز جديد، احتفظ بالجلسة الموجودة
 
         $query = Game::where('is_active', true);
 
@@ -167,18 +165,22 @@ class VisitorProductController extends Controller
 
     public function showGame(Game $game, Request $request)
     {
-        // إدارة كود الإحالة
+        \Log::info('ShowGame called', ['url_ref' => $request->ref, 'cookie_ref' => $request->cookie('referral_code'), 'session_ref' => session('referral_code')]);
+        
+        // إدارة كود الإحالة - فقط عدّل إذا كان هناك ref جديد أو كوكيز
         if ($request->filled('ref')) {
-            // إذا كان هناك ref parameter مملوء، احفظه في الجلسة والـ cookie
+            // إذا كان هناك ref parameter جديد، احفظه
             session(['referral_code' => $request->ref]);
             setcookie('referral_code', $request->ref, time() + 600, '/'); // 10 دقائق
-        } elseif ($request->cookie('referral_code')) {
-            // إذا لم يكن هناك ref parameter، لكن يوجد cookie، استخدمه
+            \Log::info('Set referral code from URL', ['ref' => $request->ref]);
+        } elseif ($request->cookie('referral_code') && !session('referral_code')) {
+            // إذا لم يكن هناك ref جديد لكن يوجد كوكيز، استخدمه
             session(['referral_code' => $request->cookie('referral_code')]);
-        } else {
-            // لا يوجد ref ولا cookie، امسح الجلسة
-            session(['referral_code' => null]);
+            \Log::info('Set referral code from cookie', ['ref' => $request->cookie('referral_code')]);
         }
+        // إذا لم يكن هناك ref جديد ولا كوكيز جديد، احتفظ بالجلسة الموجودة
+
+        \Log::info('Final session referral code in showGame', ['ref' => session('referral_code')]);
 
         // تحميل فئات اللعبة النشطة فقط
         $categories = $game->activeCategories()->get();
