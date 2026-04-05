@@ -888,8 +888,10 @@ function openGamesModal(gameId, gameName) {
     if (selected.value) {
       document.getElementById('categoryPrice').textContent = selected.dataset.price;
       document.getElementById('priceSection').style.display = 'block';
+      document.getElementById('gameCategoryId').value = selected.value;
     } else {
       document.getElementById('priceSection').style.display = 'none';
+      document.getElementById('gameCategoryId').value = '';
     }
   });
 }
