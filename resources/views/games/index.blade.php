@@ -5,6 +5,13 @@
 @section('meta_canonical', url('/games-and-apps'))
 
 @section('content')
+@if(session('referral_code'))
+<div style="background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 1rem; border-radius: 12px; margin-bottom: 2rem; text-align: center; box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);">
+    <h4 style="margin: 0; font-weight: 700;">✅ تم تفعيل رابط الإحالة!</h4>
+    <p style="margin: 0.5rem 0 0 0; opacity: 0.9;">يمكنك الآن متابعة طلب شحن رصيد اللعبة.</p>
+</div>
+@endif
+
 <style>
 :root {
   --blue-hero: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
@@ -770,7 +777,10 @@
     
     <form id="rechargeForm" enctype="multipart/form-data">
       @csrf
+      <input type="hidden" id="gameId" name="game_id">
       <input type="hidden" id="gameCategoryId" name="game_category_id">
+      <!-- حفظ ref parameter إذا كان موجوداً -->
+      <input type="hidden" id="refParam" name="ref" value="">
       
       <div id="categoriesSection" style="margin-bottom: 1rem;">
         <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">اختر فئة الشحن *</label>
@@ -822,12 +832,41 @@
 </div>
 
 <script>
+// جلب ref parameter من URL إذا كان موجوداً
+const urlParams = new URLSearchParams(window.location.search);
+const refParam = urlParams.get('ref');
+if (refParam) {
+  document.getElementById('refParam').value = refParam;
+} else {
+  // إذا لم يكن هناك ref في URL، استخدم الكود من الجلسة إذا كان موجوداً
+  const sessionRef = '{{ $currentReferralCode ?? "" }}';
+  if (sessionRef) {
+    document.getElementById('refParam').value = sessionRef;
+  }
+}
+
 let gameCategories = {!! json_encode(\App\Models\Game::with('categories')->where('is_active', true)->get()->mapWithKeys(function($game) { return [$game->id => $game->categories->where('is_active', true)->values()]; })) !!};
 
 function openGamesModal(gameId, gameName) {
   document.getElementById('gameName').textContent = gameName;
   document.getElementById('rechargeModal').style.display = 'block';
   document.body.style.overflow = 'hidden';
+  
+  // Set game ID
+  document.getElementById('gameId').value = gameId;
+  
+  // Ensure ref parameter is set from URL if available
+  const urlParams = new URLSearchParams(window.location.search);
+  const refParam = urlParams.get('ref');
+  if (refParam) {
+    document.getElementById('refParam').value = refParam;
+  } else {
+    // إذا لم يكن هناك ref في URL، استخدم الكود من الجلسة إذا كان موجوداً
+    const sessionRef = '{{ $currentReferralCode ?? "" }}';
+    if (sessionRef) {
+      document.getElementById('refParam').value = sessionRef;
+    }
+  }
   
   // Load categories for this game
   const categorySelect = document.getElementById('categorySelect');

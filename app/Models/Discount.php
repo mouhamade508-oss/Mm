@@ -18,6 +18,7 @@ class Discount extends Model
         'percentage',
         'type',
         'product_id',
+        'applies_to',
         'valid_from',
         'valid_until',
         'usage_limit',
@@ -25,20 +26,12 @@ class Discount extends Model
         'is_active',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
-    {
-        return [
-            'percentage' => 'decimal:2',
-            'valid_from' => 'datetime',
-            'valid_until' => 'datetime',
-            'is_active' => 'boolean',
-        ];
-    }
+    protected $casts = [
+        'percentage' => 'decimal:2',
+        'valid_from' => 'datetime',
+        'valid_until' => 'datetime',
+        'is_active' => 'boolean',
+    ];
 
     /**
      * Get the product that this discount belongs to (if specific discount).
@@ -59,6 +52,35 @@ class Discount extends Model
             && $now->greaterThanOrEqualTo($this->valid_from) 
             && $now->lessThanOrEqualTo($this->valid_until)
             && $this->used_count < $this->usage_limit;
+    }
+
+    /**
+     * Check if discount is valid for the given purpose.
+     */
+    public function isValidForPurpose(string $purpose = 'products', ?int $productId = null): bool
+    {
+        if (! $this->isValid()) {
+            return false;
+        }
+
+        if ($this->type === 'specific') {
+            if ($productId === null) {
+                return false;
+            }
+            if ($this->product_id !== $productId) {
+                return false;
+            }
+        }
+
+        if ($this->applies_to === 'all') {
+            return true;
+        }
+
+        if ($purpose === 'game_recharge') {
+            return $this->applies_to === 'game_recharge';
+        }
+
+        return $this->applies_to === 'products';
     }
 
     /**

@@ -175,6 +175,10 @@
                                     <i class="fas fa-phone mr-1 text-muted"></i>
                                     {{ $request->customer_phone ?: 'غير محدد' }}
                                 </div>
+                                <div class="text-sm text-muted">
+                                    <i class="fas fa-link mr-1"></i>
+                                    {{ $request->referral_code ?? '❌ بدون رابط إحالة' }}
+                                </div>
                                 @if($request->transaction_number)
                                     <div class="text-sm text-muted">
                                         <i class="fas fa-hashtag mr-1"></i>

@@ -418,14 +418,35 @@ body {
           </a>
         </div>
         <div class="info-item">
-          <span class="info-label">السعر</span>
-          <span class="info-value">{{ number_format($gameRequest->gameCategory->price, 2) }} ل.س</span>
+          <span class="info-label">السعر الاصلي</span>
+          <span class="info-value">{{ number_format($gameRequest->original_price ?? $gameRequest->gameCategory->price, 2) }} ل.س</span>
         </div>
+        @if($gameRequest->discount_code)
+            <div class="info-item">
+              <span class="info-label">كود الخصم</span>
+              <span class="info-value">{{ $gameRequest->discount_code }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">الخصم</span>
+              <span class="info-value">{{ number_format($gameRequest->discount_percentage ?? 0, 2) }}% - {{ number_format($gameRequest->discount_amount ?? 0, 2) }} ل.س</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">السعر بعد الخصم</span>
+              <span class="info-value">{{ number_format($gameRequest->final_price ?? ($gameRequest->gameCategory->price - ($gameRequest->gameCategory->price * ($gameRequest->discount_percentage ?? 0) / 100)), 2) }} ل.س</span>
+            </div>
+        @endif
       @endif
 
       <div class="info-item">
         <span class="info-label">معرّف اللاعب</span>
         <span class="info-value" style="font-family: 'Courier New', monospace; background: #f1f5f9; padding: 0.5rem; border-radius: 6px;">{{ $gameRequest->player_id }}</span>
+      </div>
+
+      <div class="info-item">
+        <span class="info-label">رمز الإحالة</span>
+        <span class="info-value">
+          {{ $gameRequest->referral_code ?? '❌ بدون رابط إحالة' }}
+        </span>
       </div>
 
       <div class="info-item">
@@ -471,12 +492,16 @@ body {
     </div>
   </div>
 
-  <!-- صورة الإثبات -->
-  @if($gameRequest->proof_image)
-    <div class="image-section">
-      <h3>📸 صورة إثبات الشحن</h3>
-      <div class="image-wrapper">
-        <img src="{{ asset('storage/' . $gameRequest->proof_image) }}" alt="إثبات الشحن">
+  <!-- إثبات الدفع -->
+  @if($gameRequest->proof_code)
+    <div class="proof-section">
+      <h3>🔢 إثبات الدفع</h3>
+      <div class="proof-wrapper">
+        @if(strpos($gameRequest->proof_code, 'game-recharge-proofs/') === 0)
+          <img src="{{ asset('storage/' . $gameRequest->proof_code) }}" alt="إثبات الدفع" style="max-width: 100%; height: auto;">
+        @else
+          <p><strong>كود الإثبات:</strong> <code>{{ $gameRequest->proof_code }}</code></p>
+        @endif
       </div>
     </div>
   @else

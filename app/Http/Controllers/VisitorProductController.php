@@ -99,6 +99,19 @@ class VisitorProductController extends Controller
 
     public function gamesAndApps(Request $request)
     {
+        // إدارة كود الإحالة
+        if ($request->filled('ref')) {
+            // إذا كان هناك ref parameter مملوء، احفظه في الجلسة والـ cookie
+            session(['referral_code' => $request->ref]);
+            setcookie('referral_code', $request->ref, time() + 600, '/'); // 10 دقائق
+        } elseif ($request->cookie('referral_code')) {
+            // إذا لم يكن هناك ref parameter، لكن يوجد cookie، استخدمه
+            session(['referral_code' => $request->cookie('referral_code')]);
+        } else {
+            // لا يوجد ref ولا cookie، امسح الجلسة
+            session(['referral_code' => null]);
+        }
+
         $query = Game::where('is_active', true);
 
         if ($request->filled('search')) {
@@ -118,7 +131,7 @@ class VisitorProductController extends Controller
             ->where('used_count', '<', \DB::raw('usage_limit'))
             ->get();
 
-        return view('games.index', compact('products', 'categories', 'generalDiscounts'));
+        return view('games.index', compact('products', 'categories', 'generalDiscounts'))->with('currentReferralCode', session('referral_code'));
     }
 
     public function show(Product $product)
@@ -152,8 +165,21 @@ class VisitorProductController extends Controller
         return view('products.show', compact('product', 'category', 'variants', 'relatedProducts', 'generalDiscounts'));
     }
 
-    public function showGame(Game $game)
+    public function showGame(Game $game, Request $request)
     {
+        // إدارة كود الإحالة
+        if ($request->filled('ref')) {
+            // إذا كان هناك ref parameter مملوء، احفظه في الجلسة والـ cookie
+            session(['referral_code' => $request->ref]);
+            setcookie('referral_code', $request->ref, time() + 600, '/'); // 10 دقائق
+        } elseif ($request->cookie('referral_code')) {
+            // إذا لم يكن هناك ref parameter، لكن يوجد cookie، استخدمه
+            session(['referral_code' => $request->cookie('referral_code')]);
+        } else {
+            // لا يوجد ref ولا cookie، امسح الجلسة
+            session(['referral_code' => null]);
+        }
+
         // تحميل فئات اللعبة النشطة فقط
         $categories = $game->activeCategories()->get();
 
@@ -165,7 +191,7 @@ class VisitorProductController extends Controller
             ->where('used_count', '<', \DB::raw('usage_limit'))
             ->get();
 
-        return view('games.show', compact('game', 'categories', 'generalDiscounts'));
+        return view('games.show', compact('game', 'categories', 'generalDiscounts'))->with('currentReferralCode', session('referral_code'));
     }
 
     /**

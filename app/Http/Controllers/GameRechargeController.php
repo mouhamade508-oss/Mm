@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Discount;
 use App\Models\GameRechargeRequest;
+use App\Models\ReferralLink;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -16,7 +18,10 @@ class GameRechargeController extends Controller
             'customer_name' => 'required|string|max:255',
             'phone_number' => 'nullable|string|max:255',
             'game_account' => 'required|string|max:255',
-            'proof_code' => 'required|string|max:255',
+            'discount_code' => 'nullable|string|max:50',
+            'proof_code' => 'nullable|string|max:255',
+            'proof_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:4096',
+            'transaction_number' => 'nullable|string|max:255',
             'notes' => 'nullable|string|max:1000',
         ]);
 
@@ -24,17 +29,60 @@ class GameRechargeController extends Controller
         $game = \App\Models\Game::find($request->game_id);
         $gameCategory = \App\Models\GameCategory::find($request->game_category_id);
 
-        // Create the request
+        // Handle proof data and referral code
+        $proofCode = $request->input('proof_code');
+
+        if ($request->hasFile('proof_image')) {
+            $proofCode = $request->file('proof_image')->store('game-recharge-proofs', 'public');
+        }
+
+        // الحصول على كود الإحالة من الطلب أولاً، ثم من الجلسة
+        $referralCode = $request->input('ref') ?: session('referral_code');
+
+        $discountCode = null;
+        $discountId = null;
+        $discountPercentage = null;
+        $discountAmount = null;
+        $originalPrice = $gameCategory->price;
+        $finalPrice = $originalPrice;
+
+        if ($request->filled('discount_code')) {
+            $discount = Discount::where('code', strtoupper($request->discount_code))->first();
+
+            if (! $discount) {
+                return back()->withErrors(['discount_code' => 'كود الخصم غير صالح أو غير موجود.'])->withInput();
+            }
+
+            if (! $discount->isValidForPurpose('game_recharge')) {
+                return back()->withErrors(['discount_code' => 'هذا الكود غير صالح لقسم شحن الألعاب.'])->withInput();
+            }
+
+            $discountCode = $discount->code;
+            $discountId = $discount->id;
+            $discountPercentage = $discount->percentage;
+            $discountAmount = $discount->calculateDiscount($originalPrice);
+            $finalPrice = max($originalPrice - $discountAmount, 0);
+            $discount->incrementUsage();
+        }
+
         $gameRequest = GameRechargeRequest::create([
             'game_id' => $request->game_id,
             'game_category_id' => $request->game_category_id,
             'game_name' => $game->name,
             'category_name' => $gameCategory->name,
             'player_id' => $request->game_account,
-            'proof_code' => $request->proof_code,
+            'proof_code' => $proofCode,
+            'transaction_number' => $request->transaction_number,
             'customer_name' => $request->customer_name,
             'customer_phone' => $request->phone_number,
             'notes' => $request->notes,
+            'referral_code' => $referralCode,
+            'discount_code' => $discountCode,
+            'discount_id' => $discountId,
+            'discount_percentage' => $discountPercentage,
+            'discount_amount' => $discountAmount,
+            'original_price' => $originalPrice,
+            'final_price' => $finalPrice,
             'status' => 'pending',
         ]);
 
@@ -98,6 +146,13 @@ class GameRechargeController extends Controller
             
             $message .= "\n<b>🎮 معلومات اللعبة:</b>\n";
             $message .= "معرّف اللاعب: <code>{$gameRequest->player_id}</code>\n";
+            
+            $message .= "\n<b>🔗 رمز الإحالة:</b> ";
+            if ($gameRequest->referral_code) {
+                $message .= "<code>{$gameRequest->referral_code}</code>\n";
+            } else {
+                $message .= "❌ بدون رابط إحالة\n";
+            }
             
             if($gameRequest->notes) {
                 $message .= "\n<b>📝 ملاحظات:</b>\n";

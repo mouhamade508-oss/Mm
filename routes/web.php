@@ -61,6 +61,9 @@ Route::middleware('admin')->prefix('admin')->name('admin.')->group(function () {
     Route::put('/game-recharge-requests/{gameRequest}/status', [App\Http\Controllers\GameRechargeController::class, 'updateStatus'])->name('game-recharge.update-status');
     Route::delete('/game-recharge-requests/{gameRequest}', [App\Http\Controllers\GameRechargeController::class, 'destroy'])->name('game-recharge.destroy');
 
+    // Referral Links routes
+    Route::resource('referrals', App\Http\Controllers\Admin\ReferralLinkController::class);
+
     // Games routes
     Route::resource('games', App\Http\Controllers\Admin\GameController::class);
 
@@ -76,6 +79,9 @@ Route::middleware('admin')->prefix('admin')->name('admin.')->group(function () {
     // Bundles routes
     Route::resource('bundles', App\Http\Controllers\Admin\BundleController::class);
 });
+
+// Referral redirect route
+Route::get('/ref/{code}', [App\Http\Controllers\ReferralLinkController::class, 'redirect'])->name('referral.redirect');
 
 // Public route for validating discount codes
 Route::post('/api/game-recharge-requests', [App\Http\Controllers\GameRechargeController::class, 'store'])->name('api.game-recharge.store');

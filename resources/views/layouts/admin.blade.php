@@ -204,6 +204,12 @@
                     </a>
                 </li>
                 <li>
+                    <a href="{{ route('admin.referrals.index') }}" 
+                       class="{{ Route::is('admin.referrals.*') ? 'active' : '' }}">
+                        🔗 روابط الإحالة
+                    </a>
+                </li>
+                <li>
                     <a href="{{ route('admin.games.index') }}" 
                        class="{{ Route::is('admin.games.*') ? 'active' : '' }}">
                         🎯 إدارة الألعاب

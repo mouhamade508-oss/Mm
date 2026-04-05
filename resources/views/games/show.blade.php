@@ -5,6 +5,13 @@
 @section('meta_canonical', url('/games/' . $game->id))
 
 @section('content')
+@if(session('referral_code'))
+<div style="background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 1rem; border-radius: 12px; margin-bottom: 2rem; text-align: center; box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);">
+    <h4 style="margin: 0; font-weight: 700;">✅ تم تفعيل رابط الإحالة!</h4>
+    <p style="margin: 0.5rem 0 0 0; opacity: 0.9;">يمكنك الآن متابعة طلب شحن رصيد اللعبة.</p>
+</div>
+@endif
+
 <style>
 :root {
   --blue-hero: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
@@ -924,6 +931,8 @@
 
       <input type="hidden" id="gameId" name="game_id">
       <input type="hidden" id="categoryId" name="game_category_id">
+      <!-- حفظ ref parameter إذا كان موجوداً -->
+      <input type="hidden" id="refParam" name="ref" value="">
 
       <div class="form-group">
         <label class="form-label">👤 اسمك الكامل *</label>
@@ -940,6 +949,15 @@
       <div class="form-group">
         <label class="form-label">🎮 معرّف اللعبة / حسابك *</label>
         <input type="text" name="game_account" class="form-input" placeholder="معرّفك في اللعبة" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">🎟️ كود الخصم (اختياري)</label>
+        <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
+          <input type="text" id="discountCodeInput" name="discount_code" class="form-input" placeholder="أدخل كود الخصم">
+          <button type="button" class="btn-store" onclick="validateGameRechargeDiscount()" style="min-width: 120px;">تحقق</button>
+        </div>
+        <p id="discountMessage" class="text-sm mt-2 text-gray-600">يمكنك استخدام كود خصم صالح لتخفيض التكلفة.</p>
       </div>
 
       <div class="form-group">
@@ -963,15 +981,96 @@
 </div>
 
 <script>
+// جلب ref parameter من URL إذا كان موجوداً
+const urlParams = new URLSearchParams(window.location.search);
+const refParam = urlParams.get('ref');
+if (refParam) {
+  document.getElementById('refParam').value = refParam;
+} else {
+  // إذا لم يكن هناك ref في URL، استخدم الكود من الجلسة إذا كان موجوداً
+  const sessionRef = '{{ $currentReferralCode ?? "" }}';
+  if (sessionRef) {
+    document.getElementById('refParam').value = sessionRef;
+  }
+}
+
+let gameRechargeOriginalPrice = 0;
+let gameRechargeDiscountRate = 0;
+let gameRechargeDiscountApplied = false;
+
 function openRechargeModal(gameId, categoryId, gameName, categoryName, price) {
   document.getElementById('gameId').value = gameId;
   document.getElementById('categoryId').value = categoryId;
   document.getElementById('modalGameName').textContent = gameName;
   document.getElementById('modalCategoryName').textContent = categoryName;
-  document.getElementById('priceDisplay').value = parseFloat(price).toFixed(2) + 'دولار';
   
+  // Ensure ref parameter is set from URL if available
+  const urlParams = new URLSearchParams(window.location.search);
+  const refParam = urlParams.get('ref');
+  if (refParam) {
+    document.getElementById('refParam').value = refParam;
+  } else {
+    // إذا لم يكن هناك ref في URL، استخدم الكود من الجلسة إذا كان موجوداً
+    const sessionRef = '{{ $currentReferralCode ?? "" }}';
+    if (sessionRef) {
+      document.getElementById('refParam').value = sessionRef;
+    }
+  }
+  
+  gameRechargeOriginalPrice = parseFloat(price);
+  gameRechargeDiscountRate = 0;
+  gameRechargeDiscountApplied = false;
+  document.getElementById('discountCodeInput').value = '';
+  document.getElementById('discountMessage').textContent = 'يمكنك استخدام كود خصم صالح لتخفيض التكلفة.';
+  document.getElementById('discountMessage').style.color = '#475569';
+  updateRechargePriceDisplay(gameRechargeOriginalPrice);
   document.getElementById('rechargeModal').classList.add('active');
   document.body.style.overflow = 'hidden';
+}
+
+function updateRechargePriceDisplay(price) {
+  document.getElementById('priceDisplay').value = Number(price).toFixed(2) + ' دولار';
+}
+
+function validateGameRechargeDiscount() {
+  const code = document.getElementById('discountCodeInput').value.trim();
+  const messageEl = document.getElementById('discountMessage');
+
+  if (!code) {
+    messageEl.textContent = 'يرجى إدخال كود الخصم.';
+    messageEl.style.color = '#dc2626';
+    return;
+  }
+
+  fetch('{{ route('validate-discount') }}', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+    },
+    body: JSON.stringify({ code: code, purpose: 'game_recharge' })
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      gameRechargeDiscountRate = Number(data.percentage || data.discount?.percentage || 0);
+      gameRechargeDiscountApplied = true;
+      const finalPrice = Number(gameRechargeOriginalPrice) - (gameRechargeOriginalPrice * gameRechargeDiscountRate / 100);
+      updateRechargePriceDisplay(finalPrice);
+      messageEl.textContent = 'تم تطبيق الكود بنجاح. السعر الجديد تم تحديثه.';
+      messageEl.style.color = '#15803d';
+    } else {
+      gameRechargeDiscountRate = 0;
+      gameRechargeDiscountApplied = false;
+      updateRechargePriceDisplay(gameRechargeOriginalPrice);
+      messageEl.textContent = data.message || 'الكود غير صالح.';
+      messageEl.style.color = '#dc2626';
+    }
+  })
+  .catch(() => {
+    messageEl.textContent = 'حدث خطأ أثناء التحقق من الكود.';
+    messageEl.style.color = '#dc2626';
+  });
 }
 
 function closeRechargeModal() {

@@ -105,10 +105,24 @@
                         </label>
                         <select id="discount_type" name="type" required 
                                 class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition">
-                            <option value="general" {{ old('type', $discount->type) === 'general' ? 'selected' : '' }}>🌍 عام (جميع المنتجات)</option>
-                            <option value="specific" {{ old('type', $discount->type) === 'specific' ? 'selected' : '' }}>🎯 خاص (منتج معين)</option>
+                            <option value="general" {{ old('type', $discount->type) === 'general' ? 'selected' : '' }}>🌍 عام</option>
+                            <option value="specific" {{ old('type', $discount->type) === 'specific' ? 'selected' : '' }}>🎯 خاص</option>
                         </select>
                         @error('type')
+                            <p class="text-red-500 text-sm mt-2">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    <div>
+                        <label for="applies_to" class="flex items-center text-gray-700 font-bold mb-3 gap-2">
+                            <span class="text-xl">🧭</span> القسم المطبق عليه <span class="text-red-500">*</span>
+                        </label>
+                        <select id="applies_to" name="applies_to" required 
+                                class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition">
+                            <option value="all" {{ old('applies_to', $discount->applies_to) === 'all' ? 'selected' : '' }}>كل الأقسام</option>
+                            <option value="products" {{ old('applies_to', $discount->applies_to) === 'products' ? 'selected' : '' }}>قسم المنتجات</option>
+                            <option value="game_recharge" {{ old('applies_to', $discount->applies_to) === 'game_recharge' ? 'selected' : '' }}>قسم شحن الألعاب</option>
+                        </select>
+                        @error('applies_to')
                             <p class="text-red-500 text-sm mt-2">{{ $message }}</p>
                         @enderror
                     </div>
@@ -133,6 +147,25 @@
                     @enderror
                 </div>
             </div>
+
+            <script>
+                function toggleDiscountFields() {
+                    const type = document.getElementById('discount_type').value;
+                    const appliesTo = document.getElementById('applies_to').value;
+                    const productField = document.getElementById('product_field');
+
+                    if (type === 'specific' && appliesTo !== 'game_recharge') {
+                        productField.classList.remove('hidden');
+                    } else {
+                        productField.classList.add('hidden');
+                        document.getElementById('product_id').value = '';
+                    }
+                }
+
+                document.getElementById('discount_type').addEventListener('change', toggleDiscountFields);
+                document.getElementById('applies_to').addEventListener('change', toggleDiscountFields);
+                document.addEventListener('DOMContentLoaded', toggleDiscountFields);
+            </script>
 
             <!-- Section 3: Validity Period -->
             <div class="pb-8 border-b">

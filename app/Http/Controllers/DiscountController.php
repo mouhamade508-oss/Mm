@@ -36,7 +36,8 @@ class DiscountController extends Controller
             'description' => 'nullable|string|max:500',
             'percentage' => 'required|numeric|min:0.01|max:100',
             'type' => 'required|in:general,specific',
-            'product_id' => 'required_if:type,specific|nullable|exists:products,id',
+            'applies_to' => 'required|in:all,products,game_recharge',
+            'product_id' => 'exclude_if:applies_to,game_recharge|required_if:type,specific|nullable|exists:products,id',
             'valid_from' => 'required|date_format:Y-m-d\TH:i',
             'valid_until' => 'required|date_format:Y-m-d\TH:i|after:valid_from',
             'usage_limit' => 'required|integer|min:1',
@@ -49,6 +50,7 @@ class DiscountController extends Controller
                 'description' => $validated['description'],
                 'percentage' => $validated['percentage'],
                 'type' => $validated['type'],
+                'applies_to' => $validated['applies_to'],
                 'product_id' => $validated['type'] === 'specific' ? $validated['product_id'] : null,
                 'valid_from' => \Carbon\Carbon::createFromFormat('Y-m-d\TH:i', $validated['valid_from']),
                 'valid_until' => \Carbon\Carbon::createFromFormat('Y-m-d\TH:i', $validated['valid_until']),
@@ -82,7 +84,8 @@ class DiscountController extends Controller
             'description' => 'nullable|string|max:500',
             'percentage' => 'required|numeric|min:0.01|max:100',
             'type' => 'required|in:general,specific',
-            'product_id' => 'required_if:type,specific|nullable|exists:products,id',
+            'applies_to' => 'required|in:all,products,game_recharge',
+            'product_id' => 'exclude_if:applies_to,game_recharge|required_if:type,specific|nullable|exists:products,id',
             'valid_from' => 'required|date_format:Y-m-d\TH:i',
             'valid_until' => 'required|date_format:Y-m-d\TH:i|after:valid_from',
             'usage_limit' => 'required|integer|min:1',
@@ -95,6 +98,7 @@ class DiscountController extends Controller
                 'description' => $validated['description'],
                 'percentage' => $validated['percentage'],
                 'type' => $validated['type'],
+                'applies_to' => $validated['applies_to'],
                 'product_id' => $validated['type'] === 'specific' ? $validated['product_id'] : null,
                 'valid_from' => \Carbon\Carbon::createFromFormat('Y-m-d\TH:i', $validated['valid_from']),
                 'valid_until' => \Carbon\Carbon::createFromFormat('Y-m-d\TH:i', $validated['valid_until']),
@@ -130,49 +134,53 @@ class DiscountController extends Controller
         $request->validate([
             'code' => 'required|string',
             'product_id' => 'sometimes|exists:products,id',
+            'purpose' => 'sometimes|in:products,game_recharge',
         ]);
 
         $discount = Discount::where('code', strtoupper($request->code))->first();
 
-        if (!$discount) {
+        if (! $discount) {
             return response()->json([
+                'success' => false,
                 'valid' => false,
                 'message' => 'الكود غير صحيح',
             ]);
         }
 
-        // Check if discount is valid
-        if (!$discount->isValid()) {
+        // Determine whether this validation is for game recharge or product purchase
+        $purpose = $request->get('purpose', $request->filled('product_id') ? 'products' : 'products');
+        $productId = $request->input('product_id');
+
+        if (! $discount->isValidForPurpose($purpose, $productId)) {
+            if ($purpose === 'game_recharge') {
+                $message = $discount->applies_to === 'products'
+                    ? 'هذا الكود خاص بالمنتجات ولا يمكن استخدامه في شحن الألعاب'
+                    : 'انتهت صلاحية الكود أو غير صالح لشحن الألعاب';
+            } else {
+                $message = $discount->applies_to === 'game_recharge'
+                    ? 'هذا الكود خاص بشحن الألعاب ولا يمكن استخدامه هنا'
+                    : 'انتهت صلاحية الكود أو غير صالح لهذا المنتج';
+            }
+
             return response()->json([
+                'success' => false,
                 'valid' => false,
-                'message' => 'انتهت صلاحية الكود أو تم استخدامه بالكامل',
+                'message' => $message,
             ]);
         }
 
-        // If product_id is provided, check if discount is applicable to this product
-        if ($request->filled('product_id')) {
-            if ($discount->type === 'specific' && $discount->product_id != $request->product_id) {
-                return response()->json([
-                    'valid' => false,
-                    'message' => 'هذا الكود غير مطبق على هذا المنتج',
-                ]);
-            }
-        } else {
-            // If no product_id provided, only allow general discounts
-            if ($discount->type === 'specific') {
-                return response()->json([
-                    'valid' => false,
-                    'message' => 'هذا الكود خاص بمنتج معين فقط',
-                ]);
-            }
-        }
-
         return response()->json([
+            'success' => true,
             'valid' => true,
             'message' => 'كود صحيح',
             'percentage' => $discount->percentage,
             'discount_id' => $discount->id,
             'type' => $discount->type,
+            'discount' => [
+                'id' => $discount->id,
+                'percentage' => $discount->percentage,
+                'type' => $discount->type,
+            ],
         ]);
     }
 }
