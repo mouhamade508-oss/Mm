@@ -86,6 +86,12 @@ class GameRechargeController extends Controller
             'status' => 'pending',
         ]);
 
+        // مسح كود الإحالة من الجلسة والكوكيز بعد الاستخدام لمنع إعادة استخدامه
+        if ($referralCode) {
+            session()->forget('referral_code');
+            setcookie('referral_code', '', time() - 3600, '/'); // مسح الكوكيز
+        }
+
         // Send notification
         $this->sendNotification($gameRequest);
 
