@@ -982,7 +982,7 @@
     <div id="successMessage" style="display: none; text-align: center; padding: 2rem;">
       <div style="background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 2rem; border-radius: 20px; box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);">
         <h3 style="margin: 0 0 1rem 0; font-size: 1.5rem;">🎉 تم إرسال طلبك بنجاح!</h3>
-        <p style="margin: 0 0 1.5rem 0; font-size: 1.1rem; opacity: 0.9;">شكراً لك على اختيار خدماتنا. سنقوم بمعالجة طلبك في أقرب وقت ممكن وسنتصل بك لتأكيد التفاصيل.</p>
+        <p style="margin: 0 0 1.5rem 0; font-size: 1.1rem; opacity: 0.9;">شكراً لك على اختيار خدماتنا. اذا واجهتك أي مشكلة لا تتردد بالتواصل معنا.</p>
         <button type="button" class="btn-submit" onclick="closeRechargeModal()" style="background: white; color: #059669; border: none; padding: 0.75rem 1.5rem; border-radius: 12px; font-weight: 600; cursor: pointer;">العودة للألعاب</button>
       </div>
     </div>
@@ -1110,6 +1110,7 @@ document.getElementById('rechargeModal').addEventListener('click', function(e) {
 // Prevent form submission if incomplete
 document.getElementById('rechargeForm').addEventListener('submit', function(e) {
   e.preventDefault();
+  console.log('Form submit event triggered');
   
   // التحقق من الحقول المطلوبة
   const requiredFields = this.querySelectorAll('input[required], textarea[required]');
@@ -1125,21 +1126,28 @@ document.getElementById('rechargeForm').addEventListener('submit', function(e) {
   });
 
   if (!isValid) {
+    console.log('Validation failed');
     alert('يرجى ملء جميع الحقول المطلوبة (المحددة بـ *)');
     return;
   }
   
+  console.log('Validation passed, sending request');
   const formData = new FormData(this);
   
   fetch('/api/game-recharge-requests', {
     method: 'POST',
     body: formData,
     headers: {
+      'Accept': 'application/json',
       'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
     }
   })
-  .then(response => response.json())
+  .then(response => {
+    console.log('Response status:', response.status);
+    return response.json();
+  })
   .then(data => {
+    console.log('Response data:', data);
     if (data.success) {
       // إخفاء النموذج وعرض رسالة النجاح
       document.getElementById('rechargeForm').style.display = 'none';
