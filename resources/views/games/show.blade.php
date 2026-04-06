@@ -7,7 +7,7 @@
 @section('content')
 @if(session('referral_code'))
 <div style="background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 1rem; border-radius: 12px; margin-bottom: 2rem; text-align: center; box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);">
-    <h4 style="margin: 0; font-weight: 700;">✅ تم تفعيل رابط الإحالة!</h4>
+    <h4 style="margin: 0; font-weight: 700;">اهلا بك</h4>
     <p style="margin: 0.5rem 0 0 0; opacity: 0.9;">يمكنك الآن متابعة طلب شحن رصيد اللعبة.</p>
 </div>
 @endif
@@ -926,7 +926,7 @@
       <p id="modalCategoryName"></p>
     </div>
 
-    <form method="POST" action="{{ route('game-recharge.store') }}" id="rechargeForm">
+    <form id="rechargeForm">
       @csrf
 
       <input type="hidden" id="gameId" name="game_id">
@@ -977,6 +977,15 @@
         <button type="submit" class="btn-submit">✅ إرسال الطلب</button>
       </div>
     </form>
+
+    <!-- رسالة النجاح -->
+    <div id="successMessage" style="display: none; text-align: center; padding: 2rem;">
+      <div style="background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 2rem; border-radius: 20px; box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);">
+        <h3 style="margin: 0 0 1rem 0; font-size: 1.5rem;">🎉 تم إرسال طلبك بنجاح!</h3>
+        <p style="margin: 0 0 1.5rem 0; font-size: 1.1rem; opacity: 0.9;">شكراً لك على اختيار خدماتنا. سنقوم بمعالجة طلبك في أقرب وقت ممكن وسنتصل بك لتأكيد التفاصيل.</p>
+        <button type="button" class="btn-submit" onclick="closeRechargeModal()" style="background: white; color: #059669; border: none; padding: 0.75rem 1.5rem; border-radius: 12px; font-weight: 600; cursor: pointer;">العودة للألعاب</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -1085,6 +1094,9 @@ function validateGameRechargeDiscount() {
 function closeRechargeModal() {
   document.getElementById('rechargeModal').classList.remove('active');
   document.body.style.overflow = 'auto';
+  // إعادة تعيين النموذج وإخفاء رسالة النجاح
+  document.getElementById('rechargeForm').style.display = 'block';
+  document.getElementById('successMessage').style.display = 'none';
   document.getElementById('rechargeForm').reset();
 }
 
@@ -1097,6 +1109,9 @@ document.getElementById('rechargeModal').addEventListener('click', function(e) {
 
 // Prevent form submission if incomplete
 document.getElementById('rechargeForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  
+  // التحقق من الحقول المطلوبة
   const requiredFields = this.querySelectorAll('input[required], textarea[required]');
   let isValid = true;
   
@@ -1110,9 +1125,33 @@ document.getElementById('rechargeForm').addEventListener('submit', function(e) {
   });
 
   if (!isValid) {
-    e.preventDefault();
     alert('يرجى ملء جميع الحقول المطلوبة (المحددة بـ *)');
+    return;
   }
+  
+  const formData = new FormData(this);
+  
+  fetch('/api/game-recharge-requests', {
+    method: 'POST',
+    body: formData,
+    headers: {
+      'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+    }
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      // إخفاء النموذج وعرض رسالة النجاح
+      document.getElementById('rechargeForm').style.display = 'none';
+      document.getElementById('successMessage').style.display = 'block';
+    } else {
+      alert('حدث خطأ. يرجى المحاولة مرة أخرى.');
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    alert('حدث خطأ. يرجى المحاولة مرة أخرى.');
+  });
 });
 </script>
 

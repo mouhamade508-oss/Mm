@@ -7,7 +7,7 @@
 @section('content')
 @if(session('referral_code'))
 <div style="background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 1rem; border-radius: 12px; margin-bottom: 2rem; text-align: center; box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);">
-    <h4 style="margin: 0; font-weight: 700;">✅ تم تفعيل رابط الإحالة!</h4>
+    <h4 style="margin: 0; font-weight: 700;">اهلا بك</h4>
     <p style="margin: 0.5rem 0 0 0; opacity: 0.9;">يمكنك الآن متابعة طلب شحن رصيد اللعبة.</p>
 </div>
 @endif
@@ -828,6 +828,15 @@
         <button type="submit" style="padding: 0.8rem 1.5rem; background: var(--blue-hero); color: white; border: none; border-radius: 12px; cursor: pointer; font-weight: 600;">إرسال الطلب</button>
       </div>
     </form>
+    
+    <!-- رسالة النجاح -->
+    <div id="successMessage" style="display: none; text-align: center; padding: 2rem;">
+      <div style="background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 2rem; border-radius: 20px; box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);">
+        <h3 style="margin: 0 0 1rem 0; font-size: 1.5rem;">🎉 تم إرسال طلبك بنجاح!</h3>
+        <p style="margin: 0 0 1.5rem 0; font-size: 1.1rem; opacity: 0.9;">شكراً لك على اختيار خدماتنا. سنقوم بمعالجة طلبك في أقرب وقت ممكن وسنتصل بك لتأكيد التفاصيل.</p>
+        <button type="button" class="btn-submit" onclick="closeRechargeModal()" style="background: white; color: #059669; border: none; padding: 0.75rem 1.5rem; border-radius: 12px; font-weight: 600; cursor: pointer;">العودة للألعاب</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -899,6 +908,9 @@ function openGamesModal(gameId, gameName) {
 function closeRechargeModal() {
   document.getElementById('rechargeModal').style.display = 'none';
   document.body.style.overflow = 'auto';
+  // إعادة تعيين النموذج وإخفاء رسالة النجاح
+  document.getElementById('rechargeForm').style.display = 'block';
+  document.getElementById('successMessage').style.display = 'none';
   document.getElementById('rechargeForm').reset();
   document.getElementById('priceSection').style.display = 'none';
 }
@@ -918,8 +930,9 @@ document.getElementById('rechargeForm').addEventListener('submit', function(e) {
   .then(response => response.json())
   .then(data => {
     if (data.success) {
-      alert('تم إرسال طلبك بنجاح! سنتصل بك قريباً.');
-      closeRechargeModal();
+      // إخفاء النموذج وعرض رسالة النجاح
+      document.getElementById('rechargeForm').style.display = 'none';
+      document.getElementById('successMessage').style.display = 'block';
     } else {
       alert('حدث خطأ. يرجى المحاولة مرة أخرى.');
     }
